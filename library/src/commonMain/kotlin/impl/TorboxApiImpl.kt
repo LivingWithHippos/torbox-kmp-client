@@ -2,6 +2,10 @@ package com.github.livingwithhippos.torbox.kmp.client.impl
 
 import com.github.livingwithhippos.torbox.kmp.client.api.TorboxApi
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateTorrentResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.CreateWebDownloadResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.DownloadTorrentResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.TorrentAvailabilityListResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.TorrentAvailabilityObjectResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 import io.ktor.client.*
@@ -37,7 +41,7 @@ class TorboxApiImpl(
         allowZip: Boolean,
         name: String?,
         asQueued: Boolean?,
-        addOnlyIfCached: Boolean
+        addOnlyIfCached: Boolean?
     ): ApiResult<CreateTorrentResponseDto> {
         if (file.isNullOrBlank() && magnet.isNullOrBlank()) {
             return ApiResult.Failure.BadRequest(
@@ -57,7 +61,7 @@ class TorboxApiImpl(
                             append("allow_zip", allowZip.toString())
                             name?.takeIf { it.isNotBlank() }?.let { append("name", it) }
                             asQueued?.let { append("as_queued", it.toString()) }
-                            append("add_only_if_cached", addOnlyIfCached.toString())
+                            addOnlyIfCached?.let { append("add_only_if_cached", it.toString()) }
                         }
                     )
                 )
@@ -67,4 +71,86 @@ class TorboxApiImpl(
             onFailure = { ApiResult.Failure.Network(it) }
         )
     }
+
+    override suspend fun downloadTorrent(
+        token: String,
+        torrentId: Int,
+        fileId: Int?,
+        zipLink: String?,
+        userIp: String?,
+        redirect: Boolean?,
+        appendName: Boolean?
+    ): ApiResult<DownloadTorrentResponseDto> = runCatching {
+        client.get("torrents/requestdl") {
+            parameter("token", token)
+            parameter("torrent_id", torrentId)
+            parameter("file_id", fileId)
+            parameter("zip_link", zipLink)
+            parameter("user_ip", userIp)
+            parameter("redirect", redirect)
+            parameter("append_name", appendName)
+        }.body<DownloadTorrentResponseDto>()
+    }.fold(
+        onSuccess = { ApiResult.Success(it) },
+        onFailure = { ApiResult.Failure.Network(it) }
+    )
+
+    override suspend fun getTorrentAvailabilityList(
+        hashes: List<String>,
+        listFiles: Boolean?
+    ): ApiResult<TorrentAvailabilityListResponseDto> = runCatching {
+        client.get("torrents/checkcached") {
+            hashes.forEach {
+                parameter("hash", it)
+            }
+            parameter("format", "list")
+            parameter("list_files", listFiles)
+        }.body<TorrentAvailabilityListResponseDto>()
+    }.fold(
+        onSuccess = { ApiResult.Success(it) },
+        onFailure = { ApiResult.Failure.Network(it) }
+    )
+
+    override suspend fun getTorrentAvailabilityObject(
+        hashes: List<String>,
+        listFiles: Boolean?
+    ): ApiResult<TorrentAvailabilityObjectResponseDto> = runCatching {
+        client.get("torrents/checkcached") {
+            hashes.forEach {
+                parameter("hash", it)
+            }
+            parameter("format", "object")
+            parameter("list_files", listFiles)
+        }.body<TorrentAvailabilityObjectResponseDto>()
+    }.fold(
+        onSuccess = { ApiResult.Success(it) },
+        onFailure = { ApiResult.Failure.Network(it) }
+    )
+
+    override suspend fun downloadWebLink(
+        link: String,
+        password: String?,
+        name: String?,
+        asQueued: Boolean?,
+        addOnlyIfCached: Boolean?
+    ): ApiResult<CreateWebDownloadResponseDto> = runCatching {
+        client.post("webdl/createwebdownload") {
+            setBody(
+                MultiPartFormDataContent(
+                    formData {
+                        append("link", link)
+                        password?.takeIf { it.isNotBlank() }?.let { append("password", it) }
+                        name?.takeIf { it.isNotBlank() }?.let { append("name", it) }
+                        asQueued?.let { append("as_queued", it.toString()) }
+                        addOnlyIfCached?.let { append("add_only_if_cached", it.toString()) }
+                    }
+                )
+            )
+        }.body<CreateWebDownloadResponseDto>()
+    }.fold(
+    onSuccess = { ApiResult.Success(it) },
+    onFailure = { ApiResult.Failure.Network(it) }
+    )
+
+
 }

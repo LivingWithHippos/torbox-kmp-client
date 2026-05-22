@@ -8,7 +8,7 @@ data class TorrentListResponseDto(
     val success: Boolean,
     val error: String?,
     val detail: String,
-    val data: List<TorrentDto>,
+    val data: List<TorrentDto>?,
 )
 
 @Serializable
@@ -74,7 +74,7 @@ data class CreateTorrentResponseDto(
     val success: Boolean,
     val error: String?,
     val detail: String,
-    val data: CreateTorrentDto,
+    val data: CreateTorrentDto?,
 )
 
 @Serializable
@@ -83,3 +83,33 @@ data class CreateTorrentDto(
 )
 
 
+@Serializable
+data class DownloadTorrentResponseDto(
+    val success: Boolean,
+    val error: String?,
+    val detail: String,
+    val data: String?,
+)
+
+@Serializable
+data class TorrentAvailabilityObjectResponseDto(
+    val success: Boolean,
+    val error: String?,
+    val detail: String,
+    val data: Map<String, TorrentAvailabilityDto>?,
+)
+
+@Serializable
+data class TorrentAvailabilityListResponseDto(
+    val success: Boolean,
+    val error: String?,
+    val detail: String,
+    val data: List<TorrentAvailabilityDto>?,
+)
+
+@Serializable
+data class TorrentAvailabilityDto(
+    val name: String,
+    val size: Long,
+    val hash: String,
+)
