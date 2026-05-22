@@ -3,10 +3,11 @@ package com.github.livingwithhippos.torbox.kmp.client.impl
 import com.github.livingwithhippos.torbox.kmp.client.api.TorboxApi
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateTorrentResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateWebDownloadResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.DownloadTorrentResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.DownloadResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentAvailabilityListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentAvailabilityObjectResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentListResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.WebDownloadListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -80,7 +81,7 @@ class TorboxApiImpl(
         userIp: String?,
         redirect: Boolean?,
         appendName: Boolean?
-    ): ApiResult<DownloadTorrentResponseDto> = runCatching {
+    ): ApiResult<DownloadResponseDto> = runCatching {
         client.get("torrents/requestdl") {
             parameter("token", token)
             parameter("torrent_id", torrentId)
@@ -89,7 +90,7 @@ class TorboxApiImpl(
             parameter("user_ip", userIp)
             parameter("redirect", redirect)
             parameter("append_name", appendName)
-        }.body<DownloadTorrentResponseDto>()
+        }.body<DownloadResponseDto>()
     }.fold(
         onSuccess = { ApiResult.Success(it) },
         onFailure = { ApiResult.Failure.Network(it) }
@@ -127,7 +128,24 @@ class TorboxApiImpl(
         onFailure = { ApiResult.Failure.Network(it) }
     )
 
-    override suspend fun downloadWebLink(
+    override suspend fun getWebLinks(
+        bypassCache: String?,
+        offset: Int?,
+        limit: Int?
+    ): ApiResult<WebDownloadListResponseDto> = runCatching {
+        client.get("webdl/mylist") {
+            // todo: check if this change the response format
+            if (bypassCache != null)
+                parameter("bypass_cache", "")
+            parameter("offset", offset)
+            parameter("limit", limit)
+        }.body<WebDownloadListResponseDto>()
+    }.fold(
+        onSuccess = { ApiResult.Success(it) },
+        onFailure = { ApiResult.Failure.Network(it) }
+    )
+
+    override suspend fun createWebLink(
         link: String,
         password: String?,
         name: String?,
@@ -150,6 +168,29 @@ class TorboxApiImpl(
     }.fold(
     onSuccess = { ApiResult.Success(it) },
     onFailure = { ApiResult.Failure.Network(it) }
+    )
+
+    override suspend fun downloadWebLink(
+        token: String,
+        webId: Int,
+        fileId: Int?,
+        zipLink: String?,
+        userIp: String?,
+        redirect: Boolean?,
+        appendName: Boolean?
+    ): ApiResult<DownloadResponseDto> = runCatching {
+        client.get("webdl/requestdl") {
+            parameter("token", token)
+            parameter("web_id", webId)
+            parameter("file_id", fileId)
+            parameter("zip_link", zipLink)
+            parameter("user_ip", userIp)
+            parameter("redirect", redirect)
+            parameter("append_name", appendName)
+        }.body<DownloadResponseDto>()
+    }.fold(
+        onSuccess = { ApiResult.Success(it) },
+        onFailure = { ApiResult.Failure.Network(it) }
     )
 
 

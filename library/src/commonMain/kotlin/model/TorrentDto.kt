@@ -8,6 +8,7 @@ data class TorrentListResponseDto(
     val success: Boolean,
     val error: String?,
     val detail: String,
+    // todo: add support for id parameter which has just val data: TorrentDto? as difference
     val data: List<TorrentDto>?,
 )
 
@@ -82,14 +83,6 @@ data class CreateTorrentDto(
     val hash: String, @SerialName("torrent_id") val torrentId: Long, @SerialName("auth_id") val authId: String
 )
 
-
-@Serializable
-data class DownloadTorrentResponseDto(
-    val success: Boolean,
-    val error: String?,
-    val detail: String,
-    val data: String?,
-)
 
 @Serializable
 data class TorrentAvailabilityObjectResponseDto(
