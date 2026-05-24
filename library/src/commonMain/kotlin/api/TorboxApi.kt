@@ -18,10 +18,11 @@ interface TorboxApi {
     ): ApiResult<TorrentListResponseDto>
 
     suspend fun createTorrent(
-        file: String? = null,
+        fileBytes: ByteArray? = null,
+        fileName: String? = null,
         magnet: String? = null,
         seed: Int = 1,
-        allowZip: Boolean,
+        allowZip: Boolean = false,
         name: String? = null,
         asQueued: Boolean? = null,
         addOnlyIfCached: Boolean? = null,

@@ -12,6 +12,7 @@ import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
+import io.ktor.http.*
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
 
@@ -39,7 +40,8 @@ class TorboxApiImpl(
     )
 
     override suspend fun createTorrent(
-        file: String?,
+        fileBytes: ByteArray?,
+        fileName: String?,
         magnet: String?,
         seed: Int,
         allowZip: Boolean,
@@ -47,9 +49,9 @@ class TorboxApiImpl(
         asQueued: Boolean?,
         addOnlyIfCached: Boolean?
     ): ApiResult<CreateTorrentResponseDto> {
-        if (file.isNullOrBlank() && magnet.isNullOrBlank()) {
+        if (fileBytes == null && magnet.isNullOrBlank()) {
             return ApiResult.Failure.BadRequest(
-                IllegalArgumentException("Either file or magnet must be provided")
+                IllegalArgumentException("Either fileBytes or magnet must be provided")
             )
         }
 
@@ -58,8 +60,19 @@ class TorboxApiImpl(
                 setBody(
                     MultiPartFormDataContent(
                         formData {
-                            // todo: support passing file blob, this is a placeholder
-                            file?.takeIf { it.isNotBlank() }?.let { append("file", it) }
+                            if (fileBytes != null) {
+                                append(
+                                    key = "file",
+                                    value = fileBytes,
+                                    headers = Headers.build {
+                                        append(HttpHeaders.ContentType, "application/x-bittorrent")
+                                        append(
+                                            HttpHeaders.ContentDisposition,
+                                            "filename=\"${fileName ?: "file.torrent"}\""
+                                        )
+                                    }
+                                )
+                            }
                             magnet?.takeIf { it.isNotBlank() }?.let { append("magnet", it) }
                             append("seed", seed.toString())
                             append("allow_zip", allowZip.toString())
