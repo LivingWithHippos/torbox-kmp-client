@@ -120,6 +120,14 @@ data class TorrentAvailabilityDto(
 )
 
 @Serializable
+data class TorrentControlRequestDto(
+    @SerialName("torrent_id")
+    val torrentId: Int? = null,
+    val operation: String,
+    val all: Boolean? = null,
+)
+
+@Serializable
 object TorrentDataSerializer : KSerializer<List<TorrentDto>?> {
     override val descriptor: SerialDescriptor = JsonElement.serializer().descriptor
 

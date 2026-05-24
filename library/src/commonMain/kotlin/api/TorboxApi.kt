@@ -37,6 +37,16 @@ interface TorboxApi {
         addOnlyIfCached: Boolean? = null,
     ): ApiResult<CreateTorrentResponseDto>
 
+    /**
+     * Controls a torrent. By sending the torrent's ID and the type of operation you want to perform, it will send that request to the torrent client.
+     *
+     * https://api-docs.torbox.app/#7192d165-a4f0-4588-9792-1b54766a1447
+     */
+    suspend fun controlTorrent(
+        torrentId: Int? = null,
+        operation: String,
+        all: Boolean? = null,
+    ): ApiResult<GenericResponseDto>
 
     suspend fun getTorrents(
         bypassCache: String? = null,

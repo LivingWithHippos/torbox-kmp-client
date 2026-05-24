@@ -7,6 +7,7 @@ import com.github.livingwithhippos.torbox.kmp.client.model.DownloadResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentAvailabilityListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentAvailabilityObjectResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.TorrentControlRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.WebDownloadListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
@@ -149,6 +150,40 @@ class TorboxApiImpl(
                         ),
                     )
                 }.body<CreateTorrentResponseDto>()
+        }.fold(
+            onSuccess = { ApiResult.Success(it) },
+            onFailure = { ApiResult.Failure.Network(it) },
+        )
+    }
+
+    override suspend fun controlTorrent(
+        torrentId: Int?,
+        operation: String,
+        all: Boolean?,
+    ): ApiResult<GenericResponseDto> {
+        //
+        if (listOf("reannounce", "delete", "resume", "stop_seeding").contains(operation.lowercase()).not()) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("Operation must be: reannounce, delete, resume or stop_seeding"),
+            )
+        } else if (torrentId == null && all != true) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("Either a torrent id or all = true must be set"),
+            )
+        }
+
+        return runCatching {
+            client
+                .post("torrents/controltorrent") {
+                    contentType(ContentType.Application.Json)
+                    setBody(
+                        TorrentControlRequestDto(
+                            torrentId = torrentId,
+                            operation = operation.lowercase(),
+                            all = all,
+                        ),
+                    )
+                }.body<GenericResponseDto>()
         }.fold(
             onSuccess = { ApiResult.Success(it) },
             onFailure = { ApiResult.Failure.Network(it) },
