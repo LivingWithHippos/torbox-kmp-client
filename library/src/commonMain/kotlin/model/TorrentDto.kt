@@ -91,9 +91,10 @@ data class CreateTorrentResponseDto(
 
 @Serializable
 data class CreateTorrentDto(
-    val hash: String, @SerialName("torrent_id") val torrentId: Long, @SerialName("auth_id") val authId: String
+    val hash: String,
+    @SerialName("torrent_id") val torrentId: Long,
+    @SerialName("auth_id") val authId: String,
 )
-
 
 @Serializable
 data class TorrentAvailabilityObjectResponseDto(
@@ -123,8 +124,9 @@ object TorrentDataSerializer : KSerializer<List<TorrentDto>?> {
     override val descriptor: SerialDescriptor = JsonElement.serializer().descriptor
 
     override fun deserialize(decoder: Decoder): List<TorrentDto>? {
-        val jsonDecoder = decoder as? JsonDecoder
-            ?: throw SerializationException("TorrentDataSerializer can be used only with Json format")
+        val jsonDecoder =
+            decoder as? JsonDecoder
+                ?: throw SerializationException("TorrentDataSerializer can be used only with Json format")
 
         return when (val element = jsonDecoder.decodeJsonElement()) {
             JsonNull -> null
@@ -134,14 +136,19 @@ object TorrentDataSerializer : KSerializer<List<TorrentDto>?> {
         }
     }
 
-    override fun serialize(encoder: Encoder, value: List<TorrentDto>?) {
-        val jsonEncoder = encoder as? JsonEncoder
-            ?: throw SerializationException("TorrentDataSerializer can be used only with Json format")
+    override fun serialize(
+        encoder: Encoder,
+        value: List<TorrentDto>?,
+    ) {
+        val jsonEncoder =
+            encoder as? JsonEncoder
+                ?: throw SerializationException("TorrentDataSerializer can be used only with Json format")
 
-        val element = when {
-            value == null -> JsonNull
-            else -> JsonArray(value.map { jsonEncoder.json.encodeToJsonElement(TorrentDto.serializer(), it) })
-        }
+        val element =
+            when {
+                value == null -> JsonNull
+                else -> JsonArray(value.map { jsonEncoder.json.encodeToJsonElement(TorrentDto.serializer(), it) })
+            }
 
         jsonEncoder.encodeJsonElement(element)
     }

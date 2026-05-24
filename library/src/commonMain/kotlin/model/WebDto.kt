@@ -28,9 +28,8 @@ data class CreateWebDownloadDto(
     @SerialName("webdownload_id") val webDownloadId: Int,
     @SerialName("auth_id") val authId: String,
     @SerialName("jdownloader_id") val jdownloaderId: String?,
-    @SerialName("link_list") val linkList: List<String>?,  // missing if already queued
+    @SerialName("link_list") val linkList: List<String>?, // missing if already queued
 )
-
 
 @Serializable
 data class WebDownloadListResponseDto(
@@ -90,8 +89,9 @@ object WebDownloadDataSerializer : KSerializer<List<WebDownloadDto>?> {
     override val descriptor: SerialDescriptor = JsonElement.serializer().descriptor
 
     override fun deserialize(decoder: Decoder): List<WebDownloadDto>? {
-        val jsonDecoder = decoder as? JsonDecoder
-            ?: throw SerializationException("WebDownloadDataSerializer can be used only with Json format")
+        val jsonDecoder =
+            decoder as? JsonDecoder
+                ?: throw SerializationException("WebDownloadDataSerializer can be used only with Json format")
 
         return when (val element = jsonDecoder.decodeJsonElement()) {
             JsonNull -> null
@@ -101,14 +101,19 @@ object WebDownloadDataSerializer : KSerializer<List<WebDownloadDto>?> {
         }
     }
 
-    override fun serialize(encoder: Encoder, value: List<WebDownloadDto>?) {
-        val jsonEncoder = encoder as? JsonEncoder
-            ?: throw SerializationException("WebDownloadDataSerializer can be used only with Json format")
+    override fun serialize(
+        encoder: Encoder,
+        value: List<WebDownloadDto>?,
+    ) {
+        val jsonEncoder =
+            encoder as? JsonEncoder
+                ?: throw SerializationException("WebDownloadDataSerializer can be used only with Json format")
 
-        val element = when {
-            value == null -> JsonNull
-            else -> JsonArray(value.map { jsonEncoder.json.encodeToJsonElement(WebDownloadDto.serializer(), it) })
-        }
+        val element =
+            when {
+                value == null -> JsonNull
+                else -> JsonArray(value.map { jsonEncoder.json.encodeToJsonElement(WebDownloadDto.serializer(), it) })
+            }
 
         jsonEncoder.encodeJsonElement(element)
     }
