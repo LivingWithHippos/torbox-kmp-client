@@ -15,8 +15,14 @@ kotlin {
     jvm()
     androidLibrary {
         namespace = "com.github.livingwithhippos.torbox.kmp.client"
-        compileSdk = libs.versions.android.compileSdk.get().toInt()
-        minSdk = libs.versions.android.minSdk.get().toInt()
+        compileSdk =
+            libs.versions.android.compileSdk
+                .get()
+                .toInt()
+        minSdk =
+            libs.versions.android.minSdk
+                .get()
+                .toInt()
 
         withJava() // enable java compilation support
         withHostTestBuilder {}.configure {}
@@ -27,7 +33,7 @@ kotlin {
         compilations.configureEach {
             compilerOptions.configure {
                 jvmTarget.set(
-                    JvmTarget.JVM_11
+                    JvmTarget.JVM_11,
                 )
             }
         }
@@ -37,15 +43,25 @@ kotlin {
     iosSimulatorArm64()
     linuxX64()
     js {
-        browser {
-        testTask {
-            useKarma {
-                useFirefox()
-                useChrome()
-                useSafari()
+        nodejs {
+            testTask {
+                useMocha {
+                    timeout = "10s"
+                }
             }
         }
-    }
+
+        /*
+        browser {
+            testTask {
+                useKarma {
+                    useFirefox()
+                    useChrome()
+                    useSafari()
+                }
+            }
+        }
+         */
         useEsModules()
         binaries.executable()
 
@@ -56,7 +72,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            //put your multiplatform dependencies here
+            // put your multiplatform dependencies here
             implementation(libs.kotlin.serialization.json)
             implementation(libs.kotlin.coroutines.core)
 
