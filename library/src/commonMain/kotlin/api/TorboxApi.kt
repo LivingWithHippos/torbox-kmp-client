@@ -12,6 +12,7 @@ import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 interface TorboxApi {
     suspend fun getTorrents(
         bypassCache: String? = null,
+        id: Int? = null,
         offset: Int? = null,
         limit: Int? = null
     ): ApiResult<TorrentListResponseDto>
@@ -52,6 +53,7 @@ interface TorboxApi {
 
     suspend fun getWebLinks(
         bypassCache: String? = null,
+        id: Int? = null,
         offset: Int? = null,
         limit: Int? = null
     ): ApiResult<WebDownloadListResponseDto>

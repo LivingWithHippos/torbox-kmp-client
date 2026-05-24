@@ -21,12 +21,15 @@ class TorboxApiImpl(
 
     override suspend fun getTorrents(
         bypassCache: String?,
+        id: Int? ,
         offset: Int?,
         limit: Int?
     ): ApiResult<TorrentListResponseDto> = runCatching {
         client.get("torrents/mylist") {
             if (bypassCache != null)
                 parameter("bypass_cache", "")
+            if (id != null)
+                parameter("id", id)
             parameter("offset", offset)
             parameter("limit", limit)
         }.body<TorrentListResponseDto>()
@@ -130,13 +133,16 @@ class TorboxApiImpl(
 
     override suspend fun getWebLinks(
         bypassCache: String?,
+        id: Int?,
         offset: Int?,
         limit: Int?
     ): ApiResult<WebDownloadListResponseDto> = runCatching {
         client.get("webdl/mylist") {
-            // todo: check if this change the response format
+            // todo: check if this changes the response format
             if (bypassCache != null)
                 parameter("bypass_cache", "")
+            if (id != null)
+                parameter("id", id)
             parameter("offset", offset)
             parameter("limit", limit)
         }.body<WebDownloadListResponseDto>()
