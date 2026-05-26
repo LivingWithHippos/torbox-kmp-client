@@ -11,6 +11,7 @@ import com.github.livingwithhippos.torbox.kmp.client.model.CreateTorrentResponse
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateWebDownloadResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.DownloadResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.EditTorrentRequestDto
+import com.github.livingwithhippos.torbox.kmp.client.model.EditWebRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentMagnetResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentResultDto
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
@@ -545,6 +546,33 @@ class TorboxApiImpl(
                 }
             }
         }
+
+    override suspend fun editWeb(
+        webId: Int,
+        name: String?,
+        tags: List<String>?,
+        alternativeHashes: List<String>?,
+    ): ApiResult<GenericResponseDto> {
+        if (name == null && tags == null && alternativeHashes == null) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("At least one between name, tags, or alternativeHashes must be provided"),
+            )
+        }
+
+        return executeRequest {
+            client.put("webdl/editwebdownload") {
+                contentType(ContentType.Application.Json)
+                setBody(
+                    EditWebRequestDto(
+                        webId = webId,
+                        name = name,
+                        tags = tags,
+                        alternativeHashes = alternativeHashes,
+                    ),
+                )
+            }
+        }
+    }
 
     override suspend fun controlWebLink(
         webId: Int?,

@@ -145,3 +145,13 @@ data class HosterDto(
     @SerialName("per_link_size_limit") val perLinkSizeLimit: Long,
     val regex: String,
 )
+
+@Serializable
+data class EditWebRequestDto(
+    @SerialName("webdl_id")
+    val webId: Int,
+    val name: String? = null,
+    val tags: List<String>? = null,
+    @SerialName("alternative_hashes")
+    val alternativeHashes: List<String>? = null,
+)

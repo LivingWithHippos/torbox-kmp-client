@@ -61,4 +61,11 @@ interface WebApi {
     suspend fun getWebAvailabilityBatchList(hashes: List<String>): ApiResult<CacheAvailabilityListResponseDto>
 
     suspend fun getHosters(auth: Boolean = false): ApiResult<HostersResponseDto>
+
+    suspend fun editWeb(
+        webId: Int,
+        name: String? = null,
+        tags: List<String>? = null,
+        alternativeHashes: List<String>? = null,
+    ): ApiResult<GenericResponseDto>
 }
