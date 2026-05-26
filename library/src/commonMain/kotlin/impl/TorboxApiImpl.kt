@@ -33,6 +33,7 @@ import com.github.livingwithhippos.torbox.kmp.client.model.UsenetDownloadListRes
 import com.github.livingwithhippos.torbox.kmp.client.model.UserDataResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.WebControlRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.WebDownloadListResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.SubscriptionResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 import com.github.livingwithhippos.torbox.kmp.client.network.noAuth
 import io.ktor.client.HttpClient
@@ -832,5 +833,10 @@ class TorboxApiImpl(
     override suspend fun getReferral(): ApiResult<ReferralDataResponseDto> =
         executeRequest {
             client.get("user/referraldata")
+        }
+
+    override suspend fun getSubscriptions(): ApiResult<SubscriptionResponseDto> =
+        executeRequest {
+            client.get("user/subscriptions")
         }
 }

@@ -4,6 +4,7 @@ import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeAuthorizati
 import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeTokenResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ReferralDataResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.SubscriptionResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserDataResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 
@@ -73,4 +74,11 @@ interface UserApi {
      * [online documentation](https://api-docs.torbox.app/#eb5bd5bd-0d7b-4014-bf2b-497a87cc6a97)
      */
     suspend fun getReferral(): ApiResult<ReferralDataResponseDto>
+
+    /**
+     * Gets the user's subscriptions, including active and inactive subscriptions.
+     *
+     * [online documentation](https://api-docs.torbox.app/#bb1307f2-ce3b-4625-a5be-e6ea1ab46a61)
+     */
+    suspend fun getSubscriptions(): ApiResult<SubscriptionResponseDto>
 }

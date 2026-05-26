@@ -97,3 +97,23 @@ data class ReferralDataDto(
     @SerialName("purchases_referred") val purchasesReferred: Int,
 )
 
+@Serializable
+data class SubscriptionResponseDto(
+    override val success: Boolean,
+    val error: String?,
+    val detail: String,
+    val data: List<SubscriptionDto>?,
+) : ApiSuccessResponse
+
+@Serializable
+data class SubscriptionDto(
+    @SerialName("created_at") val createdAt: String,
+    @SerialName("updated_at") val updatedAt: String,
+    @SerialName("subscription_code") val subscriptionCode: String,
+    @SerialName("email_token") val emailToken: String,
+    @SerialName("auth_id") val authId: String,
+    @SerialName("plan_code") val planCode: String,
+    val status: String,
+    val gateway: String,
+    @SerialName("plan_name") val planName: String,
+)

@@ -286,4 +286,13 @@ class JvmApiTest {
             KermitLogger.i(result.toString())
             assertTrue { result is ApiResult.Success }
         }
+
+    @Test
+    fun `get subscriptions`() =
+        runTest {
+            // this returns success but no data
+            val result = client.user.getSubscriptions()
+            KermitLogger.i(result.toString())
+            assertTrue { result is ApiResult.Success }
+        }
 }
