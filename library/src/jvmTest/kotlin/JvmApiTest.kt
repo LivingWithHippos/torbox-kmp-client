@@ -121,6 +121,20 @@ class JvmApiTest {
         }
 
     @Test
+    fun `edit torrent`() =
+        runTest {
+            val result =
+                client.api.editTorrent(
+                    torrentId = TestConfig.torrentId,
+                    name = "New Torrent Name",
+                )
+
+            KermitLogger.i(result.toString())
+
+            assertTrue { result is ApiResult.Success }
+        }
+
+    @Test
     fun `export torrent magnet`() =
         runTest {
             // todo: chek these tests, this returns null and the other 4 bytes

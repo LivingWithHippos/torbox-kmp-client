@@ -49,6 +49,19 @@ interface TorboxApi {
         all: Boolean? = null,
     ): ApiResult<GenericResponseDto>
 
+    /**
+     * Updates mutable metadata for a cached torrent item.
+     * Any provided field replaces the previous value for that field.
+     *
+     * https://api.torbox.app/v1/api/torrents/edittorrent
+     */
+    suspend fun editTorrent(
+        torrentId: Int,
+        name: String? = null,
+        tags: List<String>? = null,
+        alternativeHashes: List<String>? = null,
+    ): ApiResult<GenericResponseDto>
+
     suspend fun getTorrents(
         bypassCache: String? = null,
         id: Int? = null,

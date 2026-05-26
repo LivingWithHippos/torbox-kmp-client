@@ -134,6 +134,16 @@ data class TorrentControlRequestDto(
 )
 
 @Serializable
+data class EditTorrentRequestDto(
+    @SerialName("torrent_id")
+    val torrentId: Int,
+    val name: String? = null,
+    val tags: List<String>? = null,
+    @SerialName("alternative_hashes")
+    val alternativeHashes: List<String>? = null,
+)
+
+@Serializable
 data class ExportTorrentMagnetResponseDto(
     override val success: Boolean,
     val error: String?,

@@ -5,6 +5,7 @@ import com.github.livingwithhippos.torbox.kmp.client.model.ApiSuccessResponse
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateTorrentResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateWebDownloadResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.DownloadResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.EditTorrentRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentMagnetResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentResultDto
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
@@ -23,6 +24,7 @@ import io.ktor.client.request.forms.formData
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
+import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
@@ -229,6 +231,33 @@ class TorboxApiImpl(
                         torrentId = torrentId,
                         operation = operation.lowercase(),
                         all = all,
+                    ),
+                )
+            }
+        }
+    }
+
+    override suspend fun editTorrent(
+        torrentId: Int,
+        name: String?,
+        tags: List<String>?,
+        alternativeHashes: List<String>?,
+    ): ApiResult<GenericResponseDto> {
+        if (name == null && tags == null && alternativeHashes == null) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("At least one between name, tags, or alternativeHashes must be provided"),
+            )
+        }
+
+        return executeRequest {
+            client.put("torrents/edittorrent") {
+                contentType(ContentType.Application.Json)
+                setBody(
+                    EditTorrentRequestDto(
+                        torrentId = torrentId,
+                        name = name,
+                        tags = tags,
+                        alternativeHashes = alternativeHashes,
                     ),
                 )
             }
