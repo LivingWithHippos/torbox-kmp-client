@@ -44,3 +44,56 @@ data class UserDataDto(
     @SerialName("vendor_id") val vendorId: Int?,
     @SerialName("purchases_referred") val purchasesReferred: Int,
 )
+
+@Serializable
+data class DeviceCodeAuthorizationStartResponseDto(
+    override val success: Boolean,
+    val error: String?,
+    val detail: String,
+    val data: DeviceCodeAuthorizationStartDto?,
+) : ApiSuccessResponse
+
+@Serializable
+data class DeviceCodeAuthorizationStartDto(
+    @SerialName("device_code") val deviceCode: String,
+    val interval: Int,
+    @SerialName("expires_at") val expiresAt: String,
+    @SerialName("verification_url") val verificationUrl: String,
+    @SerialName("friendly_verification_url") val friendlyVerificationUrl: String,
+    val code: String,
+)
+
+@Serializable
+data class DeviceCodeTokenRequestDto(
+    @SerialName("device_code") val deviceCode: String,
+)
+
+@Serializable
+data class DeviceCodeTokenResponseDto(
+    override val success: Boolean,
+    val error: String?,
+    val detail: String,
+    val data: DeviceCodeTokenDataDto?,
+) : ApiSuccessResponse
+
+@Serializable
+data class DeviceCodeTokenDataDto(
+    @SerialName("access_token") val accessToken: String,
+    @SerialName("token_type") val tokenType: String,
+)
+
+@Serializable
+data class ReferralDataResponseDto(
+    override val success: Boolean,
+    val error: String?,
+    val detail: String,
+    val data: ReferralDataDto?,
+) : ApiSuccessResponse
+
+@Serializable
+data class ReferralDataDto(
+    @SerialName("referred_accounts") val referredAccounts: Int,
+    @SerialName("referral_code") val referralCode: String,
+    @SerialName("purchases_referred") val purchasesReferred: Int,
+)
+

@@ -13,6 +13,9 @@ import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityRequ
 import com.github.livingwithhippos.torbox.kmp.client.model.ChangelogListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateTorrentResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateWebDownloadResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeAuthorizationStartResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeTokenRequestDto
+import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeTokenResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.EditTorrentRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.EditWebRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentResultDto
@@ -20,6 +23,7 @@ import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.HostersResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.MagnetToFileRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.NotificationsResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.ReferralDataResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.RefreshApiTokenRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.SpeedtestFilesResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.StatsResponseDto
@@ -795,4 +799,38 @@ class TorboxApiImpl(
             }
         }
     }
+
+    override suspend fun getConfirmationCode(): ApiResult<GenericResponseDto> =
+        executeRequest {
+            client.get("user/getconfirmation")
+        }
+
+    override suspend fun startDeviceCodeAuthorizationProcess(app: String?): ApiResult<DeviceCodeAuthorizationStartResponseDto> =
+        executeRequest {
+            client.get("user/auth/device/start") {
+                noAuth()
+                app?.trim()?.takeIf { it.isNotEmpty() }?.let { parameter("app", it) }
+            }
+        }
+
+    override suspend fun getTokenFromDeviceCodeProcess(deviceCode: String): ApiResult<DeviceCodeTokenResponseDto> {
+        if (deviceCode.isBlank()) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("deviceCode must not be blank"),
+            )
+        }
+
+        return executeRequest {
+            client.post("user/auth/device/token") {
+                noAuth()
+                contentType(ContentType.Application.Json)
+                setBody(DeviceCodeTokenRequestDto(deviceCode = deviceCode))
+            }
+        }
+    }
+
+    override suspend fun getReferral(): ApiResult<ReferralDataResponseDto> =
+        executeRequest {
+            client.get("user/referraldata")
+        }
 }

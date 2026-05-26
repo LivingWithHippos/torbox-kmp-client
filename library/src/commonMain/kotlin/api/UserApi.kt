@@ -1,6 +1,9 @@
 package com.github.livingwithhippos.torbox.kmp.client.api
 
+import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeAuthorizationStartResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeTokenResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.ReferralDataResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserDataResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 
@@ -38,4 +41,36 @@ interface UserApi {
         referral: String,
         validate: Boolean = false,
     ): ApiResult<GenericResponseDto>
+
+    /**
+     * Requests a 6-digit code to be sent to the user's email for verification.
+     *
+     * [online documentation](https://api-docs.torbox.app/#1c1bfac4-bf2f-4fad-9ae8-a12275be3bd1)
+     */
+    suspend fun getConfirmationCode(): ApiResult<GenericResponseDto>
+
+    /**
+     * Starts the OAuth device code authorization process.
+     *
+     * [online documentation](https://api-docs.torbox.app/#744bc274-88b7-4faf-a833-e30573c8c1e0)
+     *
+     * @param app App name shown on the verification page, defaults to "Third Party App"
+     */
+    suspend fun startDeviceCodeAuthorizationProcess(app: String?): ApiResult<DeviceCodeAuthorizationStartResponseDto>
+
+    /**
+     * Redeems a token from the OAuth device code authorization process.
+     *
+     * [online documentation](https://api-docs.torbox.app/#6169f2b1-85e4-4990-9ce1-f4be25bd50c8)
+     *
+     * @param deviceCode The `device_code` returned by startDeviceCodeAuthorizationProcess.
+     */
+    suspend fun getTokenFromDeviceCodeProcess(deviceCode: String): ApiResult<DeviceCodeTokenResponseDto>
+
+    /**
+     * Gets the user's referral statistics and referral code.
+     *
+     * [online documentation](https://api-docs.torbox.app/#eb5bd5bd-0d7b-4014-bf2b-497a87cc6a97)
+     */
+    suspend fun getReferral(): ApiResult<ReferralDataResponseDto>
 }
