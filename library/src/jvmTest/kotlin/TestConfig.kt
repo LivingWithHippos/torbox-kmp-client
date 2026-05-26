@@ -31,7 +31,7 @@ object TestConfig {
             ?: error("test.torrentFilePath missing from local.properties")
 
     val torrentHash: String get() =
-        props.getProperty("test.torrenttorrentHashFilePath")
+        props.getProperty("test.torrentHash")
             ?: error("test.torrentHash missing from local.properties")
 
     val webDownloadId: Int get() =
