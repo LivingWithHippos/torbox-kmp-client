@@ -13,7 +13,6 @@ import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityRequ
 import com.github.livingwithhippos.torbox.kmp.client.model.ChangelogListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateTorrentResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateWebDownloadResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.DownloadResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.EditTorrentRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.EditWebRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentMagnetResponseDto
@@ -29,6 +28,7 @@ import com.github.livingwithhippos.torbox.kmp.client.model.StatsResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentControlRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UsenetDownloadListResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.UserDataResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.WebControlRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.WebDownloadListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
@@ -293,7 +293,7 @@ class TorboxApiImpl(
         userIp: String?,
         redirect: Boolean?,
         appendName: Boolean?,
-    ): ApiResult<DownloadResponseDto> =
+    ): ApiResult<GenericStringResponseDto> =
         executeRequest {
             // todo: check if noAuth is applicable
             client.get("torrents/requestdl") {
@@ -484,7 +484,7 @@ class TorboxApiImpl(
         userIp: String?,
         redirect: Boolean?,
         appendName: Boolean?,
-    ): ApiResult<DownloadResponseDto> =
+    ): ApiResult<GenericStringResponseDto> =
         executeRequest {
             client.get("webdl/requestdl") {
                 parameter("token", token)
@@ -765,4 +765,11 @@ class TorboxApiImpl(
             }
         }
     }
+
+    override suspend fun getUserData(settings: Boolean?): ApiResult<UserDataResponseDto> =
+        executeRequest {
+            client.get("user/me") {
+                settings?.let { parameter("settings", it) }
+            }
+        }
 }
