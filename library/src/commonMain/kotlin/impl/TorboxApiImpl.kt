@@ -2,16 +2,19 @@ package com.github.livingwithhippos.torbox.kmp.client.impl
 
 import com.github.livingwithhippos.torbox.kmp.client.api.GeneralApi
 import com.github.livingwithhippos.torbox.kmp.client.api.NotificationsApi
+import com.github.livingwithhippos.torbox.kmp.client.api.RSSApi
 import com.github.livingwithhippos.torbox.kmp.client.api.TorrentsApi
 import com.github.livingwithhippos.torbox.kmp.client.api.UsenetApi
 import com.github.livingwithhippos.torbox.kmp.client.api.UserApi
 import com.github.livingwithhippos.torbox.kmp.client.api.WebApi
+import com.github.livingwithhippos.torbox.kmp.client.model.AddRssRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.AddSearchEngineRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiSuccessResponse
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityObjectResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ChangelogListResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.ControlRssRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateTorrentResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateWebDownloadResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeAuthorizationStartResponseDto
@@ -70,7 +73,8 @@ class TorboxApiImpl(
     UsenetApi,
     GeneralApi,
     NotificationsApi,
-    UserApi {
+    UserApi,
+    RSSApi {
     private val uuidRegex =
         Regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$")
 
@@ -998,6 +1002,65 @@ class TorboxApiImpl(
                 parameter("general", general)
                 parameter("bandwidth", bandwidth)
                 normalizedGrouping?.let { parameter("bandwidth_grouping", it) }
+            }
+        }
+    }
+
+    override suspend fun addRss(
+        url: String,
+        name: String,
+        doRegex: String?,
+        dontRegex: String?,
+        dontOlderThan: Int?,
+        scanInterval: Int?,
+        passCheck: Boolean?,
+        rssType: String?,
+        torrentSeeding: Int?,
+    ): ApiResult<GenericResponseDto> {
+        if (url.isBlank()) {
+            return ApiResult.Failure.BadRequest(IllegalArgumentException("url must not be blank"))
+        }
+
+        return executeRequest {
+            client.post("rss/addrss") {
+                contentType(ContentType.Application.Json)
+                setBody(
+                    AddRssRequestDto(
+                        url = url,
+                        name = name,
+                        doRegex = doRegex,
+                        dontRegex = dontRegex,
+                        dontOlderThan = dontOlderThan,
+                        scanInterval = scanInterval,
+                        passCheck = passCheck,
+                        rssType = rssType,
+                        torrentSeeding = torrentSeeding,
+                    ),
+                )
+            }
+        }
+    }
+
+    override suspend fun controlRss(
+        operation: String,
+        rssFeedId: Int,
+    ): ApiResult<GenericResponseDto> {
+        val normalized = operation.trim().lowercase()
+        if (listOf("update", "delete", "resume", "pause").contains(normalized).not()) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("Operation must be one of: \"update\", \"delete\", \"resume\", \"pause\""),
+            )
+        }
+
+        return executeRequest {
+            client.post("rss/controlrss") {
+                contentType(ContentType.Application.Json)
+                setBody(
+                    ControlRssRequestDto(
+                        operation = normalized,
+                        rssFeedId = rssFeedId,
+                    ),
+                )
             }
         }
     }

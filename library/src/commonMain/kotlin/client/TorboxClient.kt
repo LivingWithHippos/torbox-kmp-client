@@ -2,6 +2,7 @@ package com.github.livingwithhippos.torbox.kmp.client.client
 
 import com.github.livingwithhippos.torbox.kmp.client.api.GeneralApi
 import com.github.livingwithhippos.torbox.kmp.client.api.NotificationsApi
+import com.github.livingwithhippos.torbox.kmp.client.api.RSSApi
 import com.github.livingwithhippos.torbox.kmp.client.api.TorrentsApi
 import com.github.livingwithhippos.torbox.kmp.client.api.UsenetApi
 import com.github.livingwithhippos.torbox.kmp.client.api.UserApi
@@ -19,6 +20,7 @@ class TorboxClient private constructor(
     val general: GeneralApi,
     val notifications: NotificationsApi,
     val user: UserApi,
+    val rss: RSSApi,
     private val httpClient: HttpClient,
 ) {
     companion object {
@@ -33,6 +35,7 @@ class TorboxClient private constructor(
                 general = groupedApi,
                 notifications = groupedApi,
                 user = groupedApi,
+                rss = groupedApi,
                 httpClient = client,
             )
         }
