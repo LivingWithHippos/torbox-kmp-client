@@ -18,6 +18,7 @@ import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentResultDt
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.HostersResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.MagnetToFileRequestDto
+import com.github.livingwithhippos.torbox.kmp.client.model.StatsResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentControlRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UsenetDownloadListResponseDto
@@ -625,10 +626,17 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun getStatus(): ApiResult<GenericResponseDto> =
+    override suspend fun getUpStatus(): ApiResult<GenericResponseDto> =
         executeRequest {
             // what happens if the api are failing? does this return success false?
             client.get("https://api.torbox.app") {
+                noAuth()
+            }
+        }
+
+    override suspend fun getStats(): ApiResult<StatsResponseDto> =
+        executeRequest {
+            client.get("stats") {
                 noAuth()
             }
         }
