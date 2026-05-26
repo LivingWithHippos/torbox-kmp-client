@@ -9,14 +9,6 @@ data class RefreshApiTokenRequestDto(
 )
 
 @Serializable
-data class UserDataResponseDto(
-    override val success: Boolean,
-    val error: String?,
-    val detail: String,
-    val data: UserDataDto?,
-) : ApiSuccessResponse
-
-@Serializable
 data class UserDataDto(
     val id: Int,
     @SerialName("auth_id") val authId: String,
@@ -45,14 +37,6 @@ data class UserDataDto(
 )
 
 @Serializable
-data class DeviceCodeAuthorizationStartResponseDto(
-    override val success: Boolean,
-    val error: String?,
-    val detail: String,
-    val data: DeviceCodeAuthorizationStartDto?,
-) : ApiSuccessResponse
-
-@Serializable
 data class DeviceCodeAuthorizationStartDto(
     @SerialName("device_code") val deviceCode: String,
     val interval: Int,
@@ -68,26 +52,10 @@ data class DeviceCodeTokenRequestDto(
 )
 
 @Serializable
-data class DeviceCodeTokenResponseDto(
-    override val success: Boolean,
-    val error: String?,
-    val detail: String,
-    val data: DeviceCodeTokenDataDto?,
-) : ApiSuccessResponse
-
-@Serializable
 data class DeviceCodeTokenDataDto(
     @SerialName("access_token") val accessToken: String,
     @SerialName("token_type") val tokenType: String,
 )
-
-@Serializable
-data class ReferralDataResponseDto(
-    override val success: Boolean,
-    val error: String?,
-    val detail: String,
-    val data: ReferralDataDto?,
-) : ApiSuccessResponse
 
 @Serializable
 data class ReferralDataDto(
@@ -263,14 +231,6 @@ data class AddSearchEngineRequestDto(
 )
 
 @Serializable
-data class ModifySearchEngineResponseDto(
-    override val success: Boolean,
-    val error: String?,
-    val detail: String,
-    val data: ModifySearchEngineDto?,
-) : ApiSuccessResponse
-
-@Serializable
 data class ModifySearchEngineDto(
     val id: Int,
     val type: String,
@@ -279,14 +239,6 @@ data class ModifySearchEngineDto(
     val indexers: List<String>?,
     @SerialName("download_type") val downloadType: String?,
 )
-
-@Serializable
-data class UserStatsResponseDto(
-    override val success: Boolean,
-    val error: String?,
-    val detail: String,
-    val data: UserStatsDto?,
-) : ApiSuccessResponse
 
 @Serializable
 data class UserStatsDto(
@@ -307,4 +259,3 @@ data class UserBandwidthDto(
     val date: String,
     @SerialName("bytes_downloaded") val bytesDownloaded: Long,
 )
-

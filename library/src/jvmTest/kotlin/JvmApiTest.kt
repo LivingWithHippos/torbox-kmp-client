@@ -9,7 +9,6 @@ import kotlin.io.path.Path
 import kotlin.io.path.readBytes
 import kotlin.test.Test
 import kotlin.test.assertTrue
-import co.touchlab.kermit.Logger as KermitLogger
 
 class JvmApiTest {
     private val client = TorboxClient.create(RestClientConfig(bearerToken = TestConfig.bearerToken))
@@ -18,11 +17,9 @@ class JvmApiTest {
     fun getTorrents() =
         runTest {
             val listResult = client.torrents.getTorrents()
-            KermitLogger.i(listResult.toString())
             assertTrue { listResult is ApiResult.Success }
 
             val singleResult = client.torrents.getTorrents(id = TestConfig.torrentId)
-            KermitLogger.i(singleResult.toString())
             assertTrue { singleResult is ApiResult.Success }
         }
 
@@ -35,8 +32,6 @@ class JvmApiTest {
                     allowZip = false,
                     addOnlyIfCached = false,
                 )
-
-            KermitLogger.i(result.toString())
 
             assertTrue { result is ApiResult.Success && result.value.success }
         }
@@ -51,8 +46,6 @@ class JvmApiTest {
                     fileBytes = torrentBytes,
                 )
 
-            KermitLogger.i(result.toString())
-
             assertTrue { result is ApiResult.Success && result.value.success }
         }
 
@@ -66,8 +59,6 @@ class JvmApiTest {
                     torrentId = TestConfig.torrentId,
                 )
 
-            KermitLogger.i(result.toString())
-
             assertTrue { result is ApiResult.Success && result.value.success }
         }
 
@@ -79,16 +70,12 @@ class JvmApiTest {
                     hashes = listOf(TestConfig.torrentHash),
                 )
 
-            KermitLogger.i(resultList.toString())
-
             assertTrue { resultList is ApiResult.Success }
 
             val resultObject =
                 client.torrents.getTorrentAvailabilityObject(
                     hashes = listOf(TestConfig.torrentHash),
                 )
-
-            KermitLogger.i(resultObject.toString())
 
             assertTrue { resultObject is ApiResult.Success && resultObject.value.success }
         }
@@ -100,8 +87,6 @@ class JvmApiTest {
                 client.torrents.getTorrentAvailabilityBatchObject(
                     hashes = listOf(TestConfig.torrentHash),
                 )
-
-            KermitLogger.i(resultList.toString())
 
             assertTrue { resultList is ApiResult.Success }
         }
@@ -115,8 +100,6 @@ class JvmApiTest {
                     operation = "Reannounce",
                 )
 
-            KermitLogger.i(result.toString())
-
             assertTrue { result is ApiResult.Success }
         }
 
@@ -128,8 +111,6 @@ class JvmApiTest {
                     torrentId = TestConfig.torrentId,
                     name = "New Torrent Name",
                 )
-
-            KermitLogger.i(result.toString())
 
             assertTrue { result is ApiResult.Success }
         }
@@ -143,7 +124,6 @@ class JvmApiTest {
                     torrentId = TestConfig.torrentId,
                     type = "magnet",
                 )
-            KermitLogger.i(result.toString())
             assertTrue { result is ApiResult.Success && result.value is ExportTorrentResultDto.Magnet }
         }
 
@@ -155,7 +135,6 @@ class JvmApiTest {
                     torrentId = TestConfig.torrentId,
                     type = "file",
                 )
-            KermitLogger.i(result.toString())
             assertTrue { result is ApiResult.Success && result.value is ExportTorrentResultDto.File }
         }
 
@@ -164,7 +143,6 @@ class JvmApiTest {
         runTest {
             val result = client.torrents.magnetToFile(TestConfig.magnetLink)
 
-            KermitLogger.i(result.toString())
             assertTrue { result is ApiResult.Success && result.value.isNotEmpty() }
         }
 
@@ -175,8 +153,6 @@ class JvmApiTest {
                 client.web.createWebLink(
                     link = TestConfig.hosterLink,
                 )
-
-            KermitLogger.i(result.toString())
 
             assertTrue { result is ApiResult.Success && result.value.success }
         }
@@ -190,8 +166,6 @@ class JvmApiTest {
                     webId = TestConfig.webDownloadId,
                 )
 
-            KermitLogger.i(result.toString())
-
             assertTrue { result is ApiResult.Success && result.value.success }
         }
 
@@ -199,11 +173,9 @@ class JvmApiTest {
     fun getWebLinks() =
         runTest {
             val listResult = client.web.getWebLinks()
-            KermitLogger.i(listResult.toString())
             assertTrue { listResult is ApiResult.Success && listResult.value.success }
 
             val singleResult = client.web.getWebLinks(id = TestConfig.webDownloadId)
-            KermitLogger.i(singleResult.toString())
             assertTrue { singleResult is ApiResult.Success && singleResult.value.success }
         }
 
@@ -211,7 +183,6 @@ class JvmApiTest {
     fun `get hoster list`() =
         runTest {
             val listResult = client.web.getHosters()
-            KermitLogger.i(listResult.toString())
             assertTrue { listResult is ApiResult.Success && listResult.value.success }
         }
 
@@ -219,7 +190,6 @@ class JvmApiTest {
     fun `get usenet list`() =
         runTest {
             val listResult = client.usenet.getUsenetList()
-            KermitLogger.i(listResult.toString())
             assertTrue { listResult is ApiResult.Success && listResult.value.success }
         }
 
@@ -227,7 +197,6 @@ class JvmApiTest {
     fun `get up status`() =
         runTest {
             val result = client.general.getUpStatus()
-            KermitLogger.i(result.toString())
             assertTrue { result is ApiResult.Success && result.value.success }
         }
 
@@ -235,7 +204,6 @@ class JvmApiTest {
     fun `get stats`() =
         runTest {
             val result = client.general.getStats()
-            KermitLogger.i(result.toString())
             assertTrue { result is ApiResult.Success && result.value.success }
         }
 
@@ -243,7 +211,6 @@ class JvmApiTest {
     fun `get changeLog`() =
         runTest {
             val result = client.general.getChangelog()
-            KermitLogger.i(result.toString())
             assertTrue { result is ApiResult.Success }
         }
 
@@ -251,7 +218,6 @@ class JvmApiTest {
     fun `get changeLog json`() =
         runTest {
             val result = client.general.getChangelogJson()
-            KermitLogger.i(result.toString())
             assertTrue { result is ApiResult.Success }
         }
 
@@ -259,7 +225,6 @@ class JvmApiTest {
     fun `get speed test`() =
         runTest {
             val result = client.general.getSpeedtestFiles()
-            KermitLogger.i(result.toString())
             assertTrue { result is ApiResult.Success }
         }
 
@@ -267,7 +232,6 @@ class JvmApiTest {
     fun `get notifications`() =
         runTest {
             val result = client.notifications.getNotifications()
-            KermitLogger.i(result.toString())
             assertTrue { result is ApiResult.Success }
         }
 
@@ -275,7 +239,6 @@ class JvmApiTest {
     fun `get user data`() =
         runTest {
             val result = client.user.getUserData()
-            KermitLogger.i(result.toString())
             assertTrue { result is ApiResult.Success }
         }
 
@@ -283,7 +246,6 @@ class JvmApiTest {
     fun `get referral`() =
         runTest {
             val result = client.user.getReferral()
-            KermitLogger.i(result.toString())
             assertTrue { result is ApiResult.Success }
         }
 
@@ -292,7 +254,6 @@ class JvmApiTest {
         runTest {
             // this returns success but no data
             val result = client.user.getSubscriptions()
-            KermitLogger.i(result.toString())
             assertTrue { result is ApiResult.Success }
         }
 
@@ -300,7 +261,6 @@ class JvmApiTest {
     fun `get user search engines`() =
         runTest {
             val result = client.user.getSearchEngines()
-            KermitLogger.i(result.toString())
             assertTrue { result is ApiResult.Success }
         }
 
@@ -309,7 +269,6 @@ class JvmApiTest {
         runTest {
             // fixme: this returns 500
             val result = client.user.getUserStats()
-            KermitLogger.i(result.toString())
             assertTrue { result is ApiResult.Success }
         }
 
@@ -317,15 +276,13 @@ class JvmApiTest {
     fun `get user rss`() =
         runTest {
             val result = client.rss.getUserRssFeeds()
-            KermitLogger.i(result.toString())
             assertTrue { result is ApiResult.Success }
         }
 
     @Test
     fun `get all integrations`() =
         runTest {
-            val result = client.integrations.getAllJobs()
-            KermitLogger.i(result.toString())
+            val result = client.integrations.getJobs()
             assertTrue { result is ApiResult.Success }
         }
 }

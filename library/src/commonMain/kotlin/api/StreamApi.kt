@@ -1,7 +1,8 @@
 package com.github.livingwithhippos.torbox.kmp.client.api
 
-import com.github.livingwithhippos.torbox.kmp.client.model.CreatedStreamResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.StreamResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.CreatedStreamDto
+import com.github.livingwithhippos.torbox.kmp.client.model.StreamDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 
 interface StreamApi {
@@ -17,7 +18,7 @@ interface StreamApi {
         chosenSubtitleIndex: Int? = null,
         chosenAudioIndex: Int = 0,
         chosenResolutionIndex: Int? = null,
-    ): ApiResult<CreatedStreamResponseDto>
+    ): ApiResult<ApiResponseDto<CreatedStreamDto>>
 
     /**
      * Gets stream data from an already created stream.
@@ -31,5 +32,5 @@ interface StreamApi {
         chosenSubtitleIndex: Int? = null,
         chosenAudioIndex: Int? = null,
         chosenResolutionIndex: Int? = null,
-    ): ApiResult<StreamResponseDto>
+    ): ApiResult<ApiResponseDto<StreamDto>>
 }

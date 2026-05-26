@@ -12,6 +12,7 @@ import com.github.livingwithhippos.torbox.kmp.client.api.UserApi
 import com.github.livingwithhippos.torbox.kmp.client.api.WebApi
 import com.github.livingwithhippos.torbox.kmp.client.model.AddRssRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.AddSearchEngineRequestDto
+import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiSuccessResponse
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityObjectResponseDto
@@ -19,12 +20,12 @@ import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityRequ
 import com.github.livingwithhippos.torbox.kmp.client.model.ChangelogListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ControlQueuedDownloadsRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ControlRssRequestDto
-import com.github.livingwithhippos.torbox.kmp.client.model.CreateTorrentResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.CreateWebDownloadResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.CreatedStreamResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeAuthorizationStartResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.CreateTorrentDto
+import com.github.livingwithhippos.torbox.kmp.client.model.CreateWebDownloadDto
+import com.github.livingwithhippos.torbox.kmp.client.model.CreatedStreamDto
+import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeAuthorizationStartDto
+import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeTokenDataDto
 import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeTokenRequestDto
-import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeTokenResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.EditRssRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.EditTorrentRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.EditWebRequestDto
@@ -33,27 +34,27 @@ import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.HostersResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.JobsResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.MagnetToFileRequestDto
+import com.github.livingwithhippos.torbox.kmp.client.model.ModifySearchEngineDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ModifySearchEngineRequestDto
-import com.github.livingwithhippos.torbox.kmp.client.model.ModifySearchEngineResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.NotificationsResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.QueuedDownloadsResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.ReferralDataResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.ReferralDataDto
 import com.github.livingwithhippos.torbox.kmp.client.model.RefreshApiTokenRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.SearchEngineControlRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.SpeedtestFilesResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.StatsResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.StreamResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.StatsDto
+import com.github.livingwithhippos.torbox.kmp.client.model.StreamDto
 import com.github.livingwithhippos.torbox.kmp.client.model.SubscriptionResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentControlRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TransactionResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UsenetDownloadListResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.UserDataResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.UserDataDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserRssFeedItemsResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserRssFeedsResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserSearchEnginesResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserSettingsRequestDto
-import com.github.livingwithhippos.torbox.kmp.client.model.UserStatsResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.UserStatsDto
 import com.github.livingwithhippos.torbox.kmp.client.model.WebControlRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.WebDownloadListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
@@ -219,7 +220,7 @@ class TorboxApiImpl(
         name: String?,
         asQueued: Boolean?,
         addOnlyIfCached: Boolean?,
-    ): ApiResult<CreateTorrentResponseDto> {
+    ): ApiResult<ApiResponseDto<CreateTorrentDto>> {
         if (fileBytes == null && magnet.isNullOrBlank()) {
             return ApiResult.Failure.BadRequest(
                 IllegalArgumentException("Either fileBytes or magnet must be provided"),
@@ -492,7 +493,7 @@ class TorboxApiImpl(
         name: String?,
         asQueued: Boolean?,
         addOnlyIfCached: Boolean?,
-    ): ApiResult<CreateWebDownloadResponseDto> =
+    ): ApiResult<ApiResponseDto<CreateWebDownloadDto>> =
         executeRequest {
             client.post("webdl/createwebdownload") {
                 setBody(
@@ -677,7 +678,7 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun getStats(): ApiResult<StatsResponseDto> =
+    override suspend fun getStats(): ApiResult<ApiResponseDto<StatsDto>> =
         executeRequest {
             client.get("stats") {
                 noAuth()
@@ -799,7 +800,7 @@ class TorboxApiImpl(
         }
     }
 
-    override suspend fun getUserData(settings: Boolean?): ApiResult<UserDataResponseDto> =
+    override suspend fun getUserData(settings: Boolean?): ApiResult<ApiResponseDto<UserDataDto>> =
         executeRequest {
             client.get("user/me") {
                 settings?.let { parameter("settings", it) }
@@ -834,7 +835,7 @@ class TorboxApiImpl(
             client.get("user/getconfirmation")
         }
 
-    override suspend fun startDeviceCodeAuthorizationProcess(app: String?): ApiResult<DeviceCodeAuthorizationStartResponseDto> =
+    override suspend fun startDeviceCodeAuthorizationProcess(app: String?): ApiResult<ApiResponseDto<DeviceCodeAuthorizationStartDto>> =
         executeRequest {
             client.get("user/auth/device/start") {
                 noAuth()
@@ -842,7 +843,7 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun getTokenFromDeviceCodeProcess(deviceCode: String): ApiResult<DeviceCodeTokenResponseDto> {
+    override suspend fun getTokenFromDeviceCodeProcess(deviceCode: String): ApiResult<ApiResponseDto<DeviceCodeTokenDataDto>> {
         if (deviceCode.isBlank()) {
             return ApiResult.Failure.BadRequest(
                 IllegalArgumentException("deviceCode must not be blank"),
@@ -858,7 +859,7 @@ class TorboxApiImpl(
         }
     }
 
-    override suspend fun getReferral(): ApiResult<ReferralDataResponseDto> =
+    override suspend fun getReferral(): ApiResult<ApiResponseDto<ReferralDataDto>> =
         executeRequest {
             client.get("user/referraldata")
         }
@@ -945,7 +946,7 @@ class TorboxApiImpl(
         url: String?,
         apikey: String?,
         downloadType: String?,
-    ): ApiResult<ModifySearchEngineResponseDto> {
+    ): ApiResult<ApiResponseDto<ModifySearchEngineDto>> {
         if (id <= 0) {
             return ApiResult.Failure.BadRequest(IllegalArgumentException("id must be a positive integer"))
         }
@@ -1004,7 +1005,7 @@ class TorboxApiImpl(
         general: Boolean,
         bandwidth: Boolean,
         bandwidthGrouping: String?,
-    ): ApiResult<UserStatsResponseDto> {
+    ): ApiResult<ApiResponseDto<UserStatsDto>> {
         val normalizedGrouping = bandwidthGrouping?.trim()?.lowercase()
         if (normalizedGrouping != null && normalizedGrouping !in listOf("hour", "day", "week", "month")) {
             return ApiResult.Failure.BadRequest(
@@ -1255,7 +1256,7 @@ class TorboxApiImpl(
         chosenSubtitleIndex: Int?,
         chosenAudioIndex: Int,
         chosenResolutionIndex: Int?,
-    ): ApiResult<CreatedStreamResponseDto> {
+    ): ApiResult<ApiResponseDto<CreatedStreamDto>> {
         val normalizedType = type.trim().lowercase()
         if (id <= 0) {
             return ApiResult.Failure.BadRequest(
@@ -1306,7 +1307,7 @@ class TorboxApiImpl(
         chosenSubtitleIndex: Int?,
         chosenAudioIndex: Int?,
         chosenResolutionIndex: Int?,
-    ): ApiResult<StreamResponseDto> {
+    ): ApiResult<ApiResponseDto<StreamDto>> {
         if (presignedToken.isBlank()) {
             return ApiResult.Failure.BadRequest(
                 IllegalArgumentException("presignedToken must not be blank"),

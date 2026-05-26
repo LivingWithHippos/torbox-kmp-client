@@ -4,14 +4,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CreatedStreamResponseDto(
-    override val success: Boolean,
-    val error: String?,
-    val detail: String,
-    val data: CreatedStreamDto?,
-) : ApiSuccessResponse
-
-@Serializable
 data class CreatedStreamDto(
     val id: Int,
     @SerialName("file_id") val fileId: Int,
@@ -40,14 +32,6 @@ data class CreatedStreamDto(
     val metadata: StreamMetadataDto,
     @SerialName("search_metadata") val searchMetadata: SearchMetadataDto,
 )
-
-@Serializable
-data class StreamResponseDto(
-    override val success: Boolean,
-    val error: String?,
-    val detail: String,
-    val data: StreamDto?,
-) : ApiSuccessResponse
 
 @Serializable
 data class StreamDto(

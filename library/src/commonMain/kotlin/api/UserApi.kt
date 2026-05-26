@@ -1,16 +1,17 @@
 package com.github.livingwithhippos.torbox.kmp.client.api
 
-import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeAuthorizationStartResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeTokenResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeAuthorizationStartDto
+import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeTokenDataDto
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.ModifySearchEngineResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.ReferralDataResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.ModifySearchEngineDto
+import com.github.livingwithhippos.torbox.kmp.client.model.ReferralDataDto
 import com.github.livingwithhippos.torbox.kmp.client.model.SubscriptionResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TransactionResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.UserDataResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.UserDataDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserSearchEnginesResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserSettingsRequestDto
-import com.github.livingwithhippos.torbox.kmp.client.model.UserStatsResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.UserStatsDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 
 interface UserApi {
@@ -33,7 +34,7 @@ interface UserApi {
      *
      * @param settings Allows you to retrieve user settings. Null defaults to true (default)
      */
-    suspend fun getUserData(settings: Boolean? = null): ApiResult<UserDataResponseDto>
+    suspend fun getUserData(settings: Boolean? = null): ApiResult<ApiResponseDto<UserDataDto>>
 
     /**
      * Automatically adds a referral code to the user's account.
@@ -62,7 +63,7 @@ interface UserApi {
      *
      * @param app App name shown on the verification page, defaults to "Third Party App"
      */
-    suspend fun startDeviceCodeAuthorizationProcess(app: String?): ApiResult<DeviceCodeAuthorizationStartResponseDto>
+    suspend fun startDeviceCodeAuthorizationProcess(app: String?): ApiResult<ApiResponseDto<DeviceCodeAuthorizationStartDto>>
 
     /**
      * Redeems a token from the OAuth device code authorization process.
@@ -71,14 +72,14 @@ interface UserApi {
      *
      * @param deviceCode The `device_code` returned by startDeviceCodeAuthorizationProcess.
      */
-    suspend fun getTokenFromDeviceCodeProcess(deviceCode: String): ApiResult<DeviceCodeTokenResponseDto>
+    suspend fun getTokenFromDeviceCodeProcess(deviceCode: String): ApiResult<ApiResponseDto<DeviceCodeTokenDataDto>>
 
     /**
      * Gets the user's referral statistics and referral code.
      *
      * [online documentation](https://api-docs.torbox.app/#eb5bd5bd-0d7b-4014-bf2b-497a87cc6a97)
      */
-    suspend fun getReferral(): ApiResult<ReferralDataResponseDto>
+    suspend fun getReferral(): ApiResult<ApiResponseDto<ReferralDataDto>>
 
     /**
      * Gets the user's subscriptions, including active and inactive subscriptions.
@@ -134,7 +135,7 @@ interface UserApi {
         general: Boolean = true,
         bandwidth: Boolean = false,
         bandwidthGrouping: String? = null,
-    ): ApiResult<UserStatsResponseDto>
+    ): ApiResult<ApiResponseDto<UserStatsDto>>
 
     /**
      * Controls a user's search engine(s). Allows operations: enable, disable, check, delete.
@@ -163,7 +164,7 @@ interface UserApi {
         url: String? = null,
         apikey: String? = null,
         downloadType: String? = null,
-    ): ApiResult<ModifySearchEngineResponseDto>
+    ): ApiResult<ApiResponseDto<ModifySearchEngineDto>>
 
     /**
      * Adds a new search engine to the user's account.

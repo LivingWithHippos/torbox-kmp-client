@@ -1,8 +1,9 @@
 package com.github.livingwithhippos.torbox.kmp.client.api
 
+import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityObjectResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.CreateWebDownloadResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.CreateWebDownloadDto
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.HostersResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.WebDownloadListResponseDto
@@ -15,7 +16,7 @@ interface WebApi {
         name: String? = null,
         asQueued: Boolean? = null,
         addOnlyIfCached: Boolean? = null,
-    ): ApiResult<CreateWebDownloadResponseDto>
+    ): ApiResult<ApiResponseDto<CreateWebDownloadDto>>
 
     /**
      * Controls a web item

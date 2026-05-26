@@ -82,14 +82,6 @@ data class TorrentFileDto(
 )
 
 @Serializable
-data class CreateTorrentResponseDto(
-    override val success: Boolean,
-    val error: String?,
-    val detail: String,
-    val data: CreateTorrentDto?,
-) : ApiSuccessResponse
-
-@Serializable
 data class CreateTorrentDto(
     val hash: String,
     @SerialName("torrent_id") val torrentId: Long,

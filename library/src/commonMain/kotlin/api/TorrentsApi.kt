@@ -1,8 +1,9 @@
 package com.github.livingwithhippos.torbox.kmp.client.api
 
+import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityObjectResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.CreateTorrentResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.CreateTorrentDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentResultDto
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentListResponseDto
@@ -29,7 +30,7 @@ interface TorrentsApi {
         name: String? = null,
         asQueued: Boolean? = null,
         addOnlyIfCached: Boolean? = null,
-    ): ApiResult<CreateTorrentResponseDto>
+    ): ApiResult<ApiResponseDto<CreateTorrentDto>>
 
     /**
      * Controls a torrent. By sending the torrent's ID and the type of operation you want to perform, it will send that request to the torrent client.

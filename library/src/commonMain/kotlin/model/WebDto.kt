@@ -15,14 +15,6 @@ import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
 
 @Serializable
-data class CreateWebDownloadResponseDto(
-    override val success: Boolean,
-    val error: String?,
-    val detail: String,
-    val data: CreateWebDownloadDto?,
-) : ApiSuccessResponse
-
-@Serializable
 data class CreateWebDownloadDto(
     val hash: String,
     @SerialName("webdownload_id") val webDownloadId: Int,

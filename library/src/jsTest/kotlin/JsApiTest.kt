@@ -13,14 +13,19 @@ class JsApiTest {
     private val scope = CoroutineScope(Dispatchers.Main)
 
     @Test
-    fun getTorrents() =
+    fun `get Torrents`() =
         scope.promise {
             val listResult = client.torrents.getTorrents()
-            KermitLogger.i(listResult.toString())
             assertTrue { listResult is ApiResult.Success }
 
             val singleResult = client.torrents.getTorrents(id = JsTestConfig.torrentId)
-            KermitLogger.i(singleResult.toString())
             assertTrue { singleResult is ApiResult.Success }
+        }
+
+    @Test
+    fun `get user data`() =
+        scope.promise {
+            val result = client.user.getUserData()
+            assertTrue { result is ApiResult.Success }
         }
 }

@@ -6,6 +6,14 @@ interface ApiSuccessResponse {
     val success: Boolean
 }
 
+@Serializable
+data class ApiResponseDto<T>(
+    override val success: Boolean,
+    val error: String?,
+    val detail: String,
+    val data: T? = null,
+) : ApiSuccessResponse
+
 /**
  * base response returned by the api. Data is always present and may be null, especially in errors.
  * The only precaution is to check for success = true when this is the return type
