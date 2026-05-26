@@ -222,4 +222,12 @@ class JvmApiTest {
             KermitLogger.i(listResult.toString())
             assertTrue { listResult is ApiResult.Success && listResult.value.success }
         }
+
+    @Test
+    fun `get status`() =
+        runTest {
+            val result = client.general.getStatus()
+            KermitLogger.i(result.toString())
+            assertTrue { result is ApiResult.Success && result.value.success }
+        }
 }

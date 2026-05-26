@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.torbox.kmp.client.client
 
+import com.github.livingwithhippos.torbox.kmp.client.api.GeneralApi
 import com.github.livingwithhippos.torbox.kmp.client.api.TorrentsApi
 import com.github.livingwithhippos.torbox.kmp.client.api.UsenetApi
 import com.github.livingwithhippos.torbox.kmp.client.api.WebApi
@@ -13,6 +14,7 @@ class TorboxClient private constructor(
     val torrents: TorrentsApi,
     val web: WebApi,
     val usenet: UsenetApi,
+    val general: GeneralApi,
     private val httpClient: HttpClient,
 ) {
     companion object {
@@ -24,6 +26,7 @@ class TorboxClient private constructor(
                 torrents = groupedApi,
                 web = groupedApi,
                 usenet = groupedApi,
+                general = groupedApi,
                 httpClient = client,
             )
         }

@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.torbox.kmp.client.impl
 
+import com.github.livingwithhippos.torbox.kmp.client.api.GeneralApi
 import com.github.livingwithhippos.torbox.kmp.client.api.TorrentsApi
 import com.github.livingwithhippos.torbox.kmp.client.api.UsenetApi
 import com.github.livingwithhippos.torbox.kmp.client.api.WebApi
@@ -47,7 +48,8 @@ class TorboxApiImpl(
     private val client: HttpClient,
 ) : TorrentsApi,
     WebApi,
-    UsenetApi {
+    UsenetApi,
+    GeneralApi {
     private suspend fun HttpResponse.safeBodyText(): String? = runCatching { bodyAsText() }.getOrNull()
 
     private fun HttpStatusCode.isSuccessOrRedirect(): Boolean = value in 200..399
@@ -620,6 +622,14 @@ class TorboxApiImpl(
                 }
                 parameter("offset", offset)
                 parameter("limit", limit)
+            }
+        }
+
+    override suspend fun getStatus(): ApiResult<GenericResponseDto> =
+        executeRequest {
+            // what happens if the api are failing? does this return success false?
+            client.get("https://api.torbox.app") {
+                noAuth()
             }
         }
 }
