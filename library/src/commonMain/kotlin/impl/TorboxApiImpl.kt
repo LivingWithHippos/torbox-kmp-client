@@ -19,6 +19,7 @@ import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentResultDt
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.HostersResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.MagnetToFileRequestDto
+import com.github.livingwithhippos.torbox.kmp.client.model.SpeedtestFilesResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.StatsResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentControlRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentListResponseDto
@@ -667,4 +668,26 @@ class TorboxApiImpl(
                 noAuth()
             }
         }
+
+    override suspend fun getSpeedtestFiles(
+        testLength: String?,
+        region: String?,
+        userIp: String?,
+    ): ApiResult<SpeedtestFilesResponseDto> {
+        val normalizedTestLength = testLength?.trim()?.lowercase()
+        if (normalizedTestLength != null && normalizedTestLength !in listOf("short", "long")) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("testLength must be one of: short, long"),
+            )
+        }
+
+        return executeRequest {
+            client.get("speedtest") {
+                noAuth()
+                normalizedTestLength?.let { parameter("test_length", it) }
+                region?.takeIf { it.isNotBlank() }?.let { parameter("region", it) }
+                userIp?.takeIf { it.isNotBlank() }?.let { parameter("user_ip", it) }
+            }
+        }
+    }
 }

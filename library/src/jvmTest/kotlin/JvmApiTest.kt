@@ -254,4 +254,12 @@ class JvmApiTest {
             KermitLogger.i(result.toString())
             assertTrue { result is ApiResult.Success }
         }
+
+    @Test
+    fun `get speed test`() =
+        runTest {
+            val result = client.general.getSpeedtestFiles()
+            KermitLogger.i(result.toString())
+            assertTrue { result is ApiResult.Success }
+        }
 }

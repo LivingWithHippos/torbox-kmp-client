@@ -34,3 +34,29 @@ data class ChangelogEntryDto(
     val link: String,
     @SerialName("created_at") val createdAt: String,
 )
+
+@Serializable
+data class SpeedtestFilesResponseDto(
+    override val success: Boolean,
+    val error: String?,
+    val detail: String,
+    val data: List<SpeedtestFileDto>?,
+) : ApiSuccessResponse
+
+@Serializable
+data class SpeedtestFileDto(
+    val region: String,
+    val name: String,
+    val domain: String,
+    val path: String,
+    val url: String,
+    val closest: Boolean,
+    val coordinates: SpeedtestCoordinatesDto,
+)
+
+@Serializable
+data class SpeedtestCoordinatesDto(
+    val lat: Double,
+    val lng: Double,
+)
+
