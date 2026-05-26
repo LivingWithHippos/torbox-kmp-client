@@ -5,6 +5,7 @@ import com.github.livingwithhippos.torbox.kmp.client.api.IntegrationsApi
 import com.github.livingwithhippos.torbox.kmp.client.api.NotificationsApi
 import com.github.livingwithhippos.torbox.kmp.client.api.QueuedApi
 import com.github.livingwithhippos.torbox.kmp.client.api.RSSApi
+import com.github.livingwithhippos.torbox.kmp.client.api.StreamApi
 import com.github.livingwithhippos.torbox.kmp.client.api.TorrentsApi
 import com.github.livingwithhippos.torbox.kmp.client.api.UsenetApi
 import com.github.livingwithhippos.torbox.kmp.client.api.UserApi
@@ -20,6 +21,7 @@ import com.github.livingwithhippos.torbox.kmp.client.model.ControlQueuedDownload
 import com.github.livingwithhippos.torbox.kmp.client.model.ControlRssRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateTorrentResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateWebDownloadResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.CreatedStreamResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeAuthorizationStartResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeTokenRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeTokenResponseDto
@@ -40,6 +42,7 @@ import com.github.livingwithhippos.torbox.kmp.client.model.RefreshApiTokenReques
 import com.github.livingwithhippos.torbox.kmp.client.model.SearchEngineControlRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.SpeedtestFilesResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.StatsResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.StreamResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.SubscriptionResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentControlRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentListResponseDto
@@ -85,7 +88,8 @@ class TorboxApiImpl(
     QueuedApi,
     UserApi,
     RSSApi,
-    IntegrationsApi {
+    IntegrationsApi,
+    StreamApi {
     private val uuidRegex =
         Regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$")
 
@@ -1240,6 +1244,102 @@ class TorboxApiImpl(
                         all = all,
                     ),
                 )
+            }
+        }
+    }
+
+    override suspend fun createStream(
+        id: Int,
+        fileId: Int,
+        type: String,
+        chosenSubtitleIndex: Int?,
+        chosenAudioIndex: Int,
+        chosenResolutionIndex: Int?,
+    ): ApiResult<CreatedStreamResponseDto> {
+        val normalizedType = type.trim().lowercase()
+        if (id <= 0) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("id must be a positive integer"),
+            )
+        }
+        if (fileId < 0) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("fileId must be >= 0"),
+            )
+        }
+        if (normalizedType !in listOf("torrent", "usenet", "webdl")) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("type must be one of: torrent, usenet, webdl"),
+            )
+        }
+        if (chosenAudioIndex < 0) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("chosenAudioIndex must be >= 0"),
+            )
+        }
+        if (chosenSubtitleIndex != null && chosenSubtitleIndex < 0) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("chosenSubtitleIndex must be >= 0"),
+            )
+        }
+        if (chosenResolutionIndex != null && chosenResolutionIndex < 0) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("chosenResolutionIndex must be >= 0"),
+            )
+        }
+
+        return executeRequest {
+            client.get("stream/createstream") {
+                parameter("id", id)
+                parameter("file_id", fileId)
+                parameter("type", normalizedType)
+                chosenSubtitleIndex?.let { parameter("chosen_subtitle_index", it) }
+                parameter("chosen_audio_index", chosenAudioIndex)
+                chosenResolutionIndex?.let { parameter("chosen_resolution_index", it) }
+            }
+        }
+    }
+
+    override suspend fun getStream(
+        presignedToken: String,
+        token: String,
+        chosenSubtitleIndex: Int?,
+        chosenAudioIndex: Int?,
+        chosenResolutionIndex: Int?,
+    ): ApiResult<StreamResponseDto> {
+        if (presignedToken.isBlank()) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("presignedToken must not be blank"),
+            )
+        }
+        if (token.isBlank()) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("token must not be blank"),
+            )
+        }
+        if (chosenSubtitleIndex != null && chosenSubtitleIndex < 0) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("chosenSubtitleIndex must be >= 0"),
+            )
+        }
+        if (chosenAudioIndex != null && chosenAudioIndex < 0) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("chosenAudioIndex must be >= 0"),
+            )
+        }
+        if (chosenResolutionIndex != null && chosenResolutionIndex < 0) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("chosenResolutionIndex must be >= 0"),
+            )
+        }
+
+        return executeRequest {
+            client.get("stream/getstreamdata") {
+                parameter("presigned_token", presignedToken)
+                parameter("token", token)
+                chosenSubtitleIndex?.let { parameter("chosen_subtitle_index", it) }
+                chosenAudioIndex?.let { parameter("chosen_audio_index", it) }
+                chosenResolutionIndex?.let { parameter("chosen_resolution_index", it) }
             }
         }
     }
