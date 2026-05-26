@@ -25,4 +25,17 @@ interface UserApi {
      * @param settings Allows you to retrieve user settings. Null defaults to true (default)
      */
     suspend fun getUserData(settings: Boolean? = null): ApiResult<UserDataResponseDto>
+
+    /**
+     * Automatically adds a referral code to the user's account.
+     *
+     * [online documentation](https://api-docs.torbox.app/#703cd861-908a-4021-b682-9414f581c9fa)
+     *
+     * @param referral Referral code in UUID format.
+     * @param validate A regex will be run to check the referral UUID
+     */
+    suspend fun addReferralToAccount(
+        referral: String,
+        validate: Boolean = false,
+    ): ApiResult<GenericResponseDto>
 }

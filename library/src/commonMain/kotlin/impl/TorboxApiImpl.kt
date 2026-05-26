@@ -58,6 +58,8 @@ class TorboxApiImpl(
     GeneralApi,
     NotificationsApi,
     UserApi {
+    private val uuidRegex = Regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$")
+
     private suspend fun HttpResponse.safeBodyText(): String? = runCatching { bodyAsText() }.getOrNull()
 
     private fun HttpStatusCode.isSuccessOrRedirect(): Boolean = value in 200..399
@@ -770,4 +772,27 @@ class TorboxApiImpl(
                 settings?.let { parameter("settings", it) }
             }
         }
+
+    override suspend fun addReferralToAccount(
+        referral: String,
+        validate: Boolean,
+    ): ApiResult<GenericResponseDto> {
+        if (referral.isBlank()) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("referral must not be blank"),
+            )
+        }
+
+        if (validate && !uuidRegex.matches(referral)) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("referral must be a valid UUID"),
+            )
+        }
+
+        return executeRequest {
+            client.post("user/addreferral") {
+                parameter("referral", referral)
+            }
+        }
+    }
 }
