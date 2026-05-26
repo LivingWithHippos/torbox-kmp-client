@@ -6,6 +6,7 @@ import com.github.livingwithhippos.torbox.kmp.client.api.TorrentsApi
 import com.github.livingwithhippos.torbox.kmp.client.api.UsenetApi
 import com.github.livingwithhippos.torbox.kmp.client.api.UserApi
 import com.github.livingwithhippos.torbox.kmp.client.api.WebApi
+import com.github.livingwithhippos.torbox.kmp.client.model.AddSearchEngineRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiSuccessResponse
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityObjectResponseDto
@@ -38,6 +39,7 @@ import com.github.livingwithhippos.torbox.kmp.client.model.UsenetDownloadListRes
 import com.github.livingwithhippos.torbox.kmp.client.model.UserDataResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserSearchEnginesResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserSettingsRequestDto
+import com.github.livingwithhippos.torbox.kmp.client.model.UserStatsResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.WebControlRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.WebDownloadListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
@@ -941,6 +943,61 @@ class TorboxApiImpl(
                         downloadType = downloadType,
                     ),
                 )
+            }
+        }
+    }
+
+    override suspend fun addSearchEngine(
+        type: String?,
+        url: String,
+        apikey: String?,
+        downloadType: String?,
+    ): ApiResult<UserSearchEnginesResponseDto> {
+        if (url.isBlank()) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("url must not be blank"),
+            )
+        }
+
+        val normalizedDownloadType = downloadType?.trim()?.lowercase()
+        if (normalizedDownloadType != null && normalizedDownloadType !in listOf("torrents", "usenet")) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("downloadType must be one of: torrents, usenet"),
+            )
+        }
+
+        return executeRequest {
+            client.put("user/settings/addsearchengines") {
+                contentType(ContentType.Application.Json)
+                setBody(
+                    AddSearchEngineRequestDto(
+                        type = type,
+                        url = url,
+                        apikey = apikey,
+                        downloadType = normalizedDownloadType,
+                    ),
+                )
+            }
+        }
+    }
+
+    override suspend fun getUserStats(
+        general: Boolean,
+        bandwidth: Boolean,
+        bandwidthGrouping: String?,
+    ): ApiResult<UserStatsResponseDto> {
+        val normalizedGrouping = bandwidthGrouping?.trim()?.lowercase()
+        if (normalizedGrouping != null && normalizedGrouping !in listOf("hour", "day", "week", "month")) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("bandwidthGrouping must be one of: hour, day, week, month"),
+            )
+        }
+
+        return executeRequest {
+            client.get("user/stats") {
+                parameter("general", general)
+                parameter("bandwidth", bandwidth)
+                normalizedGrouping?.let { parameter("bandwidth_grouping", it) }
             }
         }
     }

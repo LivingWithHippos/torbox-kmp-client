@@ -255,6 +255,14 @@ data class ModifySearchEngineRequestDto(
 )
 
 @Serializable
+data class AddSearchEngineRequestDto(
+    val type: String? = null,
+    val url: String,
+    val apikey: String? = null,
+    @SerialName("download_type") val downloadType: String? = null,
+)
+
+@Serializable
 data class ModifySearchEngineResponseDto(
     override val success: Boolean,
     val error: String?,
@@ -271,3 +279,32 @@ data class ModifySearchEngineDto(
     val indexers: List<String>?,
     @SerialName("download_type") val downloadType: String?,
 )
+
+@Serializable
+data class UserStatsResponseDto(
+    override val success: Boolean,
+    val error: String?,
+    val detail: String,
+    val data: UserStatsDto?,
+) : ApiSuccessResponse
+
+@Serializable
+data class UserStatsDto(
+    val general: UserStatsGeneralDto? = null,
+    val bandwidth: List<UserBandwidthDto>? = null,
+)
+
+@Serializable
+data class UserStatsGeneralDto(
+    @SerialName("total_downloaded") val totalDownloaded: Long,
+    @SerialName("total_uploaded") val totalUploaded: Long,
+    val ratio: Double,
+    @SerialName("total_items_downloaded") val totalItemsDownloaded: Int,
+)
+
+@Serializable
+data class UserBandwidthDto(
+    val date: String,
+    @SerialName("bytes_downloaded") val bytesDownloaded: Long,
+)
+

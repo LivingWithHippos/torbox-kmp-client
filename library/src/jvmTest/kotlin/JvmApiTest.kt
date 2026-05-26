@@ -295,4 +295,21 @@ class JvmApiTest {
             KermitLogger.i(result.toString())
             assertTrue { result is ApiResult.Success }
         }
+
+    @Test
+    fun `get user search engines`() =
+        runTest {
+            val result = client.user.getSearchEngines()
+            KermitLogger.i(result.toString())
+            assertTrue { result is ApiResult.Success }
+        }
+
+    @Test
+    fun `get user stats`() =
+        runTest {
+            // fixme: this returns 500
+            val result = client.user.getUserStats()
+            KermitLogger.i(result.toString())
+            assertTrue { result is ApiResult.Success }
+        }
 }

@@ -10,8 +10,8 @@ import com.github.livingwithhippos.torbox.kmp.client.model.TransactionResponseDt
 import com.github.livingwithhippos.torbox.kmp.client.model.UserDataResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserSearchEnginesResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserSettingsRequestDto
+import com.github.livingwithhippos.torbox.kmp.client.model.UserStatsResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
-import kotlinx.serialization.SerialName
 
 interface UserApi {
     /**
@@ -126,6 +126,17 @@ interface UserApi {
     suspend fun getSearchEngines(id: Int? = null): ApiResult<UserSearchEnginesResponseDto>
 
     /**
+     * Gets a user's stats. Use the query params to select general and/or bandwidth data.
+     *
+     * [online documentation](https://api-docs.torbox.app/#1eed7757-6c80-4fce-97d2-1d1ad2953dd6)
+     */
+    suspend fun getUserStats(
+        general: Boolean = true,
+        bandwidth: Boolean = false,
+        bandwidthGrouping: String? = null,
+    ): ApiResult<UserStatsResponseDto>
+
+    /**
      * Controls a user's search engine(s). Allows operations: enable, disable, check, delete.
      *
      * [online documentation](https://api-docs.torbox.app/#828c7226-daad-4737-8ed5-98c9d5fa1089)
@@ -153,4 +164,21 @@ interface UserApi {
         apikey: String? = null,
         downloadType: String? = null,
     ): ApiResult<ModifySearchEngineResponseDto>
+
+    /**
+     * Adds a new search engine to the user's account.
+     *
+     * [online documentation](https://api-docs.torbox.app/#8a1c54fa-8485-4fc0-8b42-17cddd082967)
+     *
+     * @param type Search engine type (prowlarr, jackett, nzbhydra). Optional.
+     * @param url Search engine URL (http/https).
+     * @param apikey API key for the search engine (optional).
+     * @param downloadType Download type (torrents, usenet). Optional.
+     */
+    suspend fun addSearchEngine(
+        type: String? = null,
+        url: String,
+        apikey: String? = null,
+        downloadType: String? = null,
+    ): ApiResult<UserSearchEnginesResponseDto>
 }
