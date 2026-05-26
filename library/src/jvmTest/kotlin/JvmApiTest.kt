@@ -1,0 +1,147 @@
+package com.github.livingwithhippos.torbox.kmp.client
+
+import com.github.livingwithhippos.torbox.kmp.client.client.TorboxClient
+import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
+import com.github.livingwithhippos.torbox.kmp.client.network.RestClientConfig
+import kotlinx.coroutines.test.runTest
+import kotlin.io.path.Path
+import kotlin.io.path.readBytes
+import kotlin.test.Test
+import kotlin.test.assertTrue
+import co.touchlab.kermit.Logger as KermitLogger
+
+class JvmApiTest {
+    private val client = TorboxClient.create(RestClientConfig(bearerToken = TestConfig.bearerToken))
+
+    @Test
+    fun getTorrents() =
+        runTest {
+            val listResult = client.api.getTorrents()
+            KermitLogger.i(listResult.toString())
+            assertTrue { listResult is ApiResult.Success }
+
+            val singleResult = client.api.getTorrents(id = TestConfig.torrentId)
+            KermitLogger.i(singleResult.toString())
+            assertTrue { singleResult is ApiResult.Success }
+        }
+
+    @Test
+    fun `create torrent from magnet`() =
+        runTest {
+            val result =
+                client.api.createTorrent(
+                    magnet = TestConfig.magnetLink,
+                    allowZip = false,
+                    addOnlyIfCached = false,
+                )
+
+            KermitLogger.i(result.toString())
+
+            assertTrue { result is ApiResult.Success && result.value.success }
+        }
+
+    @Test
+    fun `create torrent from file`() =
+        runTest {
+            val torrentBytes = Path(TestConfig.torrentFilePath).readBytes()
+
+            val result =
+                client.api.createTorrent(
+                    fileBytes = torrentBytes,
+                )
+
+            KermitLogger.i(result.toString())
+
+            assertTrue { result is ApiResult.Success && result.value.success }
+        }
+
+    @Test
+    fun `unrestrict torrent`() =
+        runTest {
+            // change this to simulate a success = false error
+            val result =
+                client.api.downloadTorrent(
+                    token = TestConfig.bearerToken,
+                    torrentId = TestConfig.torrentId,
+                )
+
+            KermitLogger.i(result.toString())
+
+            assertTrue { result is ApiResult.Success && result.value.success }
+        }
+
+    @Test
+    fun `torrent cache`() =
+        runTest {
+            val resultList =
+                client.api.getTorrentAvailabilityList(
+                    hashes = listOf(TestConfig.torrentHash),
+                )
+
+            KermitLogger.i(resultList.toString())
+
+            assertTrue { resultList is ApiResult.Success }
+
+            val resultObject =
+                client.api.getTorrentAvailabilityObject(
+                    hashes = listOf(TestConfig.torrentHash),
+                )
+
+            KermitLogger.i(resultObject.toString())
+
+            assertTrue { resultObject is ApiResult.Success && resultObject.value.success }
+        }
+
+    @Test
+    fun `control torrent`() =
+        runTest {
+            val result =
+                client.api.controlTorrent(
+                    torrentId = TestConfig.torrentId,
+                    operation = "Reannounce",
+                )
+
+            KermitLogger.i(result.toString())
+
+            assertTrue { result is ApiResult.Success }
+        }
+
+    @Test
+    fun `unrestrict link`() =
+        runTest {
+            val result =
+                client.api.createWebLink(
+                    link = TestConfig.hosterLink,
+                )
+
+            KermitLogger.i(result.toString())
+
+            assertTrue { result is ApiResult.Success && result.value.success }
+        }
+
+    @Test
+    fun `download link`() =
+        runTest {
+            val result =
+                client.api.downloadWebLink(
+                    token = TestConfig.bearerToken,
+                    webId = TestConfig.webDownloadId,
+                )
+
+            KermitLogger.i(result.toString())
+
+            assertTrue { result is ApiResult.Success && result.value.success }
+        }
+
+    @Test
+    fun getWebLinks() =
+        runTest {
+            val listResult = client.api.getWebLinks()
+            KermitLogger.i(listResult.toString())
+            assertTrue { listResult is ApiResult.Success && listResult.value.success }
+
+            val singleResult = client.api.getWebLinks(id = TestConfig.webDownloadId)
+            KermitLogger.i(singleResult.toString())
+            assertTrue { singleResult is ApiResult.Success && singleResult.value.success }
+        }
+}
