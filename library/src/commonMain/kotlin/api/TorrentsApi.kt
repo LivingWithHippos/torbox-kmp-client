@@ -1,11 +1,11 @@
 package com.github.livingwithhippos.torbox.kmp.client.api
 
+import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityListResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityObjectResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateTorrentResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.DownloadResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentResultDto
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.TorrentAvailabilityListResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.TorrentAvailabilityObjectResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 
@@ -76,16 +76,16 @@ interface TorrentsApi {
     suspend fun getTorrentAvailabilityList(
         hashes: List<String>,
         listFiles: Boolean? = null,
-    ): ApiResult<TorrentAvailabilityListResponseDto>
+    ): ApiResult<CacheAvailabilityListResponseDto>
 
     suspend fun getTorrentAvailabilityObject(
         hashes: List<String>,
         listFiles: Boolean? = null,
-    ): ApiResult<TorrentAvailabilityObjectResponseDto>
+    ): ApiResult<CacheAvailabilityObjectResponseDto>
 
-    suspend fun getTorrentAvailabilityBatchObject(hashes: List<String>): ApiResult<TorrentAvailabilityObjectResponseDto>
+    suspend fun getTorrentAvailabilityBatchObject(hashes: List<String>): ApiResult<CacheAvailabilityObjectResponseDto>
 
-    suspend fun getTorrentAvailabilityBatchList(hashes: List<String>): ApiResult<TorrentAvailabilityListResponseDto>
+    suspend fun getTorrentAvailabilityBatchList(hashes: List<String>): ApiResult<CacheAvailabilityListResponseDto>
 
     /**
      * Exports a torrent as a magnet link or a .torrent file.
@@ -107,4 +107,3 @@ interface TorrentsApi {
      */
     suspend fun magnetToFile(magnet: String): ApiResult<ByteArray>
 }
-

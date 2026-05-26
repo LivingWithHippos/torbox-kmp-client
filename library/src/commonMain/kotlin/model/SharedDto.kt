@@ -25,3 +25,32 @@ data class DownloadResponseDto(
     val detail: String,
     val data: String?,
 ) : ApiSuccessResponse
+
+@Serializable
+data class CacheAvailabilityObjectResponseDto(
+    override val success: Boolean,
+    val error: String?,
+    val detail: String,
+    val data: Map<String, CacheAvailabilityDto>?,
+) : ApiSuccessResponse
+
+@Serializable
+data class CacheAvailabilityListResponseDto(
+    override val success: Boolean,
+    val error: String?,
+    val detail: String,
+    val data: List<CacheAvailabilityDto>?,
+) : ApiSuccessResponse
+
+@Serializable
+data class CacheAvailabilityDto(
+    val name: String,
+    val size: Long,
+    val hash: String,
+)
+
+@Serializable
+data class CacheAvailabilityRequestDto(
+    val format: String? = null,
+    val hashes: List<String>,
+)

@@ -185,7 +185,7 @@ class JvmApiTest {
     fun `download link`() =
         runTest {
             val result =
-                client.web.downloadWebLink(
+                client.web.requestDownloadLink(
                     token = TestConfig.bearerToken,
                     webId = TestConfig.webDownloadId,
                 )
@@ -205,6 +205,14 @@ class JvmApiTest {
             val singleResult = client.web.getWebLinks(id = TestConfig.webDownloadId)
             KermitLogger.i(singleResult.toString())
             assertTrue { singleResult is ApiResult.Success && singleResult.value.success }
+        }
+
+    @Test
+    fun `get hoster list`() =
+        runTest {
+            val listResult = client.web.getHosters()
+            KermitLogger.i(listResult.toString())
+            assertTrue { listResult is ApiResult.Success && listResult.value.success }
         }
 
     @Test

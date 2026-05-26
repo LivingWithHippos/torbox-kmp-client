@@ -118,3 +118,30 @@ object WebDownloadDataSerializer : KSerializer<List<WebDownloadDto>?> {
         jsonEncoder.encodeJsonElement(element)
     }
 }
+
+@Serializable
+data class HostersResponseDto(
+    override val success: Boolean,
+    val error: String?,
+    val detail: String,
+    val data: List<HosterDto>?,
+) : ApiSuccessResponse
+
+@Serializable
+data class HosterDto(
+    val id: Int,
+    val name: String,
+    val domains: List<String>,
+    val url: String,
+    val icon: String,
+    val status: Boolean,
+    val type: String,
+    val note: String?,
+    val nsfw: Boolean,
+    @SerialName("daily_link_limit") val dailyLinkLimit: Int,
+    @SerialName("daily_link_used") val dailyLinkUsed: Int,
+    @SerialName("daily_bandwidth_limit") val dailyBandwidthLimit: Long,
+    @SerialName("daily_bandwidth_used") val dailyBandwidthUsed: Long,
+    @SerialName("per_link_size_limit") val perLinkSizeLimit: Long,
+    val regex: String,
+)

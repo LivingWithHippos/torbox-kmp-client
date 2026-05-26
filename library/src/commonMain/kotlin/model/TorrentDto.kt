@@ -97,35 +97,6 @@ data class CreateTorrentDto(
 )
 
 @Serializable
-data class TorrentAvailabilityObjectResponseDto(
-    override val success: Boolean,
-    val error: String?,
-    val detail: String,
-    val data: Map<String, TorrentAvailabilityDto>?,
-) : ApiSuccessResponse
-
-@Serializable
-data class TorrentAvailabilityListResponseDto(
-    override val success: Boolean,
-    val error: String?,
-    val detail: String,
-    val data: List<TorrentAvailabilityDto>?,
-) : ApiSuccessResponse
-
-@Serializable
-data class TorrentAvailabilityDto(
-    val name: String,
-    val size: Long,
-    val hash: String,
-)
-
-@Serializable
-data class TorrentAvailabilityRequestDto(
-    val format: String? = null,
-    val hashes: List<String>,
-)
-
-@Serializable
 data class TorrentControlRequestDto(
     @SerialName("torrent_id")
     val torrentId: Int? = null,
