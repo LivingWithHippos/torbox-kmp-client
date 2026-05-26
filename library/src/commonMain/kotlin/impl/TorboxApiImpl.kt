@@ -4,6 +4,7 @@ import com.github.livingwithhippos.torbox.kmp.client.api.GeneralApi
 import com.github.livingwithhippos.torbox.kmp.client.api.NotificationsApi
 import com.github.livingwithhippos.torbox.kmp.client.api.TorrentsApi
 import com.github.livingwithhippos.torbox.kmp.client.api.UsenetApi
+import com.github.livingwithhippos.torbox.kmp.client.api.UserApi
 import com.github.livingwithhippos.torbox.kmp.client.api.WebApi
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiSuccessResponse
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityListResponseDto
@@ -18,9 +19,11 @@ import com.github.livingwithhippos.torbox.kmp.client.model.EditWebRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentMagnetResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentResultDto
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.GenericStringResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.HostersResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.MagnetToFileRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.NotificationsResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.RefreshApiTokenRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.SpeedtestFilesResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.StatsResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentControlRequestDto
@@ -55,7 +58,8 @@ class TorboxApiImpl(
     WebApi,
     UsenetApi,
     GeneralApi,
-    NotificationsApi {
+    NotificationsApi,
+    UserApi {
     private suspend fun HttpResponse.safeBodyText(): String? = runCatching { bodyAsText() }.getOrNull()
 
     private fun HttpStatusCode.isSuccessOrRedirect(): Boolean = value in 200..399
@@ -742,4 +746,23 @@ class TorboxApiImpl(
         executeRequest {
             client.post("notifications/test")
         }
+
+    override suspend fun refreshApiToken(sessionToken: String): ApiResult<GenericStringResponseDto> {
+        if (sessionToken.isBlank()) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("sessionToken must not be blank"),
+            )
+        }
+
+        // todo: test this API to check the return type
+
+        return executeRequest {
+            client.post("user/refreshtoken") {
+                contentType(ContentType.Application.Json)
+                setBody(
+                    RefreshApiTokenRequestDto(sessionToken = sessionToken),
+                )
+            }
+        }
+    }
 }

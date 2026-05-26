@@ -19,6 +19,14 @@ data class GenericResponseDto(
 ) : ApiSuccessResponse
 
 @Serializable
+data class GenericStringResponseDto(
+    override val success: Boolean,
+    val error: String?,
+    val detail: String,
+    val data: String?,
+) : ApiSuccessResponse
+
+@Serializable
 data class DownloadResponseDto(
     override val success: Boolean,
     val error: String?,
