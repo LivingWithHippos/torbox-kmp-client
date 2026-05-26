@@ -34,6 +34,7 @@ import com.github.livingwithhippos.torbox.kmp.client.model.UserDataResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.WebControlRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.WebDownloadListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.SubscriptionResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.TransactionResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 import com.github.livingwithhippos.torbox.kmp.client.network.noAuth
 import io.ktor.client.HttpClient
@@ -839,4 +840,36 @@ class TorboxApiImpl(
         executeRequest {
             client.get("user/subscriptions")
         }
+
+    override suspend fun getTransactions(): ApiResult<TransactionResponseDto> =
+        executeRequest {
+            client.get("user/transactions")
+        }
+
+    override suspend fun getTransactionPdf(transactionId: String): ApiResult<ByteArray> {
+        if (transactionId.isBlank()) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("transactionId must not be blank"),
+            )
+        }
+
+        return runCatching {
+            client.get("user/transaction/pdf") {
+                parameter("transaction_id", transactionId)
+            }
+        }.fold(
+            onSuccess = { response ->
+                if (!response.status.isSuccessOrRedirect()) {
+                    return@fold ApiResult.Failure.Http(response.status.value, response.safeBodyText())
+                }
+
+                runCatching { response.body<ByteArray>() }.fold(
+                    onSuccess = { ApiResult.Success(it) },
+                    // don't attempt to stringify binary payloads as error body
+                    onFailure = { toFailure(it, null) },
+                )
+            },
+            onFailure = { toFailure(it, null) },
+        )
+    }
 }

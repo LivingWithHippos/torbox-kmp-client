@@ -5,6 +5,7 @@ import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeTokenRespon
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ReferralDataResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.SubscriptionResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.TransactionResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserDataResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 
@@ -81,4 +82,20 @@ interface UserApi {
      * [online documentation](https://api-docs.torbox.app/#bb1307f2-ce3b-4625-a5be-e6ea1ab46a61)
      */
     suspend fun getSubscriptions(): ApiResult<SubscriptionResponseDto>
+
+    /**
+     * Gets the user's list of transactions.
+     *
+     * [online documentation](https://api-docs.torbox.app/#4205b949-fa83-46e8-8efb-dfa35187b890)
+     */
+    suspend fun getTransactions(): ApiResult<TransactionResponseDto>
+
+    /**
+     * Generates a PDF of the transaction information. Requires the transaction ID from the "Get Transactions" request.
+     *
+     * [online documentation](https://api-docs.torbox.app/#a55ecc56-3844-4874-a343-177c49d80773)
+     *
+     * @param transactionId The transaction ID that you want to generate the PDF for.
+     */
+    suspend fun getTransactionPdf(transactionId: String): ApiResult<ByteArray>
 }

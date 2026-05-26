@@ -117,3 +117,19 @@ data class SubscriptionDto(
     val gateway: String,
     @SerialName("plan_name") val planName: String,
 )
+
+@Serializable
+data class TransactionResponseDto(
+    override val success: Boolean,
+    val error: String?,
+    val detail: String,
+    val data: List<TransactionDto>?,
+) : ApiSuccessResponse
+
+@Serializable
+data class TransactionDto(
+    @SerialName("at") val at: String,
+    val type: String,
+    val amount: Long,
+    @SerialName("transaction_id") val transactionId: String,
+)
