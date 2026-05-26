@@ -59,4 +59,3 @@ data class SpeedtestCoordinatesDto(
     val lat: Double,
     val lng: Double,
 )
-

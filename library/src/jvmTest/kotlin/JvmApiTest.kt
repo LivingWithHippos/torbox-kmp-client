@@ -262,4 +262,12 @@ class JvmApiTest {
             KermitLogger.i(result.toString())
             assertTrue { result is ApiResult.Success }
         }
+
+    @Test
+    fun `get notifications`() =
+        runTest {
+            val result = client.notifications.getNotifications()
+            KermitLogger.i(result.toString())
+            assertTrue { result is ApiResult.Success }
+        }
 }

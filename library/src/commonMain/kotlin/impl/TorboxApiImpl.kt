@@ -1,6 +1,7 @@
 package com.github.livingwithhippos.torbox.kmp.client.impl
 
 import com.github.livingwithhippos.torbox.kmp.client.api.GeneralApi
+import com.github.livingwithhippos.torbox.kmp.client.api.NotificationsApi
 import com.github.livingwithhippos.torbox.kmp.client.api.TorrentsApi
 import com.github.livingwithhippos.torbox.kmp.client.api.UsenetApi
 import com.github.livingwithhippos.torbox.kmp.client.api.WebApi
@@ -19,6 +20,7 @@ import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentResultDt
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.HostersResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.MagnetToFileRequestDto
+import com.github.livingwithhippos.torbox.kmp.client.model.NotificationsResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.SpeedtestFilesResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.StatsResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentControlRequestDto
@@ -52,7 +54,8 @@ class TorboxApiImpl(
 ) : TorrentsApi,
     WebApi,
     UsenetApi,
-    GeneralApi {
+    GeneralApi,
+    NotificationsApi {
     private suspend fun HttpResponse.safeBodyText(): String? = runCatching { bodyAsText() }.getOrNull()
 
     private fun HttpStatusCode.isSuccessOrRedirect(): Boolean = value in 200..399
@@ -288,6 +291,7 @@ class TorboxApiImpl(
         appendName: Boolean?,
     ): ApiResult<DownloadResponseDto> =
         executeRequest {
+            // todo: check if noAuth is applicable
             client.get("torrents/requestdl") {
                 parameter("token", token)
                 parameter("torrent_id", torrentId)
@@ -690,4 +694,52 @@ class TorboxApiImpl(
             }
         }
     }
+
+    override suspend fun getNotificationsRss(token: String): ApiResult<String> {
+        if (token.isBlank()) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("token must not be blank"),
+            )
+        }
+
+        return runCatching {
+            client.get("notifications/rss") {
+                // RSS notifications use token query param auth, not bearer auth header.
+                noAuth()
+                parameter("token", token)
+            }
+        }.fold(
+            onSuccess = { response ->
+                if (!response.status.isSuccessOrRedirect()) {
+                    ApiResult.Failure.Http(response.status.value, response.safeBodyText())
+                } else {
+                    runCatching { response.bodyAsText() }.fold(
+                        onSuccess = { ApiResult.Success(it) },
+                        onFailure = { toFailure(it, null) },
+                    )
+                }
+            },
+            onFailure = { toFailure(it, null) },
+        )
+    }
+
+    override suspend fun getNotifications(): ApiResult<NotificationsResponseDto> =
+        executeRequest {
+            client.get("notifications/mynotifications")
+        }
+
+    override suspend fun clearNotifications(): ApiResult<GenericResponseDto> =
+        executeRequest {
+            client.post("notifications/clear")
+        }
+
+    override suspend fun clearNotification(notificationId: Int): ApiResult<GenericResponseDto> =
+        executeRequest {
+            client.post("notifications/clear/$notificationId")
+        }
+
+    override suspend fun sendTestNotification(): ApiResult<GenericResponseDto> =
+        executeRequest {
+            client.post("notifications/test")
+        }
 }
