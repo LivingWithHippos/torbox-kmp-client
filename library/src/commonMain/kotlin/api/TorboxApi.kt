@@ -3,6 +3,7 @@ package com.github.livingwithhippos.torbox.kmp.client.api
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateTorrentResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateWebDownloadResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.DownloadResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentResultDto
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentAvailabilityListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentAvailabilityObjectResponseDto
@@ -78,6 +79,18 @@ interface TorboxApi {
     suspend fun getTorrentAvailabilityBatchObject(hashes: List<String>): ApiResult<TorrentAvailabilityObjectResponseDto>
 
     suspend fun getTorrentAvailabilityBatchList(hashes: List<String>): ApiResult<TorrentAvailabilityListResponseDto>
+
+    /**
+     * Exports a torrent as a magnet link or a .torrent file.
+     * - type = "magnet" → [ExportTorrentResultDto.Magnet]
+     * - type = "file"   → [ExportTorrentResultDto.File]
+     *
+     * https://api.torbox.app/v1/api/torrents/exportdata
+     */
+    suspend fun exportTorrentData(
+        torrentId: Int,
+        type: String,
+    ): ApiResult<ExportTorrentResultDto>
 
     /***********
      * WEB API *

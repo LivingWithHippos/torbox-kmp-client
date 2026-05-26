@@ -1,6 +1,7 @@
 package com.github.livingwithhippos.torbox.kmp.client
 
 import com.github.livingwithhippos.torbox.kmp.client.client.TorboxClient
+import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentResultDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 import com.github.livingwithhippos.torbox.kmp.client.network.RestClientConfig
 import kotlinx.coroutines.test.runTest
@@ -117,6 +118,31 @@ class JvmApiTest {
             KermitLogger.i(result.toString())
 
             assertTrue { result is ApiResult.Success }
+        }
+
+    @Test
+    fun `export torrent magnet`() =
+        runTest {
+            // todo: chek these tests, this returns null and the other 4 bytes
+            val result =
+                client.api.exportTorrentData(
+                    torrentId = TestConfig.torrentId,
+                    type = "magnet",
+                )
+            KermitLogger.i(result.toString())
+            assertTrue { result is ApiResult.Success && result.value is ExportTorrentResultDto.Magnet }
+        }
+
+    @Test
+    fun `export torrent file`() =
+        runTest {
+            val result =
+                client.api.exportTorrentData(
+                    torrentId = TestConfig.torrentId,
+                    type = "file",
+                )
+            KermitLogger.i(result.toString())
+            assertTrue { result is ApiResult.Success && result.value is ExportTorrentResultDto.File }
         }
 
     @Test

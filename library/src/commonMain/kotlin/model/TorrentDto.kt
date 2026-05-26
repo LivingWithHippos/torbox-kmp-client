@@ -134,6 +134,36 @@ data class TorrentControlRequestDto(
 )
 
 @Serializable
+data class ExportTorrentMagnetResponseDto(
+    override val success: Boolean,
+    val error: String?,
+    val detail: String,
+    val data: String?,
+) : ApiSuccessResponse
+
+/** Sealed result for exportTorrentData — caller gets either a magnet string or raw .torrent bytes */
+sealed class ExportTorrentResultDto {
+    data class Magnet(
+        val magnet: String,
+    ) : ExportTorrentResultDto()
+
+    data class File(
+        val bytes: ByteArray,
+    ) : ExportTorrentResultDto() {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other == null || this::class != other::class) return false
+
+            other as File
+
+            return bytes.contentEquals(other.bytes)
+        }
+
+        override fun hashCode(): Int = bytes.contentHashCode()
+    }
+}
+
+@Serializable
 object TorrentDataSerializer : KSerializer<List<TorrentDto>?> {
     override val descriptor: SerialDescriptor = JsonElement.serializer().descriptor
 

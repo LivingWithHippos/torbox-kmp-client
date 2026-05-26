@@ -5,6 +5,8 @@ import com.github.livingwithhippos.torbox.kmp.client.model.ApiSuccessResponse
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateTorrentResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateWebDownloadResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.DownloadResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentMagnetResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentResultDto
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentAvailabilityListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentAvailabilityObjectResponseDto
@@ -307,6 +309,49 @@ class TorboxApiImpl(
                 )
             }
         }
+
+    override suspend fun exportTorrentData(
+        torrentId: Int,
+        type: String,
+    ): ApiResult<ExportTorrentResultDto> {
+        if (type != "magnet" && type != "file") {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("type must be \"magnet\" or \"file\""),
+            )
+        }
+
+        return runCatching {
+            client.get("torrents/exportdata") {
+                parameter("torrent_id", torrentId)
+                parameter("type", type)
+            }
+        }.fold(
+            onSuccess = { response ->
+                if (!response.status.isSuccessOrRedirect()) {
+                    return@fold ApiResult.Failure.Http(response.status.value, response.safeBodyText())
+                }
+                if (type == "magnet") {
+                    runCatching { response.body<ExportTorrentMagnetResponseDto>() }.fold(
+                        onSuccess = { parsed ->
+                            if (parsed.success && parsed.data != null) {
+                                ApiResult.Success(ExportTorrentResultDto.Magnet(parsed.data))
+                            } else {
+                                ApiResult.Failure.NoSuccess(parsed)
+                            }
+                        },
+                        onFailure = { toFailure(it, response.safeBodyText()) },
+                    )
+                } else {
+                    runCatching { ExportTorrentResultDto.File(response.body<ByteArray>()) }.fold(
+                        onSuccess = { ApiResult.Success(it) },
+                        // don't pass bytes as body since it failed
+                        onFailure = { toFailure(it, null) },
+                    )
+                }
+            },
+            onFailure = { toFailure(it, null) },
+        )
+    }
 
     override suspend fun getWebLinks(
         bypassCache: String?,
