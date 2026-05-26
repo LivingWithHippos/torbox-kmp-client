@@ -320,4 +320,12 @@ class JvmApiTest {
             KermitLogger.i(result.toString())
             assertTrue { result is ApiResult.Success }
         }
+
+    @Test
+    fun `get all integrations`() =
+        runTest {
+            val result = client.integrations.getAllJobs()
+            KermitLogger.i(result.toString())
+            assertTrue { result is ApiResult.Success }
+        }
 }

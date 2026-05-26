@@ -1,6 +1,7 @@
 package com.github.livingwithhippos.torbox.kmp.client.impl
 
 import com.github.livingwithhippos.torbox.kmp.client.api.GeneralApi
+import com.github.livingwithhippos.torbox.kmp.client.api.IntegrationsApi
 import com.github.livingwithhippos.torbox.kmp.client.api.NotificationsApi
 import com.github.livingwithhippos.torbox.kmp.client.api.RSSApi
 import com.github.livingwithhippos.torbox.kmp.client.api.TorrentsApi
@@ -26,6 +27,7 @@ import com.github.livingwithhippos.torbox.kmp.client.model.EditWebRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentResultDto
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.HostersResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.JobsResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.MagnetToFileRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ModifySearchEngineRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ModifySearchEngineResponseDto
@@ -53,6 +55,7 @@ import com.github.livingwithhippos.torbox.kmp.client.network.noAuth
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ResponseException
+import io.ktor.client.request.delete
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
 import io.ktor.client.request.get
@@ -77,7 +80,8 @@ class TorboxApiImpl(
     GeneralApi,
     NotificationsApi,
     UserApi,
-    RSSApi {
+    RSSApi,
+    IntegrationsApi {
     private val uuidRegex =
         Regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$")
 
@@ -1125,4 +1129,31 @@ class TorboxApiImpl(
             }
         }
     }
+
+    override suspend fun getJobs(
+        id: Int?,
+        hash: String?,
+    ): ApiResult<JobsResponseDto> {
+        if (id != null && hash.isNullOrBlank().not()) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("Jobs cannot be retrieved using both id and hash"),
+            )
+        }
+
+        val url =
+            when {
+                id != null -> "integration/job/$id"
+                hash.isNullOrBlank().not() -> "integration/jobs/$hash"
+                else -> "integration/jobs"
+            }
+
+        return executeRequest {
+            client.get(url)
+        }
+    }
+
+    override suspend fun deleteJob(id: Int): ApiResult<GenericResponseDto> =
+        executeRequest {
+            client.delete("integration/job/$id")
+        }
 }
