@@ -41,7 +41,6 @@ data class UserDataDto(
     @SerialName("long_term_seeding") val longTermSeeding: Boolean,
     @SerialName("long_term_storage") val longTermStorage: Boolean,
     @SerialName("is_vendor") val isVendor: Boolean,
-    @SerialName("vendor_id") val vendorId: Int,
+    @SerialName("vendor_id") val vendorId: Int?,
     @SerialName("purchases_referred") val purchasesReferred: Int,
 )
-
