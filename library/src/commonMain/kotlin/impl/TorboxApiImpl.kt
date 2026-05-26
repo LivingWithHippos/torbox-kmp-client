@@ -1,6 +1,7 @@
 package com.github.livingwithhippos.torbox.kmp.client.impl
 
-import com.github.livingwithhippos.torbox.kmp.client.api.TorboxApi
+import com.github.livingwithhippos.torbox.kmp.client.api.TorrentsApi
+import com.github.livingwithhippos.torbox.kmp.client.api.WebApi
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiSuccessResponse
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateTorrentResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateWebDownloadResponseDto
@@ -39,7 +40,7 @@ import kotlinx.serialization.SerializationException
 
 class TorboxApiImpl(
     private val client: HttpClient,
-) : TorboxApi {
+) : TorrentsApi, WebApi {
     private suspend fun HttpResponse.safeBodyText(): String? = runCatching { bodyAsText() }.getOrNull()
 
     private fun HttpStatusCode.isSuccessOrRedirect(): Boolean = value in 200..399

@@ -1,6 +1,7 @@
 package com.github.livingwithhippos.torbox.kmp.client.client
 
-import com.github.livingwithhippos.torbox.kmp.client.api.TorboxApi
+import com.github.livingwithhippos.torbox.kmp.client.api.TorrentsApi
+import com.github.livingwithhippos.torbox.kmp.client.api.WebApi
 import com.github.livingwithhippos.torbox.kmp.client.impl.TorboxApiImpl
 import com.github.livingwithhippos.torbox.kmp.client.network.RestClientConfig
 import com.github.livingwithhippos.torbox.kmp.client.network.createHttpClient
@@ -8,16 +9,18 @@ import com.github.livingwithhippos.torbox.kmp.client.network.platformEngineFacto
 import io.ktor.client.HttpClient
 
 class TorboxClient private constructor(
-    // todo: split implementations in categories? torrents, web etc?
-    val api: TorboxApi,
+    val torrents: TorrentsApi,
+    val web: WebApi,
     private val httpClient: HttpClient,
 ) {
     companion object {
         fun create(config: RestClientConfig): TorboxClient {
             val client = createHttpClient(config, platformEngineFactory())
+            val groupedApi = TorboxApiImpl(client)
             return TorboxClient(
-                api = TorboxApiImpl(client),
-                httpClient = client
+                torrents = groupedApi,
+                web = groupedApi,
+                httpClient = client,
             )
         }
     }

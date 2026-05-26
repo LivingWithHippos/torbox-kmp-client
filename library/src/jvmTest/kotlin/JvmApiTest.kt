@@ -17,11 +17,11 @@ class JvmApiTest {
     @Test
     fun getTorrents() =
         runTest {
-            val listResult = client.api.getTorrents()
+            val listResult = client.torrents.getTorrents()
             KermitLogger.i(listResult.toString())
             assertTrue { listResult is ApiResult.Success }
 
-            val singleResult = client.api.getTorrents(id = TestConfig.torrentId)
+            val singleResult = client.torrents.getTorrents(id = TestConfig.torrentId)
             KermitLogger.i(singleResult.toString())
             assertTrue { singleResult is ApiResult.Success }
         }
@@ -30,7 +30,7 @@ class JvmApiTest {
     fun `create torrent from magnet`() =
         runTest {
             val result =
-                client.api.createTorrent(
+                client.torrents.createTorrent(
                     magnet = TestConfig.magnetLink,
                     allowZip = false,
                     addOnlyIfCached = false,
@@ -47,7 +47,7 @@ class JvmApiTest {
             val torrentBytes = Path(TestConfig.torrentFilePath).readBytes()
 
             val result =
-                client.api.createTorrent(
+                client.torrents.createTorrent(
                     fileBytes = torrentBytes,
                 )
 
@@ -61,7 +61,7 @@ class JvmApiTest {
         runTest {
             // change this to simulate a success = false error
             val result =
-                client.api.requestTorrentDownloadLink(
+                client.torrents.requestTorrentDownloadLink(
                     token = TestConfig.bearerToken,
                     torrentId = TestConfig.torrentId,
                 )
@@ -75,7 +75,7 @@ class JvmApiTest {
     fun `torrent cache`() =
         runTest {
             val resultList =
-                client.api.getTorrentAvailabilityList(
+                client.torrents.getTorrentAvailabilityList(
                     hashes = listOf(TestConfig.torrentHash),
                 )
 
@@ -84,7 +84,7 @@ class JvmApiTest {
             assertTrue { resultList is ApiResult.Success }
 
             val resultObject =
-                client.api.getTorrentAvailabilityObject(
+                client.torrents.getTorrentAvailabilityObject(
                     hashes = listOf(TestConfig.torrentHash),
                 )
 
@@ -97,7 +97,7 @@ class JvmApiTest {
     fun `torrent batch cache`() =
         runTest {
             val resultList =
-                client.api.getTorrentAvailabilityBatchObject(
+                client.torrents.getTorrentAvailabilityBatchObject(
                     hashes = listOf(TestConfig.torrentHash),
                 )
 
@@ -110,7 +110,7 @@ class JvmApiTest {
     fun `control torrent`() =
         runTest {
             val result =
-                client.api.controlTorrent(
+                client.torrents.controlTorrent(
                     torrentId = TestConfig.torrentId,
                     operation = "Reannounce",
                 )
@@ -124,7 +124,7 @@ class JvmApiTest {
     fun `edit torrent`() =
         runTest {
             val result =
-                client.api.editTorrent(
+                client.torrents.editTorrent(
                     torrentId = TestConfig.torrentId,
                     name = "New Torrent Name",
                 )
@@ -139,7 +139,7 @@ class JvmApiTest {
         runTest {
             // todo: chek these tests, this returns null and the other 4 bytes
             val result =
-                client.api.exportTorrentData(
+                client.torrents.exportTorrentData(
                     torrentId = TestConfig.torrentId,
                     type = "magnet",
                 )
@@ -151,7 +151,7 @@ class JvmApiTest {
     fun `export torrent file`() =
         runTest {
             val result =
-                client.api.exportTorrentData(
+                client.torrents.exportTorrentData(
                     torrentId = TestConfig.torrentId,
                     type = "file",
                 )
@@ -162,7 +162,7 @@ class JvmApiTest {
     @Test
     fun `magnet to file`() =
         runTest {
-            val result = client.api.magnetToFile(TestConfig.magnetLink)
+            val result = client.torrents.magnetToFile(TestConfig.magnetLink)
 
             KermitLogger.i(result.toString())
             assertTrue { result is ApiResult.Success && result.value.isNotEmpty() }
@@ -172,7 +172,7 @@ class JvmApiTest {
     fun `unrestrict link`() =
         runTest {
             val result =
-                client.api.createWebLink(
+                client.web.createWebLink(
                     link = TestConfig.hosterLink,
                 )
 
@@ -185,7 +185,7 @@ class JvmApiTest {
     fun `download link`() =
         runTest {
             val result =
-                client.api.downloadWebLink(
+                client.web.downloadWebLink(
                     token = TestConfig.bearerToken,
                     webId = TestConfig.webDownloadId,
                 )
@@ -198,11 +198,11 @@ class JvmApiTest {
     @Test
     fun getWebLinks() =
         runTest {
-            val listResult = client.api.getWebLinks()
+            val listResult = client.web.getWebLinks()
             KermitLogger.i(listResult.toString())
             assertTrue { listResult is ApiResult.Success && listResult.value.success }
 
-            val singleResult = client.api.getWebLinks(id = TestConfig.webDownloadId)
+            val singleResult = client.web.getWebLinks(id = TestConfig.webDownloadId)
             KermitLogger.i(singleResult.toString())
             assertTrue { singleResult is ApiResult.Success && singleResult.value.success }
         }

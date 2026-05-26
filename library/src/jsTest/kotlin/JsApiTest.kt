@@ -15,11 +15,11 @@ class JsApiTest {
     @Test
     fun getTorrents() =
         scope.promise {
-            val listResult = client.api.getTorrents()
+            val listResult = client.torrents.getTorrents()
             KermitLogger.i(listResult.toString())
             assertTrue { listResult is ApiResult.Success }
 
-            val singleResult = client.api.getTorrents(id = JsTestConfig.torrentId)
+            val singleResult = client.torrents.getTorrents(id = JsTestConfig.torrentId)
             KermitLogger.i(singleResult.toString())
             assertTrue { singleResult is ApiResult.Success }
         }
