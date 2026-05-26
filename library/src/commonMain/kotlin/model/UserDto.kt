@@ -245,3 +245,29 @@ data class SearchEngineControlRequestDto(
     val all: Boolean? = null,
 )
 
+@Serializable
+data class ModifySearchEngineRequestDto(
+    val id: Int,
+    val type: String? = null,
+    val url: String? = null,
+    val apikey: String? = null,
+    @SerialName("download_type") val downloadType: String? = null,
+)
+
+@Serializable
+data class ModifySearchEngineResponseDto(
+    override val success: Boolean,
+    val error: String?,
+    val detail: String,
+    val data: ModifySearchEngineDto?,
+) : ApiSuccessResponse
+
+@Serializable
+data class ModifySearchEngineDto(
+    val id: Int,
+    val type: String,
+    val url: String,
+    val apikey: String?,
+    val indexers: List<String>?,
+    @SerialName("download_type") val downloadType: String?,
+)

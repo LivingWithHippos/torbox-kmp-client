@@ -22,9 +22,12 @@ import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentResultDt
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.HostersResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.MagnetToFileRequestDto
+import com.github.livingwithhippos.torbox.kmp.client.model.ModifySearchEngineRequestDto
+import com.github.livingwithhippos.torbox.kmp.client.model.ModifySearchEngineResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.NotificationsResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ReferralDataResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.RefreshApiTokenRequestDto
+import com.github.livingwithhippos.torbox.kmp.client.model.SearchEngineControlRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.SpeedtestFilesResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.StatsResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.SubscriptionResponseDto
@@ -35,7 +38,6 @@ import com.github.livingwithhippos.torbox.kmp.client.model.UsenetDownloadListRes
 import com.github.livingwithhippos.torbox.kmp.client.model.UserDataResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserSearchEnginesResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserSettingsRequestDto
-import com.github.livingwithhippos.torbox.kmp.client.model.SearchEngineControlRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.WebControlRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.WebDownloadListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
@@ -892,7 +894,11 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun controlSearchEngines(id: Int?, operation: String, all: Boolean?): ApiResult<GenericResponseDto> {
+    override suspend fun controlSearchEngines(
+        id: Int?,
+        operation: String,
+        all: Boolean?,
+    ): ApiResult<GenericResponseDto> {
         val normalized = operation.trim().lowercase()
         if (normalized !in listOf("enable", "disable", "check", "delete")) {
             return ApiResult.Failure.BadRequest(
@@ -908,6 +914,33 @@ class TorboxApiImpl(
             client.post("user/settings/controlsearchengines") {
                 contentType(ContentType.Application.Json)
                 setBody(SearchEngineControlRequestDto(operation = normalized, id = id, all = all))
+            }
+        }
+    }
+
+    override suspend fun modifySearchEngine(
+        id: Int,
+        type: String?,
+        url: String?,
+        apikey: String?,
+        downloadType: String?,
+    ): ApiResult<ModifySearchEngineResponseDto> {
+        if (id <= 0) {
+            return ApiResult.Failure.BadRequest(IllegalArgumentException("id must be a positive integer"))
+        }
+
+        return executeRequest {
+            client.post("user/settings/modifysearchengines") {
+                contentType(ContentType.Application.Json)
+                setBody(
+                    ModifySearchEngineRequestDto(
+                        id = id,
+                        type = type,
+                        url = url,
+                        apikey = apikey,
+                        downloadType = downloadType,
+                    ),
+                )
             }
         }
     }

@@ -3,6 +3,7 @@ package com.github.livingwithhippos.torbox.kmp.client.api
 import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeAuthorizationStartResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeTokenResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.ModifySearchEngineResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ReferralDataResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.SubscriptionResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TransactionResponseDto
@@ -10,6 +11,7 @@ import com.github.livingwithhippos.torbox.kmp.client.model.UserDataResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserSearchEnginesResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserSettingsRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
+import kotlinx.serialization.SerialName
 
 interface UserApi {
     /**
@@ -137,4 +139,18 @@ interface UserApi {
         operation: String,
         all: Boolean?,
     ): ApiResult<GenericResponseDto>
+
+    /**
+     * Edits a user's search engine.
+     *
+     * [online documentation](https://api-docs.torbox.app/#8979611e-5dae-4ee0-81dd-e1bf41570660)
+     *.
+     */
+    suspend fun modifySearchEngine(
+        id: Int,
+        type: String? = null,
+        url: String? = null,
+        apikey: String? = null,
+        downloadType: String? = null,
+    ): ApiResult<ModifySearchEngineResponseDto>
 }
