@@ -93,6 +93,19 @@ class JvmApiTest {
         }
 
     @Test
+    fun `torrent batch cache`() =
+        runTest {
+            val resultList =
+                client.api.getTorrentAvailabilityBatchObject(
+                    hashes = listOf(TestConfig.torrentHash),
+                )
+
+            KermitLogger.i(resultList.toString())
+
+            assertTrue { resultList is ApiResult.Success }
+        }
+
+    @Test
     fun `control torrent`() =
         runTest {
             val result =

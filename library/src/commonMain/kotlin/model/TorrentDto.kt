@@ -120,6 +120,12 @@ data class TorrentAvailabilityDto(
 )
 
 @Serializable
+data class TorrentAvailabilityRequestDto(
+    val format: String? = null,
+    val hashes: List<String>,
+)
+
+@Serializable
 data class TorrentControlRequestDto(
     @SerialName("torrent_id")
     val torrentId: Int? = null,

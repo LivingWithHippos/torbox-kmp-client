@@ -8,6 +8,7 @@ import com.github.livingwithhippos.torbox.kmp.client.model.DownloadResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentAvailabilityListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentAvailabilityObjectResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.TorrentAvailabilityRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentControlRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.WebDownloadListResponseDto
@@ -37,7 +38,7 @@ class TorboxApiImpl(
 
     private fun HttpStatusCode.isSuccessOrRedirect(): Boolean = value in 200..399
 
-    private suspend fun toFailure(
+    private fun toFailure(
         throwable: Throwable,
         body: String?,
     ): ApiResult.Failure =
@@ -278,6 +279,32 @@ class TorboxApiImpl(
                 }
                 parameter("format", "object")
                 parameter("list_files", listFiles)
+            }
+        }
+
+    override suspend fun getTorrentAvailabilityBatchObject(hashes: List<String>): ApiResult<TorrentAvailabilityObjectResponseDto> =
+        executeRequest {
+            client.post("torrents/checkcached") {
+                contentType(ContentType.Application.Json)
+                setBody(
+                    TorrentAvailabilityRequestDto(
+                        format = "object",
+                        hashes = hashes,
+                    ),
+                )
+            }
+        }
+
+    override suspend fun getTorrentAvailabilityBatchList(hashes: List<String>): ApiResult<TorrentAvailabilityListResponseDto> =
+        executeRequest {
+            client.post("torrents/checkcached") {
+                contentType(ContentType.Application.Json)
+                setBody(
+                    TorrentAvailabilityRequestDto(
+                        format = "list",
+                        hashes = hashes,
+                    ),
+                )
             }
         }
 
