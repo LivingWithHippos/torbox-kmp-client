@@ -84,6 +84,10 @@ data class WebDownloadFileDto(
     @SerialName("opensubtitles_hash") val opensubtitlesHash: String?,
 )
 
+/**
+ * this custom serializer is used to avoid creating two data classes whose only difference is returning a list of downloads
+ * or a single downloads in the data field. We return a list with the download instead of the download object.
+ */
 @Serializable
 object WebDownloadDataSerializer : KSerializer<List<WebDownloadDto>?> {
     override val descriptor: SerialDescriptor = JsonElement.serializer().descriptor

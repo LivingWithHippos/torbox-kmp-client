@@ -42,6 +42,10 @@ data class JobDto(
     @SerialName("task_id") val taskId: String,
 )
 
+/**
+ * this custom serializer is used to avoid creating two data classes whose only difference is returning a list of jobs
+ * or a single job in the data field. We return a list with the job instead of the single job.
+ */
 @Serializable
 object JobSerializer : KSerializer<List<JobDto>?> {
     override val descriptor: SerialDescriptor = JsonElement.serializer().descriptor

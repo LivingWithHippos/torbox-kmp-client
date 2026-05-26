@@ -3,6 +3,7 @@ package com.github.livingwithhippos.torbox.kmp.client.impl
 import com.github.livingwithhippos.torbox.kmp.client.api.GeneralApi
 import com.github.livingwithhippos.torbox.kmp.client.api.IntegrationsApi
 import com.github.livingwithhippos.torbox.kmp.client.api.NotificationsApi
+import com.github.livingwithhippos.torbox.kmp.client.api.QueuedApi
 import com.github.livingwithhippos.torbox.kmp.client.api.RSSApi
 import com.github.livingwithhippos.torbox.kmp.client.api.TorrentsApi
 import com.github.livingwithhippos.torbox.kmp.client.api.UsenetApi
@@ -15,6 +16,7 @@ import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityList
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityObjectResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ChangelogListResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.ControlQueuedDownloadsRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ControlRssRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateTorrentResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateWebDownloadResponseDto
@@ -32,6 +34,7 @@ import com.github.livingwithhippos.torbox.kmp.client.model.MagnetToFileRequestDt
 import com.github.livingwithhippos.torbox.kmp.client.model.ModifySearchEngineRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ModifySearchEngineResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.NotificationsResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.QueuedDownloadsResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ReferralDataResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.RefreshApiTokenRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.SearchEngineControlRequestDto
@@ -79,6 +82,7 @@ class TorboxApiImpl(
     UsenetApi,
     GeneralApi,
     NotificationsApi,
+    QueuedApi,
     UserApi,
     RSSApi,
     IntegrationsApi {
@@ -1156,4 +1160,87 @@ class TorboxApiImpl(
         executeRequest {
             client.delete("integration/job/$id")
         }
+
+    override suspend fun getQueuedDownloads(
+        bypassCache: Boolean?,
+        id: Int?,
+        offset: Int?,
+        limit: Int?,
+        type: String,
+    ): ApiResult<QueuedDownloadsResponseDto> {
+        val normalizedType = type.trim().lowercase()
+        if (normalizedType !in listOf("torrent", "usenet", "webdl")) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("type must be one of: torrent, usenet, webdl"),
+            )
+        }
+        if (id != null && id <= 0) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("id must be a positive integer"),
+            )
+        }
+        if (offset != null && offset < 0) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("offset must be >= 0"),
+            )
+        }
+        if (limit != null && limit <= 0) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("limit must be a positive integer"),
+            )
+        }
+
+        return executeRequest {
+            client.get("queued/getqueued") {
+                if (bypassCache == true) {
+                    parameter("bypass_cache", "")
+                }
+                id?.let { parameter("id", it) }
+                offset?.let { parameter("offset", it) }
+                limit?.let { parameter("limit", it) }
+                parameter("type", normalizedType)
+            }
+        }
+    }
+
+    override suspend fun controlQueuedDownloads(
+        queuedId: Int?,
+        operation: String,
+        all: Boolean?,
+    ): ApiResult<GenericResponseDto> {
+        val normalizedOperation = operation.trim().lowercase()
+        if (normalizedOperation !in listOf("delete", "start")) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("operation must be one of: delete, start"),
+            )
+        }
+        if (queuedId == null && all != true) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("Either queuedId or all = true must be provided"),
+            )
+        }
+        if (queuedId != null && queuedId <= 0) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("queuedId must be a positive integer"),
+            )
+        }
+        if (normalizedOperation == "start" && all == true) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("start cannot be used with the all parameter"),
+            )
+        }
+
+        return executeRequest {
+            client.post("queued/controlqueued") {
+                contentType(ContentType.Application.Json)
+                setBody(
+                    ControlQueuedDownloadsRequestDto(
+                        queuedId = queuedId,
+                        operation = normalizedOperation,
+                        all = all,
+                    ),
+                )
+            }
+        }
+    }
 }

@@ -141,6 +141,10 @@ sealed class ExportTorrentResultDto {
     }
 }
 
+/**
+ * this custom serializer is used to avoid creating two data classes whose only difference is returning a list of torrents
+ * or a single torrent in the data field. We return a list with the torrent instead of the torrent object.
+ */
 @Serializable
 object TorrentDataSerializer : KSerializer<List<TorrentDto>?> {
     override val descriptor: SerialDescriptor = JsonElement.serializer().descriptor
