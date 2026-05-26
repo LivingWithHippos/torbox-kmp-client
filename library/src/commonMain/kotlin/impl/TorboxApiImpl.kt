@@ -8,6 +8,7 @@ import com.github.livingwithhippos.torbox.kmp.client.model.ApiSuccessResponse
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityObjectResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityRequestDto
+import com.github.livingwithhippos.torbox.kmp.client.model.ChangelogListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateTorrentResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateWebDownloadResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.DownloadResponseDto
@@ -637,6 +638,32 @@ class TorboxApiImpl(
     override suspend fun getStats(): ApiResult<StatsResponseDto> =
         executeRequest {
             client.get("stats") {
+                noAuth()
+            }
+        }
+
+    override suspend fun getChangelog(): ApiResult<String> =
+        runCatching {
+            client.get("changelogs/rss") {
+                noAuth()
+            }
+        }.fold(
+            onSuccess = { response ->
+                if (!response.status.isSuccessOrRedirect()) {
+                    ApiResult.Failure.Http(response.status.value, response.safeBodyText())
+                } else {
+                    runCatching { response.bodyAsText() }.fold(
+                        onSuccess = { ApiResult.Success(it) },
+                        onFailure = { toFailure(it, null) },
+                    )
+                }
+            },
+            onFailure = { toFailure(it, null) },
+        )
+
+    override suspend fun getChangelogJson(): ApiResult<ChangelogListResponseDto> =
+        executeRequest {
+            client.get("changelogs/json") {
                 noAuth()
             }
         }

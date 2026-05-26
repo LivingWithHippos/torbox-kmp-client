@@ -16,3 +16,21 @@ data class StatsDto(
     @SerialName("total_users") val totalUsers: Long,
     @SerialName("total_servers") val totalServers: Long,
 )
+
+@Serializable
+data class ChangelogListResponseDto(
+    override val success: Boolean,
+    val error: String?,
+    val detail: String,
+    val data: List<ChangelogEntryDto>?,
+) : ApiSuccessResponse
+
+@Serializable
+data class ChangelogEntryDto(
+    val id: String,
+    val name: String,
+    val html: String,
+    val markdown: String,
+    val link: String,
+    @SerialName("created_at") val createdAt: String,
+)

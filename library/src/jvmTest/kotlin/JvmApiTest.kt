@@ -238,4 +238,20 @@ class JvmApiTest {
             KermitLogger.i(result.toString())
             assertTrue { result is ApiResult.Success && result.value.success }
         }
+
+    @Test
+    fun `get changeLog`() =
+        runTest {
+            val result = client.general.getChangelog()
+            KermitLogger.i(result.toString())
+            assertTrue { result is ApiResult.Success }
+        }
+
+    @Test
+    fun `get changeLog json`() =
+        runTest {
+            val result = client.general.getChangelogJson()
+            KermitLogger.i(result.toString())
+            assertTrue { result is ApiResult.Success }
+        }
 }
