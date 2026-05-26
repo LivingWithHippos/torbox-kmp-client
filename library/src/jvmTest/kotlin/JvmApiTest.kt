@@ -160,6 +160,15 @@ class JvmApiTest {
         }
 
     @Test
+    fun `magnet to file`() =
+        runTest {
+            val result = client.api.magnetToFile(TestConfig.magnetLink)
+
+            KermitLogger.i(result.toString())
+            assertTrue { result is ApiResult.Success && result.value.isNotEmpty() }
+        }
+
+    @Test
     fun `unrestrict link`() =
         runTest {
             val result =

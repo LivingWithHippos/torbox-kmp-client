@@ -105,6 +105,14 @@ interface TorboxApi {
         type: String,
     ): ApiResult<ExportTorrentResultDto>
 
+    /**
+     * Converts a magnet link to its corresponding .torrent file bytes.
+     * This endpoint does not require authorization.
+     *
+     * https://api.torbox.app/v1/api/torrents/magnettofile
+     */
+    suspend fun magnetToFile(magnet: String): ApiResult<ByteArray>
+
     /***********
      * WEB API *
      **********/

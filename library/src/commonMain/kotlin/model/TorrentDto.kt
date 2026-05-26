@@ -144,6 +144,11 @@ data class EditTorrentRequestDto(
 )
 
 @Serializable
+data class MagnetToFileRequestDto(
+    val magnet: String,
+)
+
+@Serializable
 data class ExportTorrentMagnetResponseDto(
     override val success: Boolean,
     val error: String?,

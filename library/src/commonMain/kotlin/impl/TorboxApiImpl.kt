@@ -9,6 +9,7 @@ import com.github.livingwithhippos.torbox.kmp.client.model.EditTorrentRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentMagnetResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentResultDto
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.MagnetToFileRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentAvailabilityListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentAvailabilityObjectResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentAvailabilityRequestDto
@@ -16,6 +17,7 @@ import com.github.livingwithhippos.torbox.kmp.client.model.TorrentControlRequest
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.WebDownloadListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
+import com.github.livingwithhippos.torbox.kmp.client.network.noAuth
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ResponseException
@@ -373,10 +375,39 @@ class TorboxApiImpl(
                 } else {
                     runCatching { ExportTorrentResultDto.File(response.body<ByteArray>()) }.fold(
                         onSuccess = { ApiResult.Success(it) },
-                        // don't pass bytes as body since it failed
+                        // don't attempt to stringify binary payloads as error body
                         onFailure = { toFailure(it, null) },
                     )
                 }
+            },
+            onFailure = { toFailure(it, null) },
+        )
+    }
+
+    override suspend fun magnetToFile(magnet: String): ApiResult<ByteArray> {
+        if (magnet.isBlank()) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("magnet must not be blank"),
+            )
+        }
+
+        return runCatching {
+            client.post("torrents/magnettofile") {
+                noAuth()
+                contentType(ContentType.Application.Json)
+                setBody(MagnetToFileRequestDto(magnet = magnet))
+            }
+        }.fold(
+            onSuccess = { response ->
+                if (!response.status.isSuccessOrRedirect()) {
+                    return@fold ApiResult.Failure.Http(response.status.value, response.safeBodyText())
+                }
+
+                runCatching { response.body<ByteArray>() }.fold(
+                    onSuccess = { ApiResult.Success(it) },
+                    // don't attempt to stringify binary payloads as error body
+                    onFailure = { toFailure(it, null) },
+                )
             },
             onFailure = { toFailure(it, null) },
         )
