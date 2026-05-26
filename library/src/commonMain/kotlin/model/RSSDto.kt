@@ -35,3 +35,33 @@ data class EditRssRequestDto(
     @SerialName("rss_type") val rssType: String? = null,
     @SerialName("torrent_seeding") val torrentSeeding: Int? = null,
 )
+
+@Serializable
+data class UserRssFeedsResponseDto(
+    override val success: Boolean,
+    val error: String?,
+    val detail: String,
+    val data: List<RssFeedDto>?,
+) : ApiSuccessResponse
+
+@Serializable
+data class RssFeedDto(
+    val id: Int,
+    @SerialName("created_at") val createdAt: String,
+    @SerialName("last_checked") val lastChecked: String? = null,
+    @SerialName("auth_id") val authId: String,
+    val name: String,
+    val url: String,
+    val source: String? = null,
+    @SerialName("source_name") val sourceName: String? = null,
+    @SerialName("do_regex") val doRegex: String? = null,
+    @SerialName("dont_regex") val dontRegex: String? = null,
+    val status: String,
+    @SerialName("scan_interval") val scanInterval: Int,
+    @SerialName("dont_older_than") val dontOlderThan: Int,
+    @SerialName("status_message") val statusMessage: String? = null,
+    val type: String,
+    @SerialName("torrent_seeding") val torrentSeeding: Int,
+    val state: String,
+)
+

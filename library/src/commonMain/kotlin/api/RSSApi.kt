@@ -1,7 +1,7 @@
 package com.github.livingwithhippos.torbox.kmp.client.api
 
-import com.github.livingwithhippos.torbox.kmp.client.model.AddRssRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.UserRssFeedsResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 
 interface RSSApi {
@@ -49,4 +49,11 @@ interface RSSApi {
         rssType: String? = null,
         torrentSeeding: Int? = null,
     ): ApiResult<GenericResponseDto>
+
+    /**
+     * Gets all RSS feeds on the authenticated user's account, or one specific feed when [id] is provided.
+     *
+     * [online documentation](https://api-docs.torbox.app/#1624cad4-28fd-4bb0-934d-2246d1810cbc)
+     */
+    suspend fun getRssFeeds(id: Int? = null): ApiResult<UserRssFeedsResponseDto>
 }

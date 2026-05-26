@@ -39,6 +39,7 @@ import com.github.livingwithhippos.torbox.kmp.client.model.SubscriptionResponseD
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentControlRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TransactionResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.UserRssFeedsResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UsenetDownloadListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserDataResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserSearchEnginesResponseDto
@@ -1038,6 +1039,20 @@ class TorboxApiImpl(
                         torrentSeeding = torrentSeeding,
                     ),
                 )
+            }
+        }
+    }
+
+    override suspend fun getRssFeeds(id: Int?): ApiResult<UserRssFeedsResponseDto> {
+        if (id != null && id <= 0) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("id must be a positive integer"),
+            )
+        }
+
+        return executeRequest {
+            client.get("rss/getfeeds") {
+                id?.let { parameter("id", it) }
             }
         }
     }

@@ -312,4 +312,12 @@ class JvmApiTest {
             KermitLogger.i(result.toString())
             assertTrue { result is ApiResult.Success }
         }
+
+    @Test
+    fun `get user rss`() =
+        runTest {
+            val result = client.rss.getRssFeeds()
+            KermitLogger.i(result.toString())
+            assertTrue { result is ApiResult.Success }
+        }
 }
