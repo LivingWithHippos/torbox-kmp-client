@@ -27,14 +27,15 @@ import com.github.livingwithhippos.torbox.kmp.client.model.ReferralDataResponseD
 import com.github.livingwithhippos.torbox.kmp.client.model.RefreshApiTokenRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.SpeedtestFilesResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.StatsResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.SubscriptionResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentControlRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentListResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.TransactionResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UsenetDownloadListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserDataResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.UserSettingsRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.WebControlRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.WebDownloadListResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.SubscriptionResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.TransactionResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 import com.github.livingwithhippos.torbox.kmp.client.network.noAuth
 import io.ktor.client.HttpClient
@@ -64,7 +65,8 @@ class TorboxApiImpl(
     GeneralApi,
     NotificationsApi,
     UserApi {
-    private val uuidRegex = Regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$")
+    private val uuidRegex =
+        Regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$")
 
     private suspend fun HttpResponse.safeBodyText(): String? = runCatching { bodyAsText() }.getOrNull()
 
@@ -872,4 +874,12 @@ class TorboxApiImpl(
             onFailure = { toFailure(it, null) },
         )
     }
+
+    override suspend fun editSettings(settings: UserSettingsRequestDto): ApiResult<GenericResponseDto> =
+        executeRequest {
+            client.put("user/settings/editsettings") {
+                contentType(ContentType.Application.Json)
+                setBody(settings)
+            }
+        }
 }

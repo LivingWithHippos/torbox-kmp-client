@@ -7,6 +7,7 @@ import com.github.livingwithhippos.torbox.kmp.client.model.ReferralDataResponseD
 import com.github.livingwithhippos.torbox.kmp.client.model.SubscriptionResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TransactionResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserDataResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.UserSettingsRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 
 interface UserApi {
@@ -98,4 +99,17 @@ interface UserApi {
      * @param transactionId The transaction ID that you want to generate the PDF for.
      */
     suspend fun getTransactionPdf(transactionId: String): ApiResult<ByteArray>
+
+    /**
+     * Edits a user's TorBox settings. Values take effect immediately.
+     *
+     * The request body must match the API's accepted settings keys. See the API docs for allowed
+     * options — this method accepts a typed [UserSettingsRequestDto] so callers may supply only
+     * the fields they want to change.
+     *
+     * [online documentation](https://api-docs.torbox.app/#263427ea-0129-4f59-a0e4-11ef3e9364f4)
+     *
+     * @param settings A [UserSettingsRequestDto] containing the settings to update.
+     */
+    suspend fun editSettings(settings: UserSettingsRequestDto): ApiResult<GenericResponseDto>
 }
