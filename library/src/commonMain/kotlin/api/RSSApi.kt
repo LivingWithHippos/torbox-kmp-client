@@ -32,4 +32,21 @@ interface RSSApi {
         operation: String,
         rssFeedId: Int,
     ): ApiResult<GenericResponseDto>
+
+    /**
+     * Edits an existing RSS feed
+     *
+     * [online documentation](https://api-docs.torbox.app/#e69680e6-f21b-4613-ab70-80598b1ab838)
+     */
+    suspend fun editRss(
+        rssFeedId: Int,
+        name: String? = null,
+        doRegex: String? = null,
+        dontRegex: String? = null,
+        dontOlderThan: Int? = null,
+        scanInterval: Int? = null,
+        passCheck: Boolean? = null,
+        rssType: String? = null,
+        torrentSeeding: Int? = null,
+    ): ApiResult<GenericResponseDto>
 }

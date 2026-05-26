@@ -20,6 +20,7 @@ import com.github.livingwithhippos.torbox.kmp.client.model.CreateWebDownloadResp
 import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeAuthorizationStartResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeTokenRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeTokenResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.EditRssRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.EditTorrentRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.EditWebRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentResultDto
@@ -1064,4 +1065,34 @@ class TorboxApiImpl(
             }
         }
     }
+
+    override suspend fun editRss(
+        rssFeedId: Int,
+        name: String?,
+        doRegex: String?,
+        dontRegex: String?,
+        dontOlderThan: Int?,
+        scanInterval: Int?,
+        passCheck: Boolean?,
+        rssType: String?,
+        torrentSeeding: Int?,
+    ): ApiResult<GenericResponseDto> =
+        executeRequest {
+            client.post("rss/modifyrss") {
+                contentType(ContentType.Application.Json)
+                setBody(
+                    EditRssRequestDto(
+                        rssFeedId = rssFeedId,
+                        name = name,
+                        doRegex = doRegex,
+                        dontRegex = dontRegex,
+                        dontOlderThan = dontOlderThan,
+                        scanInterval = scanInterval,
+                        passCheck = passCheck,
+                        rssType = rssType,
+                        torrentSeeding = torrentSeeding,
+                    ),
+                )
+            }
+        }
 }
