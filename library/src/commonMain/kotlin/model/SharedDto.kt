@@ -16,15 +16,7 @@ data class GenericResponseDto(
     override val success: Boolean,
     val error: String?,
     val detail: String,
-) : ApiSuccessResponse
-
-// todo: merge this and GenericResponseDto using val data: String? = null
-@Serializable
-data class GenericStringResponseDto(
-    override val success: Boolean,
-    val error: String?,
-    val detail: String,
-    val data: String?,
+    val data: String? = null,
 ) : ApiSuccessResponse
 
 @Serializable

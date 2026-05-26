@@ -119,14 +119,6 @@ data class MagnetToFileRequestDto(
     val magnet: String,
 )
 
-@Serializable
-data class ExportTorrentMagnetResponseDto(
-    override val success: Boolean,
-    val error: String?,
-    val detail: String,
-    val data: String?,
-) : ApiSuccessResponse
-
 /** Sealed result for exportTorrentData — caller gets either a magnet string or raw .torrent bytes */
 sealed class ExportTorrentResultDto {
     data class Magnet(

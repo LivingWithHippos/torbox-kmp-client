@@ -15,10 +15,8 @@ import com.github.livingwithhippos.torbox.kmp.client.model.CreateTorrentResponse
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateWebDownloadResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.EditTorrentRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.EditWebRequestDto
-import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentMagnetResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentResultDto
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.GenericStringResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.HostersResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.MagnetToFileRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.NotificationsResponseDto
@@ -293,7 +291,7 @@ class TorboxApiImpl(
         userIp: String?,
         redirect: Boolean?,
         appendName: Boolean?,
-    ): ApiResult<GenericStringResponseDto> =
+    ): ApiResult<GenericResponseDto> =
         executeRequest {
             // todo: check if noAuth is applicable
             client.get("torrents/requestdl") {
@@ -382,7 +380,7 @@ class TorboxApiImpl(
                     return@fold ApiResult.Failure.Http(response.status.value, response.safeBodyText())
                 }
                 if (type == "magnet") {
-                    runCatching { response.body<ExportTorrentMagnetResponseDto>() }.fold(
+                    runCatching { response.body<GenericResponseDto>() }.fold(
                         onSuccess = { parsed ->
                             if (parsed.success && parsed.data != null) {
                                 ApiResult.Success(ExportTorrentResultDto.Magnet(parsed.data))
@@ -484,7 +482,7 @@ class TorboxApiImpl(
         userIp: String?,
         redirect: Boolean?,
         appendName: Boolean?,
-    ): ApiResult<GenericStringResponseDto> =
+    ): ApiResult<GenericResponseDto> =
         executeRequest {
             client.get("webdl/requestdl") {
                 parameter("token", token)
@@ -747,7 +745,7 @@ class TorboxApiImpl(
             client.post("notifications/test")
         }
 
-    override suspend fun refreshApiToken(sessionToken: String): ApiResult<GenericStringResponseDto> {
+    override suspend fun refreshApiToken(sessionToken: String): ApiResult<GenericResponseDto> {
         if (sessionToken.isBlank()) {
             return ApiResult.Failure.BadRequest(
                 IllegalArgumentException("sessionToken must not be blank"),

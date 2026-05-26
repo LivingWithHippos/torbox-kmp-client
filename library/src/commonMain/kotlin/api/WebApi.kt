@@ -4,7 +4,6 @@ import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityList
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityObjectResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateWebDownloadResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.GenericStringResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.HostersResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.WebDownloadListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
@@ -44,7 +43,7 @@ interface WebApi {
         userIp: String? = null,
         redirect: Boolean? = null,
         appendName: Boolean? = null,
-    ): ApiResult<GenericStringResponseDto>
+    ): ApiResult<GenericResponseDto>
 
     suspend fun getWebAvailabilityList(
         hashes: List<String>,

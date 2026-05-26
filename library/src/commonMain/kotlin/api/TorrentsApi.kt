@@ -5,7 +5,6 @@ import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityObje
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateTorrentResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentResultDto
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.GenericStringResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 
@@ -71,7 +70,7 @@ interface TorrentsApi {
         userIp: String? = null,
         redirect: Boolean? = null,
         appendName: Boolean? = null,
-    ): ApiResult<GenericStringResponseDto>
+    ): ApiResult<GenericResponseDto>
 
     suspend fun getTorrentAvailabilityList(
         hashes: List<String>,
