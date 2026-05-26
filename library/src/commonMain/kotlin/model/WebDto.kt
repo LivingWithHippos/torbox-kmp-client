@@ -16,11 +16,11 @@ import kotlinx.serialization.json.JsonObject
 
 @Serializable
 data class CreateWebDownloadResponseDto(
-    val success: Boolean,
+    override val success: Boolean,
     val error: String?,
     val detail: String,
     val data: CreateWebDownloadDto?,
-)
+) : ApiSuccessResponse
 
 @Serializable
 data class CreateWebDownloadDto(
@@ -33,12 +33,12 @@ data class CreateWebDownloadDto(
 
 @Serializable
 data class WebDownloadListResponseDto(
-    val success: Boolean,
+    override val success: Boolean,
     val error: String?,
     val detail: String,
     @Serializable(with = WebDownloadDataSerializer::class)
     val data: List<WebDownloadDto>?,
-)
+) : ApiSuccessResponse
 
 @Serializable
 data class WebDownloadDto(

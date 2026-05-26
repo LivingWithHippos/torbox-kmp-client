@@ -16,12 +16,12 @@ import kotlinx.serialization.json.JsonObject
 
 @Serializable
 data class TorrentListResponseDto(
-    val success: Boolean,
+    override val success: Boolean,
     val error: String?,
     val detail: String,
     @Serializable(with = TorrentDataSerializer::class)
     val data: List<TorrentDto>?,
-)
+) : ApiSuccessResponse
 
 @Serializable
 data class TorrentDto(
@@ -83,11 +83,11 @@ data class TorrentFileDto(
 
 @Serializable
 data class CreateTorrentResponseDto(
-    val success: Boolean,
+    override val success: Boolean,
     val error: String?,
     val detail: String,
     val data: CreateTorrentDto?,
-)
+) : ApiSuccessResponse
 
 @Serializable
 data class CreateTorrentDto(
@@ -98,19 +98,19 @@ data class CreateTorrentDto(
 
 @Serializable
 data class TorrentAvailabilityObjectResponseDto(
-    val success: Boolean,
+    override val success: Boolean,
     val error: String?,
     val detail: String,
     val data: Map<String, TorrentAvailabilityDto>?,
-)
+) : ApiSuccessResponse
 
 @Serializable
 data class TorrentAvailabilityListResponseDto(
-    val success: Boolean,
+    override val success: Boolean,
     val error: String?,
     val detail: String,
     val data: List<TorrentAvailabilityDto>?,
-)
+) : ApiSuccessResponse
 
 @Serializable
 data class TorrentAvailabilityDto(

@@ -8,6 +8,7 @@ import com.github.livingwithhippos.torbox.kmp.client.network.platformEngineFacto
 import io.ktor.client.HttpClient
 
 class TorboxClient private constructor(
+    // todo: split implementations in categories? torrents, web etc?
     val api: TorboxApi,
     private val httpClient: HttpClient,
 ) {
