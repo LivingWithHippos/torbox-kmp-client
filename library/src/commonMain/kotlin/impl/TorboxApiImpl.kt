@@ -33,7 +33,9 @@ import com.github.livingwithhippos.torbox.kmp.client.model.TorrentListResponseDt
 import com.github.livingwithhippos.torbox.kmp.client.model.TransactionResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UsenetDownloadListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserDataResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.UserSearchEnginesResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserSettingsRequestDto
+import com.github.livingwithhippos.torbox.kmp.client.model.SearchEngineControlRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.WebControlRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.WebDownloadListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
@@ -882,4 +884,31 @@ class TorboxApiImpl(
                 setBody(settings)
             }
         }
+
+    override suspend fun getSearchEngines(id: Int?): ApiResult<UserSearchEnginesResponseDto> =
+        executeRequest {
+            client.get("user/settings/searchengines") {
+                id?.let { parameter("id", it) }
+            }
+        }
+
+    override suspend fun controlSearchEngines(id: Int?, operation: String, all: Boolean?): ApiResult<GenericResponseDto> {
+        val normalized = operation.trim().lowercase()
+        if (normalized !in listOf("enable", "disable", "check", "delete")) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("operation must be one of: enable, disable, check, delete"),
+            )
+        } else if (id == null && all != true) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("Either an id or all = true must be provided"),
+            )
+        }
+
+        return executeRequest {
+            client.post("user/settings/controlsearchengines") {
+                contentType(ContentType.Application.Json)
+                setBody(SearchEngineControlRequestDto(operation = normalized, id = id, all = all))
+            }
+        }
+    }
 }

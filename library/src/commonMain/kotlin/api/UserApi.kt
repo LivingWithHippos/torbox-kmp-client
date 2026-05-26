@@ -7,6 +7,7 @@ import com.github.livingwithhippos.torbox.kmp.client.model.ReferralDataResponseD
 import com.github.livingwithhippos.torbox.kmp.client.model.SubscriptionResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TransactionResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserDataResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.UserSearchEnginesResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserSettingsRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 
@@ -112,4 +113,28 @@ interface UserApi {
      * @param settings A [UserSettingsRequestDto] containing the settings to update.
      */
     suspend fun editSettings(settings: UserSettingsRequestDto): ApiResult<GenericResponseDto>
+
+    /**
+     * Gets all of user's configured search engines. Can pass an optional id to retrieve a specific search engine.
+     *
+     * [online documentation](https://api-docs.torbox.app/#fbb2cd77-7dbf-4e73-913c-8544f7acedd0)
+     *
+     * @param id Optional search engine id to retrieve a specific engine owned by the user.
+     */
+    suspend fun getSearchEngines(id: Int? = null): ApiResult<UserSearchEnginesResponseDto>
+
+    /**
+     * Controls a user's search engine(s). Allows operations: enable, disable, check, delete.
+     *
+     * [online documentation](https://api-docs.torbox.app/#828c7226-daad-4737-8ed5-98c9d5fa1089)
+     *
+     * @param id Optional ID of a specific search engine to operate on.
+     * @param operation One of: enable, disable, check, delete.
+     * @param all If true, perform operation on all user's search engines.
+     */
+    suspend fun controlSearchEngines(
+        id: Int?,
+        operation: String,
+        all: Boolean?,
+    ): ApiResult<GenericResponseDto>
 }

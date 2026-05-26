@@ -215,3 +215,33 @@ data class DashboardFilterDto(
     @SerialName("private") val isPrivate: Boolean,
     val borrowed: Boolean,
 )
+
+@Serializable
+data class UserSearchEnginesResponseDto(
+    override val success: Boolean,
+    val error: String?,
+    val detail: String,
+    val data: List<SearchEngineDto>?,
+) : ApiSuccessResponse
+
+@Serializable
+data class SearchEngineDto(
+    val id: Int,
+    @SerialName("created_at") val createdAt: String,
+    @SerialName("auth_id") val authId: String,
+    val type: String,
+    val url: String,
+    val apikey: String?,
+    val active: Boolean,
+    val valid: Boolean,
+    @SerialName("download_type") val downloadType: String?,
+    val indexers: List<String>?,
+)
+
+@Serializable
+data class SearchEngineControlRequestDto(
+    val operation: String,
+    val id: Int? = null,
+    val all: Boolean? = null,
+)
+
