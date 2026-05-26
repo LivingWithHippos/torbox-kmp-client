@@ -55,7 +55,7 @@ interface TorboxApi {
         limit: Int? = null,
     ): ApiResult<TorrentListResponseDto>
 
-    suspend fun downloadTorrent(
+    suspend fun requestTorrentDownloadLink(
         token: String,
         torrentId: Int,
         fileId: Int? = null,
@@ -74,6 +74,10 @@ interface TorboxApi {
         hashes: List<String>,
         listFiles: Boolean? = null,
     ): ApiResult<TorrentAvailabilityObjectResponseDto>
+
+    suspend fun getTorrentAvailabilityBatchObject(hashes: List<String>): ApiResult<TorrentAvailabilityObjectResponseDto>
+
+    suspend fun getTorrentAvailabilityBatchList(hashes: List<String>): ApiResult<TorrentAvailabilityListResponseDto>
 
     /***********
      * WEB API *

@@ -60,7 +60,7 @@ class JvmApiTest {
         runTest {
             // change this to simulate a success = false error
             val result =
-                client.api.downloadTorrent(
+                client.api.requestTorrentDownloadLink(
                     token = TestConfig.bearerToken,
                     torrentId = TestConfig.torrentId,
                 )

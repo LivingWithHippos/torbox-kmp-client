@@ -232,7 +232,7 @@ class TorboxApiImpl(
         }
     }
 
-    override suspend fun downloadTorrent(
+    override suspend fun requestTorrentDownloadLink(
         token: String,
         torrentId: Int,
         fileId: Int?,
