@@ -2,6 +2,7 @@ package com.github.livingwithhippos.torbox.kmp.client.api
 
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateWebDownloadResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.DownloadResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.WebDownloadListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 
@@ -30,5 +31,15 @@ interface WebApi {
         redirect: Boolean? = null,
         appendName: Boolean? = null,
     ): ApiResult<DownloadResponseDto>
-}
 
+    /**
+     * Controls a web item
+     *
+     * https://api-docs.torbox.app/#151c9e58-16ca-4e44-91b0-6192fddc5e32
+     */
+    suspend fun controlWebLink(
+        webId: Int? = null,
+        operation: String,
+        all: Boolean? = null,
+    ): ApiResult<GenericResponseDto>
+}

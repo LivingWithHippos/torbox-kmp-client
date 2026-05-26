@@ -1,6 +1,7 @@
 package com.github.livingwithhippos.torbox.kmp.client.impl
 
 import com.github.livingwithhippos.torbox.kmp.client.api.TorrentsApi
+import com.github.livingwithhippos.torbox.kmp.client.api.UsenetApi
 import com.github.livingwithhippos.torbox.kmp.client.api.WebApi
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiSuccessResponse
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateTorrentResponseDto
@@ -16,6 +17,8 @@ import com.github.livingwithhippos.torbox.kmp.client.model.TorrentAvailabilityOb
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentAvailabilityRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentControlRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentListResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.UsenetDownloadListResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.WebControlRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.WebDownloadListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 import com.github.livingwithhippos.torbox.kmp.client.network.noAuth
@@ -40,7 +43,9 @@ import kotlinx.serialization.SerializationException
 
 class TorboxApiImpl(
     private val client: HttpClient,
-) : TorrentsApi, WebApi {
+) : TorrentsApi,
+    WebApi,
+    UsenetApi {
     private suspend fun HttpResponse.safeBodyText(): String? = runCatching { bodyAsText() }.getOrNull()
 
     private fun HttpStatusCode.isSuccessOrRedirect(): Boolean = value in 200..399
@@ -215,7 +220,6 @@ class TorboxApiImpl(
         operation: String,
         all: Boolean?,
     ): ApiResult<GenericResponseDto> {
-        //
         if (listOf("reannounce", "delete", "resume", "stop_seeding").contains(operation.lowercase()).not()) {
             return ApiResult.Failure.BadRequest(
                 IllegalArgumentException("Operation must be one of: reannounce, delete, resume or stop_seeding"),
@@ -475,6 +479,55 @@ class TorboxApiImpl(
                 parameter("user_ip", userIp)
                 parameter("redirect", redirect)
                 parameter("append_name", appendName)
+            }
+        }
+
+    override suspend fun controlWebLink(
+        webId: Int?,
+        operation: String,
+        all: Boolean?,
+    ): ApiResult<GenericResponseDto> {
+        // just rename this to delete?
+        if (listOf("delete").contains(operation.lowercase()).not()) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("Operation must be one of: delete"),
+            )
+        } else if (webId == null && all != true) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("Either a web id or all = true must be set"),
+            )
+        }
+
+        return executeRequest {
+            client.post("webdl/controlwebdownload") {
+                contentType(ContentType.Application.Json)
+                setBody(
+                    WebControlRequestDto(
+                        webId = webId,
+                        operation = operation.lowercase(),
+                        all = all,
+                    ),
+                )
+            }
+        }
+    }
+
+    override suspend fun getUsenetList(
+        bypassCache: String?,
+        id: Int?,
+        offset: Int?,
+        limit: Int?,
+    ): ApiResult<UsenetDownloadListResponseDto> =
+        executeRequest {
+            client.get("usenet/mylist") {
+                if (bypassCache != null) {
+                    parameter("bypass_cache", "")
+                }
+                if (id != null) {
+                    parameter("id", id)
+                }
+                parameter("offset", offset)
+                parameter("limit", limit)
             }
         }
 }

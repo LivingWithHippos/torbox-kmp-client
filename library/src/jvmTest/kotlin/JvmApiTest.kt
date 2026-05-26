@@ -206,4 +206,12 @@ class JvmApiTest {
             KermitLogger.i(singleResult.toString())
             assertTrue { singleResult is ApiResult.Success && singleResult.value.success }
         }
+
+    @Test
+    fun `get usenet list`() =
+        runTest {
+            val listResult = client.usenet.getUsenetList()
+            KermitLogger.i(listResult.toString())
+            assertTrue { listResult is ApiResult.Success && listResult.value.success }
+        }
 }

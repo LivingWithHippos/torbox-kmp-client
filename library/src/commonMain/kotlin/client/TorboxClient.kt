@@ -1,6 +1,7 @@
 package com.github.livingwithhippos.torbox.kmp.client.client
 
 import com.github.livingwithhippos.torbox.kmp.client.api.TorrentsApi
+import com.github.livingwithhippos.torbox.kmp.client.api.UsenetApi
 import com.github.livingwithhippos.torbox.kmp.client.api.WebApi
 import com.github.livingwithhippos.torbox.kmp.client.impl.TorboxApiImpl
 import com.github.livingwithhippos.torbox.kmp.client.network.RestClientConfig
@@ -11,15 +12,18 @@ import io.ktor.client.HttpClient
 class TorboxClient private constructor(
     val torrents: TorrentsApi,
     val web: WebApi,
+    val usenet: UsenetApi,
     private val httpClient: HttpClient,
 ) {
     companion object {
         fun create(config: RestClientConfig): TorboxClient {
             val client = createHttpClient(config, platformEngineFactory())
+            // todo: since we split this rename all APIs to a shorter version, like torrents.create() etc.
             val groupedApi = TorboxApiImpl(client)
             return TorboxClient(
                 torrents = groupedApi,
                 web = groupedApi,
+                usenet = groupedApi,
                 httpClient = client,
             )
         }
