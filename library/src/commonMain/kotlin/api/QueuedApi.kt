@@ -1,7 +1,8 @@
 package com.github.livingwithhippos.torbox.kmp.client.api
 
+import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.QueuedDownloadsResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.QueuedDownloadDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 
 interface QueuedApi {
@@ -17,7 +18,7 @@ interface QueuedApi {
         offset: Int? = null,
         limit: Int? = null,
         type: String = "torrent",
-    ): ApiResult<QueuedDownloadsResponseDto>
+    ): ApiResult<ApiResponseListDto<QueuedDownloadDto>>
 
     /**
      * Controls a queued torrent.

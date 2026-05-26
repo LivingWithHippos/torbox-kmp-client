@@ -1,7 +1,8 @@
 package com.github.livingwithhippos.torbox.kmp.client.api
 
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityListResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
+import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityObjectResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateTorrentDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentResultDto
@@ -76,7 +77,7 @@ interface TorrentsApi {
     suspend fun getTorrentAvailabilityList(
         hashes: List<String>,
         listFiles: Boolean? = null,
-    ): ApiResult<CacheAvailabilityListResponseDto>
+    ): ApiResult<ApiResponseListDto<CacheAvailabilityDto>>
 
     suspend fun getTorrentAvailabilityObject(
         hashes: List<String>,
@@ -85,7 +86,7 @@ interface TorrentsApi {
 
     suspend fun getTorrentAvailabilityBatchObject(hashes: List<String>): ApiResult<CacheAvailabilityObjectResponseDto>
 
-    suspend fun getTorrentAvailabilityBatchList(hashes: List<String>): ApiResult<CacheAvailabilityListResponseDto>
+    suspend fun getTorrentAvailabilityBatchList(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>>
 
     /**
      * Exports a torrent as a magnet link or a .torrent file.

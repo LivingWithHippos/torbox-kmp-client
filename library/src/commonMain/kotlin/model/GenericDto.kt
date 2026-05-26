@@ -10,14 +10,6 @@ data class StatsDto(
 )
 
 @Serializable
-data class ChangelogListResponseDto(
-    override val success: Boolean,
-    val error: String?,
-    val detail: String,
-    val data: List<ChangelogEntryDto>?,
-) : ApiSuccessResponse
-
-@Serializable
 data class ChangelogEntryDto(
     val id: String,
     val name: String,
@@ -26,14 +18,6 @@ data class ChangelogEntryDto(
     val link: String,
     @SerialName("created_at") val createdAt: String,
 )
-
-@Serializable
-data class SpeedtestFilesResponseDto(
-    override val success: Boolean,
-    val error: String?,
-    val detail: String,
-    val data: List<SpeedtestFileDto>?,
-) : ApiSuccessResponse
 
 @Serializable
 data class SpeedtestFileDto(

@@ -1,15 +1,16 @@
 package com.github.livingwithhippos.torbox.kmp.client.api
 
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
 import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeAuthorizationStartDto
 import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeTokenDataDto
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ModifySearchEngineDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ReferralDataDto
-import com.github.livingwithhippos.torbox.kmp.client.model.SubscriptionResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.TransactionResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.SearchEngineDto
+import com.github.livingwithhippos.torbox.kmp.client.model.SubscriptionDto
+import com.github.livingwithhippos.torbox.kmp.client.model.TransactionDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserDataDto
-import com.github.livingwithhippos.torbox.kmp.client.model.UserSearchEnginesResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserSettingsRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserStatsDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
@@ -86,14 +87,14 @@ interface UserApi {
      *
      * [online documentation](https://api-docs.torbox.app/#bb1307f2-ce3b-4625-a5be-e6ea1ab46a61)
      */
-    suspend fun getSubscriptions(): ApiResult<SubscriptionResponseDto>
+    suspend fun getSubscriptions(): ApiResult<ApiResponseListDto<SubscriptionDto>>
 
     /**
      * Gets the user's list of transactions.
      *
      * [online documentation](https://api-docs.torbox.app/#4205b949-fa83-46e8-8efb-dfa35187b890)
      */
-    suspend fun getTransactions(): ApiResult<TransactionResponseDto>
+    suspend fun getTransactions(): ApiResult<ApiResponseListDto<TransactionDto>>
 
     /**
      * Generates a PDF of the transaction information. Requires the transaction ID from the "Get Transactions" request.
@@ -124,7 +125,7 @@ interface UserApi {
      *
      * @param id Optional search engine id to retrieve a specific engine owned by the user.
      */
-    suspend fun getSearchEngines(id: Int? = null): ApiResult<UserSearchEnginesResponseDto>
+    suspend fun getSearchEngines(id: Int? = null): ApiResult<ApiResponseListDto<SearchEngineDto>>
 
     /**
      * Gets a user's stats. Use the query params to select general and/or bandwidth data.
@@ -181,5 +182,5 @@ interface UserApi {
         url: String,
         apikey: String? = null,
         downloadType: String? = null,
-    ): ApiResult<UserSearchEnginesResponseDto>
+    ): ApiResult<ApiResponseListDto<SearchEngineDto>>
 }

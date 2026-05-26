@@ -4,14 +4,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class QueuedDownloadsResponseDto(
-    override val success: Boolean,
-    val error: String?,
-    val detail: String,
-    val data: List<QueuedDownloadDto>?,
-) : ApiSuccessResponse
-
-@Serializable
 data class QueuedDownloadDto(
     val id: Int,
     @SerialName("created_at") val createdAt: String,

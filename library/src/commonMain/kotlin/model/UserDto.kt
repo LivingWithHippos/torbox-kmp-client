@@ -65,14 +65,6 @@ data class ReferralDataDto(
 )
 
 @Serializable
-data class SubscriptionResponseDto(
-    override val success: Boolean,
-    val error: String?,
-    val detail: String,
-    val data: List<SubscriptionDto>?,
-) : ApiSuccessResponse
-
-@Serializable
 data class SubscriptionDto(
     @SerialName("created_at") val createdAt: String,
     @SerialName("updated_at") val updatedAt: String,
@@ -84,14 +76,6 @@ data class SubscriptionDto(
     val gateway: String,
     @SerialName("plan_name") val planName: String,
 )
-
-@Serializable
-data class TransactionResponseDto(
-    override val success: Boolean,
-    val error: String?,
-    val detail: String,
-    val data: List<TransactionDto>?,
-) : ApiSuccessResponse
 
 @Serializable
 data class TransactionDto(
@@ -183,14 +167,6 @@ data class DashboardFilterDto(
     @SerialName("private") val isPrivate: Boolean,
     val borrowed: Boolean,
 )
-
-@Serializable
-data class UserSearchEnginesResponseDto(
-    override val success: Boolean,
-    val error: String?,
-    val detail: String,
-    val data: List<SearchEngineDto>?,
-) : ApiSuccessResponse
 
 @Serializable
 data class SearchEngineDto(

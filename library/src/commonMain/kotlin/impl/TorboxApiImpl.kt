@@ -13,11 +13,12 @@ import com.github.livingwithhippos.torbox.kmp.client.api.WebApi
 import com.github.livingwithhippos.torbox.kmp.client.model.AddRssRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.AddSearchEngineRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiSuccessResponse
-import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityListResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityObjectResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityRequestDto
-import com.github.livingwithhippos.torbox.kmp.client.model.ChangelogListResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.ChangelogEntryDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ControlQueuedDownloadsRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ControlRssRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateTorrentDto
@@ -31,28 +32,28 @@ import com.github.livingwithhippos.torbox.kmp.client.model.EditTorrentRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.EditWebRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentResultDto
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.HostersResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.HosterDto
 import com.github.livingwithhippos.torbox.kmp.client.model.JobsResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.MagnetToFileRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ModifySearchEngineDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ModifySearchEngineRequestDto
-import com.github.livingwithhippos.torbox.kmp.client.model.NotificationsResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.QueuedDownloadsResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.NotificationDto
+import com.github.livingwithhippos.torbox.kmp.client.model.QueuedDownloadDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ReferralDataDto
 import com.github.livingwithhippos.torbox.kmp.client.model.RefreshApiTokenRequestDto
+import com.github.livingwithhippos.torbox.kmp.client.model.RssFeedDto
+import com.github.livingwithhippos.torbox.kmp.client.model.RssFeedItemDto
 import com.github.livingwithhippos.torbox.kmp.client.model.SearchEngineControlRequestDto
-import com.github.livingwithhippos.torbox.kmp.client.model.SpeedtestFilesResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.SearchEngineDto
+import com.github.livingwithhippos.torbox.kmp.client.model.SpeedtestFileDto
 import com.github.livingwithhippos.torbox.kmp.client.model.StatsDto
 import com.github.livingwithhippos.torbox.kmp.client.model.StreamDto
-import com.github.livingwithhippos.torbox.kmp.client.model.SubscriptionResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.SubscriptionDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentControlRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentListResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.TransactionResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.TransactionDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UsenetDownloadListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserDataDto
-import com.github.livingwithhippos.torbox.kmp.client.model.UserRssFeedItemsResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.UserRssFeedsResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.UserSearchEnginesResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserSettingsRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserStatsDto
 import com.github.livingwithhippos.torbox.kmp.client.model.WebControlRequestDto
@@ -344,7 +345,7 @@ class TorboxApiImpl(
     override suspend fun getTorrentAvailabilityList(
         hashes: List<String>,
         listFiles: Boolean?,
-    ): ApiResult<CacheAvailabilityListResponseDto> =
+    ): ApiResult<ApiResponseListDto<CacheAvailabilityDto>> =
         executeRequest {
             client.get("torrents/checkcached") {
                 hashes.forEach {
@@ -382,7 +383,7 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun getTorrentAvailabilityBatchList(hashes: List<String>): ApiResult<CacheAvailabilityListResponseDto> =
+    override suspend fun getTorrentAvailabilityBatchList(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>> =
         executeRequest {
             client.post("torrents/checkcached") {
                 contentType(ContentType.Application.Json)
@@ -534,7 +535,7 @@ class TorboxApiImpl(
     override suspend fun getWebAvailabilityList(
         hashes: List<String>,
         listFiles: Boolean?,
-    ): ApiResult<CacheAvailabilityListResponseDto> =
+    ): ApiResult<ApiResponseListDto<CacheAvailabilityDto>> =
         executeRequest {
             client.get("webdl/checkcached") {
                 hashes.forEach {
@@ -572,7 +573,7 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun getWebAvailabilityBatchList(hashes: List<String>): ApiResult<CacheAvailabilityListResponseDto> =
+    override suspend fun getWebAvailabilityBatchList(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>> =
         executeRequest {
             client.post("webdl/checkcached") {
                 contentType(ContentType.Application.Json)
@@ -585,7 +586,7 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun getHosters(auth: Boolean): ApiResult<HostersResponseDto> =
+    override suspend fun getHosters(auth: Boolean): ApiResult<ApiResponseListDto<HosterDto>> =
         executeRequest {
             client.get("webdl/hosters") {
                 if (!auth) {
@@ -704,7 +705,7 @@ class TorboxApiImpl(
             onFailure = { toFailure(it, null) },
         )
 
-    override suspend fun getChangelogJson(): ApiResult<ChangelogListResponseDto> =
+    override suspend fun getChangelogJson(): ApiResult<ApiResponseListDto<ChangelogEntryDto>> =
         executeRequest {
             client.get("changelogs/json") {
                 noAuth()
@@ -715,7 +716,7 @@ class TorboxApiImpl(
         testLength: String?,
         region: String?,
         userIp: String?,
-    ): ApiResult<SpeedtestFilesResponseDto> {
+    ): ApiResult<ApiResponseListDto<SpeedtestFileDto>> {
         val normalizedTestLength = testLength?.trim()?.lowercase()
         if (normalizedTestLength != null && normalizedTestLength !in listOf("short", "long")) {
             return ApiResult.Failure.BadRequest(
@@ -761,7 +762,7 @@ class TorboxApiImpl(
         )
     }
 
-    override suspend fun getNotifications(): ApiResult<NotificationsResponseDto> =
+    override suspend fun getNotifications(): ApiResult<ApiResponseListDto<NotificationDto>> =
         executeRequest {
             client.get("notifications/mynotifications")
         }
@@ -864,12 +865,12 @@ class TorboxApiImpl(
             client.get("user/referraldata")
         }
 
-    override suspend fun getSubscriptions(): ApiResult<SubscriptionResponseDto> =
+    override suspend fun getSubscriptions(): ApiResult<ApiResponseListDto<SubscriptionDto>> =
         executeRequest {
             client.get("user/subscriptions")
         }
 
-    override suspend fun getTransactions(): ApiResult<TransactionResponseDto> =
+    override suspend fun getTransactions(): ApiResult<ApiResponseListDto<TransactionDto>> =
         executeRequest {
             client.get("user/transactions")
         }
@@ -909,7 +910,7 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun getSearchEngines(id: Int?): ApiResult<UserSearchEnginesResponseDto> =
+    override suspend fun getSearchEngines(id: Int?): ApiResult<ApiResponseListDto<SearchEngineDto>> =
         executeRequest {
             client.get("user/settings/searchengines") {
                 id?.let { parameter("id", it) }
@@ -972,7 +973,7 @@ class TorboxApiImpl(
         url: String,
         apikey: String?,
         downloadType: String?,
-    ): ApiResult<UserSearchEnginesResponseDto> {
+    ): ApiResult<ApiResponseListDto<SearchEngineDto>> {
         if (url.isBlank()) {
             return ApiResult.Failure.BadRequest(
                 IllegalArgumentException("url must not be blank"),
@@ -1111,7 +1112,7 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun getUserRssFeeds(id: Int?): ApiResult<UserRssFeedsResponseDto> {
+    override suspend fun getUserRssFeeds(id: Int?): ApiResult<ApiResponseListDto<RssFeedDto>> {
         if (id != null && id <= 0) {
             return ApiResult.Failure.BadRequest(
                 IllegalArgumentException("id must be a positive integer"),
@@ -1125,7 +1126,7 @@ class TorboxApiImpl(
         }
     }
 
-    override suspend fun getRssFeeds(id: Int): ApiResult<UserRssFeedItemsResponseDto> {
+    override suspend fun getRssFeeds(id: Int): ApiResult<ApiResponseListDto<RssFeedItemDto>> {
         if (id <= 0) {
             return ApiResult.Failure.BadRequest(
                 IllegalArgumentException("id must be a positive integer"),
@@ -1172,7 +1173,7 @@ class TorboxApiImpl(
         offset: Int?,
         limit: Int?,
         type: String,
-    ): ApiResult<QueuedDownloadsResponseDto> {
+    ): ApiResult<ApiResponseListDto<QueuedDownloadDto>> {
         val normalizedType = type.trim().lowercase()
         if (normalizedType !in listOf("torrent", "usenet", "webdl")) {
             return ApiResult.Failure.BadRequest(

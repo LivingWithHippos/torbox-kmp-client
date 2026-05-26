@@ -1,13 +1,14 @@
 package com.github.livingwithhippos.torbox.kmp.client.api
 
+import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.NotificationsResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.NotificationDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 
 interface NotificationsApi {
     suspend fun getNotificationsRss(token: String): ApiResult<String>
 
-    suspend fun getNotifications(): ApiResult<NotificationsResponseDto>
+    suspend fun getNotifications(): ApiResult<ApiResponseListDto<NotificationDto>>
 
     suspend fun clearNotifications(): ApiResult<GenericResponseDto>
 

@@ -116,14 +116,6 @@ object WebDownloadDataSerializer : KSerializer<List<WebDownloadDto>?> {
 }
 
 @Serializable
-data class HostersResponseDto(
-    override val success: Boolean,
-    val error: String?,
-    val detail: String,
-    val data: List<HosterDto>?,
-) : ApiSuccessResponse
-
-@Serializable
 data class HosterDto(
     val id: Int,
     val name: String,

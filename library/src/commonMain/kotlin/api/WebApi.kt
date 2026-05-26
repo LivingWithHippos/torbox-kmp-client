@@ -1,11 +1,12 @@
 package com.github.livingwithhippos.torbox.kmp.client.api
 
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityListResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
+import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityObjectResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateWebDownloadDto
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.HostersResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.HosterDto
 import com.github.livingwithhippos.torbox.kmp.client.model.WebDownloadListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 
@@ -49,7 +50,7 @@ interface WebApi {
     suspend fun getWebAvailabilityList(
         hashes: List<String>,
         listFiles: Boolean? = null,
-    ): ApiResult<CacheAvailabilityListResponseDto>
+    ): ApiResult<ApiResponseListDto<CacheAvailabilityDto>>
 
     suspend fun getWebAvailabilityObject(
         hashes: List<String>,
@@ -58,9 +59,9 @@ interface WebApi {
 
     suspend fun getWebAvailabilityBatchObject(hashes: List<String>): ApiResult<CacheAvailabilityObjectResponseDto>
 
-    suspend fun getWebAvailabilityBatchList(hashes: List<String>): ApiResult<CacheAvailabilityListResponseDto>
+    suspend fun getWebAvailabilityBatchList(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>>
 
-    suspend fun getHosters(auth: Boolean = false): ApiResult<HostersResponseDto>
+    suspend fun getHosters(auth: Boolean = false): ApiResult<ApiResponseListDto<HosterDto>>
 
     suspend fun editWeb(
         webId: Int,

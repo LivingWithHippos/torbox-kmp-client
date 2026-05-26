@@ -37,14 +37,6 @@ data class EditRssRequestDto(
 )
 
 @Serializable
-data class UserRssFeedsResponseDto(
-    override val success: Boolean,
-    val error: String?,
-    val detail: String,
-    val data: List<RssFeedDto>?,
-) : ApiSuccessResponse
-
-@Serializable
 data class RssFeedDto(
     val id: Int,
     @SerialName("created_at") val createdAt: String,
@@ -66,14 +58,6 @@ data class RssFeedDto(
 )
 
 @Serializable
-data class UserRssFeedItemsResponseDto(
-    override val success: Boolean,
-    val error: String?,
-    val detail: String,
-    val data: List<RssFeedItemDto>?,
-) : ApiSuccessResponse
-
-@Serializable
 data class RssFeedItemDto(
     val id: Int,
     @SerialName("created_at") val createdAt: String,
@@ -88,4 +72,3 @@ data class RssFeedItemDto(
     @SerialName("seed_torrents") val seedTorrents: Int,
     val type: String,
 )
-

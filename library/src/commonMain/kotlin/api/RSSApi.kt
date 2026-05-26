@@ -1,8 +1,9 @@
 package com.github.livingwithhippos.torbox.kmp.client.api
 
+import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.UserRssFeedItemsResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.UserRssFeedsResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.RssFeedDto
+import com.github.livingwithhippos.torbox.kmp.client.model.RssFeedItemDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 
 interface RSSApi {
@@ -56,7 +57,7 @@ interface RSSApi {
      *
      * [online documentation](https://api-docs.torbox.app/#1624cad4-28fd-4bb0-934d-2246d1810cbc)
      */
-    suspend fun getUserRssFeeds(id: Int? = null): ApiResult<UserRssFeedsResponseDto>
+    suspend fun getUserRssFeeds(id: Int? = null): ApiResult<ApiResponseListDto<RssFeedDto>>
 
     /**
      * Gets the first 10,000 RSS feed items associated with an RSS feed.
@@ -65,5 +66,5 @@ interface RSSApi {
      *
      * [online documentation](https://api-docs.torbox.app/#5e2946d4-bfc8-4d0c-94c1-399c35b7cefa)
      */
-    suspend fun getRssFeeds(id: Int): ApiResult<UserRssFeedItemsResponseDto>
+    suspend fun getRssFeeds(id: Int): ApiResult<ApiResponseListDto<RssFeedItemDto>>
 }
