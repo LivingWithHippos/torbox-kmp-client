@@ -1,6 +1,7 @@
 package com.github.livingwithhippos.torbox.kmp.client.api
 
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.UserRssFeedItemsResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserRssFeedsResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 
@@ -55,5 +56,14 @@ interface RSSApi {
      *
      * [online documentation](https://api-docs.torbox.app/#1624cad4-28fd-4bb0-934d-2246d1810cbc)
      */
-    suspend fun getRssFeeds(id: Int? = null): ApiResult<UserRssFeedsResponseDto>
+    suspend fun getUserRssFeeds(id: Int? = null): ApiResult<UserRssFeedsResponseDto>
+
+    /**
+     * Gets the first 10,000 RSS feed items associated with an RSS feed.
+     * RSS feed items are scraped items from the RSS feed.
+     * They contain a direct download link as well as the content name, and additional information.
+     *
+     * [online documentation](https://api-docs.torbox.app/#5e2946d4-bfc8-4d0c-94c1-399c35b7cefa)
+     */
+    suspend fun getRssFeeds(id: Int): ApiResult<UserRssFeedItemsResponseDto>
 }

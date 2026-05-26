@@ -39,9 +39,10 @@ import com.github.livingwithhippos.torbox.kmp.client.model.SubscriptionResponseD
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentControlRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TransactionResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.UserRssFeedsResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UsenetDownloadListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserDataResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.UserRssFeedItemsResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.UserRssFeedsResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserSearchEnginesResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserSettingsRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserStatsResponseDto
@@ -1043,20 +1044,6 @@ class TorboxApiImpl(
         }
     }
 
-    override suspend fun getRssFeeds(id: Int?): ApiResult<UserRssFeedsResponseDto> {
-        if (id != null && id <= 0) {
-            return ApiResult.Failure.BadRequest(
-                IllegalArgumentException("id must be a positive integer"),
-            )
-        }
-
-        return executeRequest {
-            client.get("rss/getfeeds") {
-                id?.let { parameter("id", it) }
-            }
-        }
-    }
-
     override suspend fun controlRss(
         operation: String,
         rssFeedId: Int,
@@ -1110,4 +1097,32 @@ class TorboxApiImpl(
                 )
             }
         }
+
+    override suspend fun getUserRssFeeds(id: Int?): ApiResult<UserRssFeedsResponseDto> {
+        if (id != null && id <= 0) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("id must be a positive integer"),
+            )
+        }
+
+        return executeRequest {
+            client.get("rss/getfeeds") {
+                id?.let { parameter("id", it) }
+            }
+        }
+    }
+
+    override suspend fun getRssFeeds(id: Int): ApiResult<UserRssFeedItemsResponseDto> {
+        if (id <= 0) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("id must be a positive integer"),
+            )
+        }
+
+        return executeRequest {
+            client.get("rss/getfeeditems") {
+                parameter("id", id)
+            }
+        }
+    }
 }

@@ -65,3 +65,27 @@ data class RssFeedDto(
     val state: String,
 )
 
+@Serializable
+data class UserRssFeedItemsResponseDto(
+    override val success: Boolean,
+    val error: String?,
+    val detail: String,
+    val data: List<RssFeedItemDto>?,
+) : ApiSuccessResponse
+
+@Serializable
+data class RssFeedItemDto(
+    val id: Int,
+    @SerialName("created_at") val createdAt: String,
+    @SerialName("rss_name") val rssName: String,
+    @SerialName("rss_url") val rssUrl: String,
+    val ignored: Boolean,
+    val downloaded: Boolean,
+    val link: String,
+    val name: String,
+    val status: String,
+    @SerialName("status_message") val statusMessage: String? = null,
+    @SerialName("seed_torrents") val seedTorrents: Int,
+    val type: String,
+)
+

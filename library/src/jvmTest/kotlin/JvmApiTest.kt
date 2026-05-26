@@ -316,7 +316,7 @@ class JvmApiTest {
     @Test
     fun `get user rss`() =
         runTest {
-            val result = client.rss.getRssFeeds()
+            val result = client.rss.getUserRssFeeds()
             KermitLogger.i(result.toString())
             assertTrue { result is ApiResult.Success }
         }
