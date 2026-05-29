@@ -3,8 +3,6 @@ package com.github.livingwithhippos.torbox.kmp.client.network
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.plugins.HttpTimeout
-import io.ktor.client.plugins.auth.Auth
-import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
@@ -43,18 +41,20 @@ fun createHttpClient(
             )
         }
 
-        install(Logging) {
-            // todo: remove from prod
-            level = LogLevel.ALL
-            logger =
-                object : KtorLogger {
-                    override fun log(message: String) {
-                        KermitLogger.i(tag = "KtorClient") {
-                            message
+        if (config.logLevel != LogLevel.NONE) {
+            install(Logging) {
+                level = config.logLevel
+                logger =
+                    object : KtorLogger {
+                        override fun log(message: String) {
+                            KermitLogger.i(tag = "TorboxKMP") {
+                                message
+                            }
                         }
                     }
-                }
-            sanitizeHeader { header -> header == HttpHeaders.Authorization }
+                // important: some APIs have the token as query parameter!
+                sanitizeHeader { header -> header == HttpHeaders.Authorization }
+            }
         }
 
         install(HttpTimeout) {
