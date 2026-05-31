@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "com.github.livingwithhippos"
-version = "1.0.0"
+version = "0.1.0"
 
 kotlin {
     jvm()
@@ -52,23 +52,17 @@ kotlin {
                 }
             }
         }
-
-        /*
-        browser {
-            testTask {
-                useKarma {
-                    useFirefox()
-                    useChrome()
-                    useSafari()
-                }
-            }
-        }
-         */
+        // browser {
+        //     webpackTask {
+        //         enabled = true
+        //     }
+        // }
         useEsModules()
         binaries.executable()
-
+        // generateTypeScriptDefinitions()
         compilerOptions {
             optIn.add("kotlin.js.ExperimentalJsExport")
+            // target = "es2015"
         }
     }
 
