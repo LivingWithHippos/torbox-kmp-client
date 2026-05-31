@@ -22,6 +22,7 @@ import com.github.livingwithhippos.torbox.kmp.client.model.ChangelogEntryDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ControlQueuedDownloadsRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ControlRssRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateTorrentDto
+import com.github.livingwithhippos.torbox.kmp.client.model.CreateUsenetDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateWebDownloadDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreatedStreamDto
 import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeAuthorizationStartDto
@@ -29,6 +30,7 @@ import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeTokenDataDt
 import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeTokenRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.EditRssRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.EditTorrentRequestDto
+import com.github.livingwithhippos.torbox.kmp.client.model.EditUsenetRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.EditWebRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentResultDto
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
@@ -53,6 +55,7 @@ import com.github.livingwithhippos.torbox.kmp.client.model.SubscriptionDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentControlRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TransactionDto
+import com.github.livingwithhippos.torbox.kmp.client.model.UsenetControlRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UsenetDownloadListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserDataDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserSettingsRequestDto
@@ -142,7 +145,7 @@ class TorboxApiImpl(
             onFailure = { toFailure(it, null) },
         )
 
-    override suspend fun get(
+    override suspend fun getTorrent(
         bypassCache: String?,
         id: Int?,
         offset: Int?,
@@ -294,7 +297,7 @@ class TorboxApiImpl(
         }
     }
 
-    override suspend fun edit(
+    override suspend fun editTorrent(
         torrentId: Int,
         name: String?,
         tags: List<String>?,
@@ -321,7 +324,7 @@ class TorboxApiImpl(
         }
     }
 
-    override suspend fun requestTorrentDownloadLink(
+    override suspend fun torrentDownloadLink(
         token: String,
         torrentId: Int,
         fileId: Int?,
@@ -331,7 +334,6 @@ class TorboxApiImpl(
         appendName: Boolean?,
     ): ApiResult<GenericResponseDto> =
         executeRequest {
-            // todo: check if noAuth is applicable
             client.get("torrents/requestdl") {
                 parameter("token", token)
                 parameter("torrent_id", torrentId)
@@ -343,7 +345,7 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun getAvailabilityList(
+    override suspend fun getTorrentAvailabilityList(
         hashes: List<String>,
         listFiles: Boolean?,
     ): ApiResult<ApiResponseListDto<CacheAvailabilityDto>> =
@@ -357,7 +359,7 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun getAvailabilityObject(
+    override suspend fun getTorrentAvailabilityObject(
         hashes: List<String>,
         listFiles: Boolean?,
     ): ApiResult<CacheAvailabilityObjectResponseDto> =
@@ -371,7 +373,7 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun getAvailabilityBatchObject(hashes: List<String>): ApiResult<CacheAvailabilityObjectResponseDto> =
+    override suspend fun getTorrentAvailabilityBatchObject(hashes: List<String>): ApiResult<CacheAvailabilityObjectResponseDto> =
         executeRequest {
             client.post("torrents/checkcached") {
                 contentType(ContentType.Application.Json)
@@ -384,7 +386,7 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun getAvailabilityBatchList(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>> =
+    override suspend fun getTorrentAvailabilityBatchList(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>> =
         executeRequest {
             client.post("torrents/checkcached") {
                 contentType(ContentType.Application.Json)
@@ -653,7 +655,7 @@ class TorboxApiImpl(
         }
     }
 
-    override suspend fun getUsenetList(
+    override suspend fun getUsenet(
         bypassCache: String?,
         id: Int?,
         offset: Int?,
@@ -671,6 +673,186 @@ class TorboxApiImpl(
                 parameter("limit", limit)
             }
         }
+
+    override suspend fun createUsenet(
+        fileBytes: ByteArray?,
+        fileName: String?,
+        link: String?,
+        name: String?,
+        password: String?,
+        postProcessing: Int?,
+        asQueued: Boolean?,
+        addOnlyIfCached: Boolean?,
+    ): ApiResult<ApiResponseDto<CreateUsenetDto>> {
+        if (fileBytes != null && !link.isNullOrBlank()) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("Only one between fileBytes or link must be provided"),
+            )
+        } else if (fileBytes == null && link.isNullOrBlank()) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("Either one between fileBytes or link must be provided"),
+            )
+        }
+
+        return executeRequest {
+            client.post("usenet/createusenetdownload") {
+                setBody(
+                    MultiPartFormDataContent(
+                        formData {
+                            if (fileBytes != null) {
+                                append(
+                                    key = "file",
+                                    value = fileBytes,
+                                    headers =
+                                        Headers.build {
+                                            append(HttpHeaders.ContentType, "application/x-nzb")
+                                            append(
+                                                HttpHeaders.ContentDisposition,
+                                                "filename=\"${fileName ?: "file.nzb"}\"",
+                                            )
+                                        },
+                                )
+                            }
+                            name?.takeIf { it.isNotBlank() }?.let { append("name", it) }
+                            asQueued?.let { append("as_queued", it.toString()) }
+                            addOnlyIfCached?.let { append("add_only_if_cached", it.toString()) }
+                        },
+                    ),
+                )
+            }
+        }
+    }
+
+    override suspend fun controlUsenet(
+        usenetId: Int?,
+        operation: String,
+        all: Boolean?,
+    ): ApiResult<GenericResponseDto> {
+        if (listOf("delete").contains(operation.lowercase()).not()) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("Operation must be one of: delete"),
+            )
+        } else if (usenetId == null && all != true) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("Either a usenet id or all = true must be set"),
+            )
+        }
+
+        return executeRequest {
+            client.post("usenet/controlusenetdownload") {
+                contentType(ContentType.Application.Json)
+                setBody(
+                    UsenetControlRequestDto(
+                        usenetId = usenetId,
+                        operation = operation.lowercase(),
+                        all = all,
+                    ),
+                )
+            }
+        }
+    }
+
+    override suspend fun usenetDownloadLink(
+        token: String,
+        usenetId: Int,
+        fileId: Int?,
+        zipLink: String?,
+        userIp: String?,
+        redirect: Boolean?,
+        appendName: Boolean?,
+    ): ApiResult<GenericResponseDto> =
+        executeRequest {
+            client.get("usenet/controlusenetdownload") {
+                parameter("token", token)
+                parameter("usenet_id", usenetId)
+                parameter("file_id", fileId)
+                parameter("zip_link", zipLink)
+                parameter("user_ip", userIp)
+                parameter("redirect", redirect)
+                parameter("append_name", appendName)
+            }
+        }
+
+    override suspend fun getUsenetAvailabilityList(
+        hashes: List<String>,
+        listFiles: Boolean?,
+    ): ApiResult<ApiResponseListDto<CacheAvailabilityDto>> =
+        executeRequest {
+            client.get("usenet/checkcached") {
+                hashes.forEach {
+                    parameter("hash", it)
+                }
+                parameter("format", "list")
+                parameter("list_files", listFiles)
+            }
+        }
+
+    override suspend fun getUsenetAvailabilityObject(
+        hashes: List<String>,
+        listFiles: Boolean?,
+    ): ApiResult<CacheAvailabilityObjectResponseDto> =
+        executeRequest {
+            client.get("usenet/checkcached") {
+                hashes.forEach {
+                    parameter("hash", it)
+                }
+                parameter("format", "object")
+                parameter("list_files", listFiles)
+            }
+        }
+
+    override suspend fun getUsenetAvailabilityBatchObject(hashes: List<String>): ApiResult<CacheAvailabilityObjectResponseDto> =
+        executeRequest {
+            client.post("usenet/checkcached") {
+                contentType(ContentType.Application.Json)
+                setBody(
+                    CacheAvailabilityRequestDto(
+                        format = "object",
+                        hashes = hashes,
+                    ),
+                )
+            }
+        }
+
+    override suspend fun getUsenetAvailabilityBatchList(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>> =
+        executeRequest {
+            client.post("usenet/checkcached") {
+                contentType(ContentType.Application.Json)
+                setBody(
+                    CacheAvailabilityRequestDto(
+                        format = "list",
+                        hashes = hashes,
+                    ),
+                )
+            }
+        }
+
+    override suspend fun editUsenet(
+        usenetId: Int,
+        name: String?,
+        tags: List<String>?,
+        alternativeHashes: List<String>?,
+    ): ApiResult<GenericResponseDto> {
+        if (name == null && tags == null && alternativeHashes == null) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("At least one between name, tags, or alternativeHashes must be provided"),
+            )
+        }
+
+        return executeRequest {
+            client.put("usenet/editusenetdownload") {
+                contentType(ContentType.Application.Json)
+                setBody(
+                    EditUsenetRequestDto(
+                        usenetId = usenetId,
+                        name = name,
+                        tags = tags,
+                        alternativeHashes = alternativeHashes,
+                    ),
+                )
+            }
+        }
+    }
 
     override suspend fun upStatus(): ApiResult<GenericResponseDto> =
         executeRequest {

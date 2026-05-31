@@ -15,6 +15,31 @@ import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
 
 @Serializable
+data class CreateUsenetDto(
+    val hash: String,
+    @SerialName("usenetdownload_id") val usenetId: Long,
+    @SerialName("auth_id") val authId: String,
+)
+
+@Serializable
+data class UsenetControlRequestDto(
+    @SerialName("usenet_id")
+    val usenetId: Int? = null,
+    val operation: String,
+    val all: Boolean? = null,
+)
+
+@Serializable
+data class EditUsenetRequestDto(
+    @SerialName("usenet_download_id")
+    val usenetId: Int,
+    val name: String? = null,
+    val tags: List<String>? = null,
+    @SerialName("alternative_hashes")
+    val alternativeHashes: List<String>? = null,
+)
+
+@Serializable
 data class UsenetDownloadListResponseDto(
     override val success: Boolean,
     val error: String?,
@@ -93,8 +118,20 @@ object UsenetDownloadDataSerializer : KSerializer<List<UsenetDownloadDto>?> {
 
         val element =
             when {
-                value == null -> JsonNull
-                else -> JsonArray(value.map { jsonEncoder.json.encodeToJsonElement(UsenetDownloadDto.serializer(), it) })
+                value == null -> {
+                    JsonNull
+                }
+
+                else -> {
+                    JsonArray(
+                        value.map {
+                            jsonEncoder.json.encodeToJsonElement(
+                                UsenetDownloadDto.serializer(),
+                                it,
+                            )
+                        },
+                    )
+                }
             }
 
         jsonEncoder.encodeJsonElement(element)

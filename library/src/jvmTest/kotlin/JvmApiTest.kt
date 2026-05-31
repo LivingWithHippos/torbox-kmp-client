@@ -4,7 +4,6 @@ import com.github.livingwithhippos.torbox.kmp.client.client.TorboxClient
 import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentResultDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 import com.github.livingwithhippos.torbox.kmp.client.network.RestClientConfig
-import io.ktor.client.plugins.logging.LogLevel
 import kotlinx.coroutines.test.runTest
 import kotlin.io.path.Path
 import kotlin.io.path.readBytes
@@ -17,10 +16,10 @@ class JvmApiTest {
     @Test
     fun getTorrents() =
         runTest {
-            val listResult = client.torrents.get()
+            val listResult = client.torrents.getTorrent()
             assertTrue { listResult is ApiResult.Success }
 
-            val singleResult = client.torrents.get(id = TestConfig.torrentId)
+            val singleResult = client.torrents.getTorrent(id = TestConfig.torrentId)
             assertTrue { singleResult is ApiResult.Success }
         }
 
@@ -55,7 +54,7 @@ class JvmApiTest {
         runTest {
             // change this to simulate a success = false error
             val result =
-                client.torrents.requestTorrentDownloadLink(
+                client.torrents.torrentDownloadLink(
                     token = TestConfig.bearerToken,
                     torrentId = TestConfig.torrentId,
                 )
@@ -190,7 +189,7 @@ class JvmApiTest {
     @Test
     fun `get usenet list`() =
         runTest {
-            val listResult = client.usenet.getUsenetList()
+            val listResult = client.usenet.getUsenet()
             assertTrue { listResult is ApiResult.Success && listResult.value.success }
         }
 

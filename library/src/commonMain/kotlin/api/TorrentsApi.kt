@@ -99,7 +99,7 @@ interface TorrentsApi {
      *
      * [online documentation](https://api-docs.torbox.app/#a436204c-b235-4323-91b0-769311740d68)
      */
-    suspend fun edit(
+    suspend fun editTorrent(
         torrentId: Int,
         name: String? = null,
         tags: List<String>? = null,
@@ -132,7 +132,7 @@ interface TorrentsApi {
      *
      * [online documentation](https://api-docs.torbox.app/#8fa2961a-da1e-410e-84c3-821b3f6b30cc)
      */
-    suspend fun get(
+    suspend fun getTorrent(
         bypassCache: String? = null,
         id: Int? = null,
         offset: Int? = null,
@@ -153,7 +153,7 @@ interface TorrentsApi {
      *
      * [online documentation](https://api-docs.torbox.app/#cc4ceac8-7cb6-4be5-bf09-f949d9e9a458)
      */
-    suspend fun requestTorrentDownloadLink(
+    suspend fun torrentDownloadLink(
         token: String,
         torrentId: Int,
         fileId: Int? = null,
@@ -174,7 +174,7 @@ interface TorrentsApi {
      *
      * [online documentation](https://api-docs.torbox.app/#99e1b7a7-bdf6-4884-af9d-bd9903a8ca63)
      */
-    suspend fun getAvailabilityList(
+    suspend fun getTorrentAvailabilityList(
         hashes: List<String>,
         listFiles: Boolean? = null,
     ): ApiResult<ApiResponseListDto<CacheAvailabilityDto>>
@@ -190,7 +190,7 @@ interface TorrentsApi {
      *
      * [online documentation](https://api-docs.torbox.app/#99e1b7a7-bdf6-4884-af9d-bd9903a8ca63)
      */
-    suspend fun getAvailabilityObject(
+    suspend fun getTorrentAvailabilityObject(
         hashes: List<String>,
         listFiles: Boolean? = null,
     ): ApiResult<CacheAvailabilityObjectResponseDto>
@@ -206,7 +206,7 @@ interface TorrentsApi {
      *
      * [online documentation](https://api-docs.torbox.app/#00718c3f-0147-4423-af4d-e50b94fea867)
      */
-    suspend fun getAvailabilityBatchObject(hashes: List<String>): ApiResult<CacheAvailabilityObjectResponseDto>
+    suspend fun getTorrentAvailabilityBatchObject(hashes: List<String>): ApiResult<CacheAvailabilityObjectResponseDto>
 
     /**
      * Takes in a list of comma separated torrent hashes and checks if the torrent is cached.
@@ -219,7 +219,7 @@ interface TorrentsApi {
      *
      * [online documentation](https://api-docs.torbox.app/)
      */
-    suspend fun getAvailabilityBatchList(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>>
+    suspend fun getTorrentAvailabilityBatchList(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>>
 
     /**
      * Exports the magnet or torrent file.
