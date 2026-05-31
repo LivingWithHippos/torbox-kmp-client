@@ -14,17 +14,17 @@ class JsApiTest {
     @Test
     fun `get Torrents`() =
         scope.promise {
-            val listResult = client.torrents.getTorrent()
+            val listResult = client.torrents.get()
             assertTrue { listResult is ApiResult.Success }
 
-            val singleResult = client.torrents.getTorrent(id = JsTestConfig.torrentId)
+            val singleResult = client.torrents.get(id = JsTestConfig.torrentId)
             assertTrue { singleResult is ApiResult.Success }
         }
 
     @Test
     fun `get user data`() =
         scope.promise {
-            val result = client.user.getUserData()
+            val result = client.user.data()
             assertTrue { result is ApiResult.Success }
         }
 }

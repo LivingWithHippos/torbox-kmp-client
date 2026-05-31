@@ -53,7 +53,7 @@ interface RSSApi {
      *
      * [online documentation](https://api-docs.torbox.app/#e69680e6-f21b-4613-ab70-80598b1ab838)
      */
-    suspend fun edit(
+    suspend fun editRss(
         rssFeedId: Int,
         name: String? = null,
         doRegex: String? = null,

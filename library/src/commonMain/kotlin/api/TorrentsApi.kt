@@ -132,7 +132,7 @@ interface TorrentsApi {
      *
      * [online documentation](https://api-docs.torbox.app/#8fa2961a-da1e-410e-84c3-821b3f6b30cc)
      */
-    suspend fun getTorrent(
+    suspend fun get(
         bypassCache: String? = null,
         id: Int? = null,
         offset: Int? = null,

@@ -4,19 +4,20 @@ import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityObjectResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.CreateTorrentDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateUsenetDto
-import com.github.livingwithhippos.torbox.kmp.client.model.CreatedStreamDto
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UsenetDownloadListResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 
 interface UsenetApi {
     /**
+     * Gets the user's usenet download list.
+     * This gives you the needed information to perform other usenet actions.
+     * Unlike Torrents, this information is updated on its own every 5 seconds for live usenet downloads.
      *
-     * [online documentation](https://api-docs.torbox.app)
+     * [online documentation](https://api-docs.torbox.app/#b9de037f-fd97-4236-bd11-04535c9fe551)
      */
-    suspend fun getUsenet(
+    suspend fun get(
         bypassCache: String? = null,
         id: Int? = null,
         offset: Int? = null,
@@ -44,7 +45,7 @@ interface UsenetApi {
      *
      * [online documentation](https://api-docs.torbox.app/#daacc348-3e3c-476e-8362-f35124a8ca46)
      */
-    suspend fun createUsenet(
+    suspend fun create(
         fileBytes: ByteArray? = null,
         fileName: String? = null,
         link: String? = null,

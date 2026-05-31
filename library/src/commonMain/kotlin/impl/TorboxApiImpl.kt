@@ -145,7 +145,7 @@ class TorboxApiImpl(
             onFailure = { toFailure(it, null) },
         )
 
-    override suspend fun getTorrent(
+    override suspend fun get(
         bypassCache: String?,
         id: Int?,
         offset: Int?,
@@ -471,7 +471,7 @@ class TorboxApiImpl(
         )
     }
 
-    override suspend fun getWebLinks(
+    override suspend fun list(
         bypassCache: String?,
         id: Int?,
         offset: Int?,
@@ -491,7 +491,7 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun createWebLink(
+    override suspend fun create(
         link: String,
         password: String?,
         name: String?,
@@ -589,7 +589,7 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun getHosters(auth: Boolean): ApiResult<ApiResponseListDto<HosterDto>> =
+    override suspend fun hosters(auth: Boolean): ApiResult<ApiResponseListDto<HosterDto>> =
         executeRequest {
             client.get("webdl/hosters") {
                 if (!auth) {
@@ -655,7 +655,7 @@ class TorboxApiImpl(
         }
     }
 
-    override suspend fun getUsenet(
+    override suspend fun get(
         bypassCache: String?,
         id: Int?,
         offset: Int?,
@@ -674,7 +674,7 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun createUsenet(
+    override suspend fun create(
         fileBytes: ByteArray?,
         fileName: String?,
         link: String?,
@@ -964,7 +964,7 @@ class TorboxApiImpl(
             client.post("notifications/test")
         }
 
-    override suspend fun refreshApiToken(sessionToken: String): ApiResult<GenericResponseDto> {
+    override suspend fun refreshToken(sessionToken: String): ApiResult<GenericResponseDto> {
         if (sessionToken.isBlank()) {
             return ApiResult.Failure.BadRequest(
                 IllegalArgumentException("sessionToken must not be blank"),
@@ -983,14 +983,14 @@ class TorboxApiImpl(
         }
     }
 
-    override suspend fun getUserData(settings: Boolean?): ApiResult<ApiResponseDto<UserDataDto>> =
+    override suspend fun data(settings: Boolean?): ApiResult<ApiResponseDto<UserDataDto>> =
         executeRequest {
             client.get("user/me") {
                 settings?.let { parameter("settings", it) }
             }
         }
 
-    override suspend fun addReferralToAccount(
+    override suspend fun addReferral(
         referral: String,
         validate: Boolean,
     ): ApiResult<GenericResponseDto> {
@@ -1013,12 +1013,12 @@ class TorboxApiImpl(
         }
     }
 
-    override suspend fun getConfirmationCode(): ApiResult<GenericResponseDto> =
+    override suspend fun confirmationCode(): ApiResult<GenericResponseDto> =
         executeRequest {
             client.get("user/getconfirmation")
         }
 
-    override suspend fun startDeviceCodeAuthorizationProcess(app: String?): ApiResult<ApiResponseDto<DeviceCodeAuthorizationStartDto>> =
+    override suspend fun startAuthorizationProcess(app: String?): ApiResult<ApiResponseDto<DeviceCodeAuthorizationStartDto>> =
         executeRequest {
             client.get("user/auth/device/start") {
                 noAuth()
@@ -1026,7 +1026,7 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun getTokenFromDeviceCodeProcess(deviceCode: String): ApiResult<ApiResponseDto<DeviceCodeTokenDataDto>> {
+    override suspend fun token(deviceCode: String): ApiResult<ApiResponseDto<DeviceCodeTokenDataDto>> {
         if (deviceCode.isBlank()) {
             return ApiResult.Failure.BadRequest(
                 IllegalArgumentException("deviceCode must not be blank"),
@@ -1042,22 +1042,22 @@ class TorboxApiImpl(
         }
     }
 
-    override suspend fun getReferral(): ApiResult<ApiResponseDto<ReferralDataDto>> =
+    override suspend fun referral(): ApiResult<ApiResponseDto<ReferralDataDto>> =
         executeRequest {
             client.get("user/referraldata")
         }
 
-    override suspend fun getSubscriptions(): ApiResult<ApiResponseListDto<SubscriptionDto>> =
+    override suspend fun subscriptions(): ApiResult<ApiResponseListDto<SubscriptionDto>> =
         executeRequest {
             client.get("user/subscriptions")
         }
 
-    override suspend fun getTransactions(): ApiResult<ApiResponseListDto<TransactionDto>> =
+    override suspend fun transactions(): ApiResult<ApiResponseListDto<TransactionDto>> =
         executeRequest {
             client.get("user/transactions")
         }
 
-    override suspend fun getTransactionPdf(transactionId: String): ApiResult<ByteArray> {
+    override suspend fun transactionPdf(transactionId: String): ApiResult<ByteArray> {
         if (transactionId.isBlank()) {
             return ApiResult.Failure.BadRequest(
                 IllegalArgumentException("transactionId must not be blank"),
@@ -1092,7 +1092,7 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun getSearchEngines(id: Int?): ApiResult<ApiResponseListDto<SearchEngineDto>> =
+    override suspend fun searchEngines(id: Int?): ApiResult<ApiResponseListDto<SearchEngineDto>> =
         executeRequest {
             client.get("user/settings/searchengines") {
                 id?.let { parameter("id", it) }
@@ -1184,7 +1184,7 @@ class TorboxApiImpl(
         }
     }
 
-    override suspend fun getUserStats(
+    override suspend fun userStats(
         general: Boolean,
         bandwidth: Boolean,
         bandwidthGrouping: String?,
@@ -1264,7 +1264,7 @@ class TorboxApiImpl(
         }
     }
 
-    override suspend fun edit(
+    override suspend fun editRss(
         rssFeedId: Int,
         name: String?,
         doRegex: String?,
@@ -1386,7 +1386,7 @@ class TorboxApiImpl(
         }
     }
 
-    override suspend fun control(
+    override suspend fun controlQueued(
         queuedId: Int?,
         operation: String,
         all: Boolean?,

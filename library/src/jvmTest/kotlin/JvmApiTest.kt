@@ -16,10 +16,10 @@ class JvmApiTest {
     @Test
     fun getTorrents() =
         runTest {
-            val listResult = client.torrents.getTorrent()
+            val listResult = client.torrents.get()
             assertTrue { listResult is ApiResult.Success }
 
-            val singleResult = client.torrents.getTorrent(id = TestConfig.torrentId)
+            val singleResult = client.torrents.get(id = TestConfig.torrentId)
             assertTrue { singleResult is ApiResult.Success }
         }
 
@@ -150,7 +150,7 @@ class JvmApiTest {
     fun `unrestrict link`() =
         runTest {
             val result =
-                client.web.createWebLink(
+                client.web.create(
                     link = TestConfig.hosterLink,
                 )
 
@@ -172,24 +172,24 @@ class JvmApiTest {
     @Test
     fun getWebLinks() =
         runTest {
-            val listResult = client.web.getWebLinks()
+            val listResult = client.web.list()
             assertTrue { listResult is ApiResult.Success && listResult.value.success }
 
-            val singleResult = client.web.getWebLinks(id = TestConfig.webDownloadId)
+            val singleResult = client.web.list(id = TestConfig.webDownloadId)
             assertTrue { singleResult is ApiResult.Success && singleResult.value.success }
         }
 
     @Test
     fun `get hoster list`() =
         runTest {
-            val listResult = client.web.getHosters()
+            val listResult = client.web.hosters()
             assertTrue { listResult is ApiResult.Success && listResult.value.success }
         }
 
     @Test
     fun `get usenet list`() =
         runTest {
-            val listResult = client.usenet.getUsenet()
+            val listResult = client.usenet.get()
             assertTrue { listResult is ApiResult.Success && listResult.value.success }
         }
 
@@ -238,14 +238,14 @@ class JvmApiTest {
     @Test
     fun `get user data`() =
         runTest {
-            val result = client.user.getUserData()
+            val result = client.user.data()
             assertTrue { result is ApiResult.Success }
         }
 
     @Test
     fun `get referral`() =
         runTest {
-            val result = client.user.getReferral()
+            val result = client.user.referral()
             assertTrue { result is ApiResult.Success }
         }
 
@@ -253,21 +253,21 @@ class JvmApiTest {
     fun `get subscriptions`() =
         runTest {
             // this returns success but no data
-            val result = client.user.getSubscriptions()
+            val result = client.user.subscriptions()
             assertTrue { result is ApiResult.Success }
         }
 
     @Test
     fun `get user search engines`() =
         runTest {
-            val result = client.user.getSearchEngines()
+            val result = client.user.searchEngines()
             assertTrue { result is ApiResult.Success }
         }
 
     fun `get user stats`() =
         runTest {
             // fixme: this returns 500
-            val result = client.user.getUserStats()
+            val result = client.user.userStats()
             assertTrue { result is ApiResult.Success }
         }
 

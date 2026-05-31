@@ -26,16 +26,16 @@ interface UserApi {
      * @param sessionToken You can find the session_token in the localStorage of your browser on any TorBox.app page under the key torbox_session_token.
      *  This is a temporary token that only lasts for 1 hour, which is why it is used here to verify the identity of a user as well as their API token
      */
-    suspend fun refreshApiToken(sessionToken: String): ApiResult<GenericResponseDto>
+    suspend fun refreshToken(sessionToken: String): ApiResult<GenericResponseDto>
 
     /**
-     * Gets a users account data and informatiom
+     * Gets a users account data and information
      *
      * [online documentation](https://api-docs.torbox.app/#a3775d9b-f3ee-49cd-98a4-fc909ed2923b)
      *
      * @param settings Allows you to retrieve user settings. Null defaults to true (default)
      */
-    suspend fun getUserData(settings: Boolean? = null): ApiResult<ApiResponseDto<UserDataDto>>
+    suspend fun data(settings: Boolean? = null): ApiResult<ApiResponseDto<UserDataDto>>
 
     /**
      * Automatically adds a referral code to the user's account.
@@ -45,7 +45,7 @@ interface UserApi {
      * @param referral Referral code in UUID format.
      * @param validate A regex will be run to check the referral UUID
      */
-    suspend fun addReferralToAccount(
+    suspend fun addReferral(
         referral: String,
         validate: Boolean = false,
     ): ApiResult<GenericResponseDto>
@@ -55,7 +55,7 @@ interface UserApi {
      *
      * [online documentation](https://api-docs.torbox.app/#1c1bfac4-bf2f-4fad-9ae8-a12275be3bd1)
      */
-    suspend fun getConfirmationCode(): ApiResult<GenericResponseDto>
+    suspend fun confirmationCode(): ApiResult<GenericResponseDto>
 
     /**
      * Starts the OAuth device code authorization process.
@@ -64,7 +64,7 @@ interface UserApi {
      *
      * @param app App name shown on the verification page, defaults to "Third Party App"
      */
-    suspend fun startDeviceCodeAuthorizationProcess(app: String?): ApiResult<ApiResponseDto<DeviceCodeAuthorizationStartDto>>
+    suspend fun startAuthorizationProcess(app: String?): ApiResult<ApiResponseDto<DeviceCodeAuthorizationStartDto>>
 
     /**
      * Redeems a token from the OAuth device code authorization process.
@@ -73,28 +73,28 @@ interface UserApi {
      *
      * @param deviceCode The `device_code` returned by startDeviceCodeAuthorizationProcess.
      */
-    suspend fun getTokenFromDeviceCodeProcess(deviceCode: String): ApiResult<ApiResponseDto<DeviceCodeTokenDataDto>>
+    suspend fun token(deviceCode: String): ApiResult<ApiResponseDto<DeviceCodeTokenDataDto>>
 
     /**
      * Gets the user's referral statistics and referral code.
      *
      * [online documentation](https://api-docs.torbox.app/#eb5bd5bd-0d7b-4014-bf2b-497a87cc6a97)
      */
-    suspend fun getReferral(): ApiResult<ApiResponseDto<ReferralDataDto>>
+    suspend fun referral(): ApiResult<ApiResponseDto<ReferralDataDto>>
 
     /**
      * Gets the user's subscriptions, including active and inactive subscriptions.
      *
      * [online documentation](https://api-docs.torbox.app/#bb1307f2-ce3b-4625-a5be-e6ea1ab46a61)
      */
-    suspend fun getSubscriptions(): ApiResult<ApiResponseListDto<SubscriptionDto>>
+    suspend fun subscriptions(): ApiResult<ApiResponseListDto<SubscriptionDto>>
 
     /**
      * Gets the user's list of transactions.
      *
      * [online documentation](https://api-docs.torbox.app/#4205b949-fa83-46e8-8efb-dfa35187b890)
      */
-    suspend fun getTransactions(): ApiResult<ApiResponseListDto<TransactionDto>>
+    suspend fun transactions(): ApiResult<ApiResponseListDto<TransactionDto>>
 
     /**
      * Generates a PDF of the transaction information. Requires the transaction ID from the "Get Transactions" request.
@@ -103,7 +103,7 @@ interface UserApi {
      *
      * @param transactionId The transaction ID that you want to generate the PDF for.
      */
-    suspend fun getTransactionPdf(transactionId: String): ApiResult<ByteArray>
+    suspend fun transactionPdf(transactionId: String): ApiResult<ByteArray>
 
     /**
      * Edits a user's TorBox settings. Values take effect immediately.
@@ -125,14 +125,14 @@ interface UserApi {
      *
      * @param id Optional search engine id to retrieve a specific engine owned by the user.
      */
-    suspend fun getSearchEngines(id: Int? = null): ApiResult<ApiResponseListDto<SearchEngineDto>>
+    suspend fun searchEngines(id: Int? = null): ApiResult<ApiResponseListDto<SearchEngineDto>>
 
     /**
      * Gets a user's stats. Use the query params to select general and/or bandwidth data.
      *
      * [online documentation](https://api-docs.torbox.app/#1eed7757-6c80-4fce-97d2-1d1ad2953dd6)
      */
-    suspend fun getUserStats(
+    suspend fun userStats(
         general: Boolean = true,
         bandwidth: Boolean = false,
         bandwidthGrouping: String? = null,
@@ -157,7 +157,6 @@ interface UserApi {
      * Edits a user's search engine.
      *
      * [online documentation](https://api-docs.torbox.app/#8979611e-5dae-4ee0-81dd-e1bf41570660)
-     *.
      */
     suspend fun modifySearchEngine(
         id: Int,
