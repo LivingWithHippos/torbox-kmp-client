@@ -1184,7 +1184,7 @@ class TorboxApiImpl(
         }
     }
 
-    override suspend fun userStats(
+    override suspend fun stats(
         general: Boolean,
         bandwidth: Boolean,
         bandwidthGrouping: String?,

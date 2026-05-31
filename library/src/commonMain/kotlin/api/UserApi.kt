@@ -132,7 +132,7 @@ interface UserApi {
      *
      * [online documentation](https://api-docs.torbox.app/#1eed7757-6c80-4fce-97d2-1d1ad2953dd6)
      */
-    suspend fun userStats(
+    suspend fun stats(
         general: Boolean = true,
         bandwidth: Boolean = false,
         bandwidthGrouping: String? = null,
