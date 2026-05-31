@@ -33,6 +33,7 @@ import com.github.livingwithhippos.torbox.kmp.client.model.EditWebRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentResultDto
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.HosterDto
+import com.github.livingwithhippos.torbox.kmp.client.model.JobResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.JobsResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.MagnetToFileRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ModifySearchEngineDto
@@ -141,7 +142,7 @@ class TorboxApiImpl(
             onFailure = { toFailure(it, null) },
         )
 
-    override suspend fun getTorrents(
+    override suspend fun get(
         bypassCache: String?,
         id: Int?,
         offset: Int?,
@@ -160,7 +161,7 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun asyncCreateTorrent(
+    override suspend fun asyncCreate(
         fileBytes: ByteArray?,
         fileName: String?,
         magnet: String?,
@@ -212,7 +213,7 @@ class TorboxApiImpl(
         }
     }
 
-    override suspend fun createTorrent(
+    override suspend fun create(
         fileBytes: ByteArray?,
         fileName: String?,
         magnet: String?,
@@ -293,7 +294,7 @@ class TorboxApiImpl(
         }
     }
 
-    override suspend fun editTorrent(
+    override suspend fun edit(
         torrentId: Int,
         name: String?,
         tags: List<String>?,
@@ -342,7 +343,7 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun getTorrentAvailabilityList(
+    override suspend fun getAvailabilityList(
         hashes: List<String>,
         listFiles: Boolean?,
     ): ApiResult<ApiResponseListDto<CacheAvailabilityDto>> =
@@ -356,7 +357,7 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun getTorrentAvailabilityObject(
+    override suspend fun getAvailabilityObject(
         hashes: List<String>,
         listFiles: Boolean?,
     ): ApiResult<CacheAvailabilityObjectResponseDto> =
@@ -370,7 +371,7 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun getTorrentAvailabilityBatchObject(hashes: List<String>): ApiResult<CacheAvailabilityObjectResponseDto> =
+    override suspend fun getAvailabilityBatchObject(hashes: List<String>): ApiResult<CacheAvailabilityObjectResponseDto> =
         executeRequest {
             client.post("torrents/checkcached") {
                 contentType(ContentType.Application.Json)
@@ -383,7 +384,7 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun getTorrentAvailabilityBatchList(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>> =
+    override suspend fun getAvailabilityBatchList(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>> =
         executeRequest {
             client.post("torrents/checkcached") {
                 contentType(ContentType.Application.Json)
@@ -396,7 +397,7 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun exportTorrentData(
+    override suspend fun export(
         torrentId: Int,
         type: String,
     ): ApiResult<ExportTorrentResultDto> {
@@ -671,7 +672,7 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun getUpStatus(): ApiResult<GenericResponseDto> =
+    override suspend fun upStatus(): ApiResult<GenericResponseDto> =
         executeRequest {
             // what happens if the api are failing? does this return success false?
             client.get("https://api.torbox.app") {
@@ -679,14 +680,14 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun getStats(): ApiResult<ApiResponseDto<StatsDto>> =
+    override suspend fun stats(): ApiResult<ApiResponseDto<StatsDto>> =
         executeRequest {
             client.get("stats") {
                 noAuth()
             }
         }
 
-    override suspend fun getChangelog(): ApiResult<String> =
+    override suspend fun changelogRSSFeed(): ApiResult<String> =
         runCatching {
             client.get("changelogs/rss") {
                 noAuth()
@@ -705,14 +706,14 @@ class TorboxApiImpl(
             onFailure = { toFailure(it, null) },
         )
 
-    override suspend fun getChangelogJson(): ApiResult<ApiResponseListDto<ChangelogEntryDto>> =
+    override suspend fun changelogJson(): ApiResult<ApiResponseListDto<ChangelogEntryDto>> =
         executeRequest {
             client.get("changelogs/json") {
                 noAuth()
             }
         }
 
-    override suspend fun getSpeedtestFiles(
+    override suspend fun speedtestFiles(
         testLength: String?,
         region: String?,
         userIp: String?,
@@ -734,7 +735,7 @@ class TorboxApiImpl(
         }
     }
 
-    override suspend fun getNotificationsRss(token: String): ApiResult<String> {
+    override suspend fun rssFeed(token: String): ApiResult<String> {
         if (token.isBlank()) {
             return ApiResult.Failure.BadRequest(
                 IllegalArgumentException("token must not be blank"),
@@ -762,22 +763,21 @@ class TorboxApiImpl(
         )
     }
 
-    override suspend fun getNotifications(): ApiResult<ApiResponseListDto<NotificationDto>> =
+    override suspend fun jsonFeed(): ApiResult<ApiResponseListDto<NotificationDto>> =
         executeRequest {
             client.get("notifications/mynotifications")
         }
 
-    override suspend fun clearNotifications(): ApiResult<GenericResponseDto> =
+    override suspend fun clear(notificationId: Int?): ApiResult<GenericResponseDto> =
         executeRequest {
-            client.post("notifications/clear")
+            if (notificationId != null) {
+                client.post("notifications/clear/$notificationId")
+            } else {
+                client.post("notifications/clear")
+            }
         }
 
-    override suspend fun clearNotification(notificationId: Int): ApiResult<GenericResponseDto> =
-        executeRequest {
-            client.post("notifications/clear/$notificationId")
-        }
-
-    override suspend fun sendTestNotification(): ApiResult<GenericResponseDto> =
+    override suspend fun sendTest(): ApiResult<GenericResponseDto> =
         executeRequest {
             client.post("notifications/test")
         }
@@ -1023,7 +1023,7 @@ class TorboxApiImpl(
         }
     }
 
-    override suspend fun addRss(
+    override suspend fun add(
         url: String,
         name: String,
         doRegex: String?,
@@ -1082,7 +1082,7 @@ class TorboxApiImpl(
         }
     }
 
-    override suspend fun editRss(
+    override suspend fun edit(
         rssFeedId: Int,
         name: String?,
         doRegex: String?,
@@ -1112,7 +1112,7 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun getUserRssFeeds(id: Int?): ApiResult<ApiResponseListDto<RssFeedDto>> {
+    override suspend fun userFeeds(id: Int?): ApiResult<ApiResponseListDto<RssFeedDto>> {
         if (id != null && id <= 0) {
             return ApiResult.Failure.BadRequest(
                 IllegalArgumentException("id must be a positive integer"),
@@ -1126,7 +1126,7 @@ class TorboxApiImpl(
         }
     }
 
-    override suspend fun getRssFeeds(id: Int): ApiResult<ApiResponseListDto<RssFeedItemDto>> {
+    override suspend fun feeds(id: Int): ApiResult<ApiResponseListDto<RssFeedItemDto>> {
         if (id <= 0) {
             return ApiResult.Failure.BadRequest(
                 IllegalArgumentException("id must be a positive integer"),
@@ -1140,19 +1140,9 @@ class TorboxApiImpl(
         }
     }
 
-    override suspend fun getJobs(
-        id: Int?,
-        hash: String?,
-    ): ApiResult<JobsResponseDto> {
-        if (id != null && hash.isNullOrBlank().not()) {
-            return ApiResult.Failure.BadRequest(
-                IllegalArgumentException("Jobs cannot be retrieved using both id and hash"),
-            )
-        }
-
+    override suspend fun jobs(hash: String?): ApiResult<JobsResponseDto> {
         val url =
             when {
-                id != null -> "integration/job/$id"
                 hash.isNullOrBlank().not() -> "integration/jobs/$hash"
                 else -> "integration/jobs"
             }
@@ -1162,12 +1152,17 @@ class TorboxApiImpl(
         }
     }
 
-    override suspend fun deleteJob(id: Int): ApiResult<GenericResponseDto> =
+    override suspend fun job(id: Int): ApiResult<JobResponseDto> =
+        executeRequest {
+            client.get("integration/job/$id")
+        }
+
+    override suspend fun delete(id: Int): ApiResult<GenericResponseDto> =
         executeRequest {
             client.delete("integration/job/$id")
         }
 
-    override suspend fun getQueuedDownloads(
+    override suspend fun downloads(
         bypassCache: Boolean?,
         id: Int?,
         offset: Int?,
@@ -1209,7 +1204,7 @@ class TorboxApiImpl(
         }
     }
 
-    override suspend fun controlQueuedDownloads(
+    override suspend fun control(
         queuedId: Int?,
         operation: String,
         all: Boolean?,
@@ -1250,7 +1245,7 @@ class TorboxApiImpl(
         }
     }
 
-    override suspend fun createStream(
+    override suspend fun create(
         id: Int,
         fileId: Int,
         type: String,
@@ -1302,7 +1297,7 @@ class TorboxApiImpl(
         }
     }
 
-    override suspend fun getStream(
+    override suspend fun get(
         presignedToken: String,
         token: String,
         chosenSubtitleIndex: Int?,

@@ -24,6 +24,15 @@ data class JobsResponseDto(
 ) : ApiSuccessResponse
 
 @Serializable
+data class JobResponseDto(
+    override val success: Boolean,
+    val error: String?,
+    val detail: String,
+    @Serializable(with = JobSerializer::class)
+    val data: JobDto?,
+) : ApiSuccessResponse
+
+@Serializable
 data class JobDto(
     val id: Int,
     @SerialName("created_at") val createdAt: String,

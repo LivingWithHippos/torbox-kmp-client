@@ -12,7 +12,7 @@ interface QueuedApi {
      *
      * [online documentation](https://api-docs.torbox.app/#097e3b5d-c34d-449a-b26b-603ed3e6f6fe)
      */
-    suspend fun getQueuedDownloads(
+    suspend fun downloads(
         bypassCache: Boolean? = null,
         id: Int? = null,
         offset: Int? = null,
@@ -31,7 +31,7 @@ interface QueuedApi {
      *
      * [online documentation](https://api-docs.torbox.app/#2e9b7b90-5544-478d-8744-e04543f4f0b8)
      */
-    suspend fun controlQueuedDownloads(
+    suspend fun control(
         queuedId: Int? = null,
         operation: String,
         all: Boolean? = null,

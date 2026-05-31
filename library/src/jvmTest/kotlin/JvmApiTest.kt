@@ -4,6 +4,7 @@ import com.github.livingwithhippos.torbox.kmp.client.client.TorboxClient
 import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentResultDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 import com.github.livingwithhippos.torbox.kmp.client.network.RestClientConfig
+import io.ktor.client.plugins.logging.LogLevel
 import kotlinx.coroutines.test.runTest
 import kotlin.io.path.Path
 import kotlin.io.path.readBytes
@@ -16,10 +17,10 @@ class JvmApiTest {
     @Test
     fun getTorrents() =
         runTest {
-            val listResult = client.torrents.getTorrents()
+            val listResult = client.torrents.get()
             assertTrue { listResult is ApiResult.Success }
 
-            val singleResult = client.torrents.getTorrents(id = TestConfig.torrentId)
+            val singleResult = client.torrents.get(id = TestConfig.torrentId)
             assertTrue { singleResult is ApiResult.Success }
         }
 
@@ -27,7 +28,7 @@ class JvmApiTest {
     fun `create torrent from magnet`() =
         runTest {
             val result =
-                client.torrents.createTorrent(
+                client.torrents.create(
                     magnet = TestConfig.magnetLink,
                     allowZip = false,
                     addOnlyIfCached = false,
@@ -42,7 +43,7 @@ class JvmApiTest {
             val torrentBytes = Path(TestConfig.torrentFilePath).readBytes()
 
             val result =
-                client.torrents.createTorrent(
+                client.torrents.create(
                     fileBytes = torrentBytes,
                 )
 
@@ -66,14 +67,14 @@ class JvmApiTest {
     fun `torrent cache`() =
         runTest {
             val resultList =
-                client.torrents.getTorrentAvailabilityList(
+                client.torrents.getAvailabilityList(
                     hashes = listOf(TestConfig.torrentHash),
                 )
 
             assertTrue { resultList is ApiResult.Success }
 
             val resultObject =
-                client.torrents.getTorrentAvailabilityObject(
+                client.torrents.getAvailabilityObject(
                     hashes = listOf(TestConfig.torrentHash),
                 )
 
@@ -84,7 +85,7 @@ class JvmApiTest {
     fun `torrent batch cache`() =
         runTest {
             val resultList =
-                client.torrents.getTorrentAvailabilityBatchObject(
+                client.torrents.getAvailabilityBatchObject(
                     hashes = listOf(TestConfig.torrentHash),
                 )
 
@@ -94,6 +95,7 @@ class JvmApiTest {
     @Test
     fun `control torrent`() =
         runTest {
+            // this test must use a valid torrent id (check the list API)
             val result =
                 client.torrents.controlTorrent(
                     torrentId = TestConfig.torrentId,
@@ -107,7 +109,7 @@ class JvmApiTest {
     fun `edit torrent`() =
         runTest {
             val result =
-                client.torrents.editTorrent(
+                client.torrents.edit(
                     torrentId = TestConfig.torrentId,
                     name = "New Torrent Name",
                 )
@@ -115,12 +117,11 @@ class JvmApiTest {
             assertTrue { result is ApiResult.Success }
         }
 
-    @Test
     fun `export torrent magnet`() =
         runTest {
-            // todo: chek these tests, this returns null and the other 4 bytes
+            // fixme: chek these tests, this returns null and `export torrent file` returns 4 bytes
             val result =
-                client.torrents.exportTorrentData(
+                client.torrents.export(
                     torrentId = TestConfig.torrentId,
                     type = "magnet",
                 )
@@ -131,7 +132,7 @@ class JvmApiTest {
     fun `export torrent file`() =
         runTest {
             val result =
-                client.torrents.exportTorrentData(
+                client.torrents.export(
                     torrentId = TestConfig.torrentId,
                     type = "file",
                 )
@@ -196,42 +197,42 @@ class JvmApiTest {
     @Test
     fun `get up status`() =
         runTest {
-            val result = client.general.getUpStatus()
+            val result = client.general.upStatus()
             assertTrue { result is ApiResult.Success && result.value.success }
         }
 
     @Test
     fun `get stats`() =
         runTest {
-            val result = client.general.getStats()
+            val result = client.general.stats()
             assertTrue { result is ApiResult.Success && result.value.success }
         }
 
     @Test
     fun `get changeLog`() =
         runTest {
-            val result = client.general.getChangelog()
+            val result = client.general.changelogRSSFeed()
             assertTrue { result is ApiResult.Success }
         }
 
     @Test
     fun `get changeLog json`() =
         runTest {
-            val result = client.general.getChangelogJson()
+            val result = client.general.changelogJson()
             assertTrue { result is ApiResult.Success }
         }
 
     @Test
     fun `get speed test`() =
         runTest {
-            val result = client.general.getSpeedtestFiles()
+            val result = client.general.speedtestFiles()
             assertTrue { result is ApiResult.Success }
         }
 
     @Test
     fun `get notifications`() =
         runTest {
-            val result = client.notifications.getNotifications()
+            val result = client.notifications.jsonFeed()
             assertTrue { result is ApiResult.Success }
         }
 
@@ -264,7 +265,6 @@ class JvmApiTest {
             assertTrue { result is ApiResult.Success }
         }
 
-    @Test
     fun `get user stats`() =
         runTest {
             // fixme: this returns 500
@@ -275,14 +275,14 @@ class JvmApiTest {
     @Test
     fun `get user rss`() =
         runTest {
-            val result = client.rss.getUserRssFeeds()
+            val result = client.rss.userFeeds()
             assertTrue { result is ApiResult.Success }
         }
 
     @Test
     fun `get all integrations`() =
         runTest {
-            val result = client.integrations.getJobs()
+            val result = client.integrations.jobs()
             assertTrue { result is ApiResult.Success }
         }
 }

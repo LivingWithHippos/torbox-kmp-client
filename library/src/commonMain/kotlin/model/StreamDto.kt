@@ -3,6 +3,7 @@ package com.github.livingwithhippos.torbox.kmp.client.model
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+// todo: this probably has more nullable variables, test it
 @Serializable
 data class CreatedStreamDto(
     val id: Int,
@@ -24,7 +25,7 @@ data class CreatedStreamDto(
     @SerialName("scrobbling_enabled") val scrobblingEnabled: Boolean,
     @SerialName("hls_url") val hlsUrl: String,
     @SerialName("presigned_token") val presignedToken: String,
-    @SerialName("subtitle_index") val subtitleIndex: Int,
+    @SerialName("subtitle_index") val subtitleIndex: Int?,
     @SerialName("audio_index") val audioIndex: Int,
     @SerialName("resolution_index") val resolutionIndex: Int,
     @SerialName("is_transcoding") val isTranscoding: Boolean,

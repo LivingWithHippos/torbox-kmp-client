@@ -6,7 +6,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.promise
 import kotlin.test.Test
 import kotlin.test.assertTrue
-import co.touchlab.kermit.Logger as KermitLogger
 
 class JsApiTest {
     private val client = TorboxClient.create(RestClientConfig(bearerToken = JsTestConfig.bearerToken))
@@ -15,10 +14,10 @@ class JsApiTest {
     @Test
     fun `get Torrents`() =
         scope.promise {
-            val listResult = client.torrents.getTorrents()
+            val listResult = client.torrents.get()
             assertTrue { listResult is ApiResult.Success }
 
-            val singleResult = client.torrents.getTorrents(id = JsTestConfig.torrentId)
+            val singleResult = client.torrents.get(id = JsTestConfig.torrentId)
             assertTrue { singleResult is ApiResult.Success }
         }
 

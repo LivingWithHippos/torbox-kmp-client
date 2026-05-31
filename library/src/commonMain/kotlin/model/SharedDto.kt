@@ -26,6 +26,11 @@ data class ApiResponseListDto<T>(
  * base response returned by the api. Data is always present and may be null, especially in errors.
  * The only precaution is to check for success = true when this is the return type
  * since even errors returns this
+ *
+ * @param success false if there was an error
+ * @param error if success is false this could be an error code, such as "DATABASE_ERROR", see [detail] for more info
+ * @param detail a string detailing the operation result
+ * @param data an optional string which may contain the valid response, if the API has a return value
  */
 @Serializable
 data class GenericResponseDto(
