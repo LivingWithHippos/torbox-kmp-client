@@ -282,7 +282,8 @@ class TorboxApiImpl(
         operation: String,
         all: Boolean?,
     ): ApiResult<GenericResponseDto> {
-        if (listOf("reannounce", "delete", "resume", "stop_seeding").contains(operation.lowercase()).not()) {
+        val normalizedOperation = operation.trim().lowercase()
+        if (normalizedOperation !in listOf("reannounce", "delete", "resume", "stop_seeding")) {
             return ApiResult.Failure.BadRequest(
                 IllegalArgumentException("Operation must be one of: reannounce, delete, resume or stop_seeding"),
             )
@@ -298,7 +299,7 @@ class TorboxApiImpl(
                 setBody(
                     TorrentControlRequestDto(
                         torrentId = torrentId,
-                        operation = operation.lowercase(),
+                        operation = normalizedOperation,
                         all = all,
                     ),
                 )
@@ -648,8 +649,8 @@ class TorboxApiImpl(
         operation: String,
         all: Boolean?,
     ): ApiResult<GenericResponseDto> {
-        // just rename this to delete?
-        if (listOf("delete").contains(operation.lowercase()).not()) {
+        val normalizedOperation = operation.trim().lowercase()
+        if (normalizedOperation != "delete") {
             return ApiResult.Failure.BadRequest(
                 IllegalArgumentException("Operation must be one of: delete"),
             )
@@ -665,7 +666,7 @@ class TorboxApiImpl(
                 setBody(
                     WebControlRequestDto(
                         webId = webId,
-                        operation = operation.lowercase(),
+                        operation = normalizedOperation,
                         all = all,
                     ),
                 )
@@ -789,7 +790,7 @@ class TorboxApiImpl(
         appendName: Boolean?,
     ): ApiResult<GenericResponseDto> =
         executeRequest {
-            client.get("usenet/controlusenetdownload") {
+            client.get("usenet/requestdl") {
                 parameter("token", token)
                 parameter("usenet_id", usenetId)
                 parameter("file_id", fileId)
