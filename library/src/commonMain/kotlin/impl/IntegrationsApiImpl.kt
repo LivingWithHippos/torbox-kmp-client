@@ -2,8 +2,8 @@ package com.github.livingwithhippos.torbox.kmp.client.impl
 
 import com.github.livingwithhippos.torbox.kmp.client.api.IntegrationsApi
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.JobResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.JobsResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
+import com.github.livingwithhippos.torbox.kmp.client.model.JobDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 import com.github.livingwithhippos.torbox.kmp.client.network.executeRequest
 import io.ktor.client.HttpClient
@@ -13,7 +13,7 @@ import io.ktor.client.request.get
 class IntegrationsApiImpl(
     private val client: HttpClient,
 ) : IntegrationsApi {
-    override suspend fun jobs(hash: String?): ApiResult<JobsResponseDto> {
+    override suspend fun jobs(hash: String?): ApiResult<ApiResponseListDto<JobDto>> {
         val url =
             when {
                 hash.isNullOrBlank().not() -> "integration/jobs/$hash"
@@ -25,7 +25,7 @@ class IntegrationsApiImpl(
         }
     }
 
-    override suspend fun job(id: Int): ApiResult<JobResponseDto> =
+    override suspend fun job(id: Int): ApiResult<ApiResponseDto<JobDto>> =
         executeRequest {
             client.get("integration/job/$id")
         }

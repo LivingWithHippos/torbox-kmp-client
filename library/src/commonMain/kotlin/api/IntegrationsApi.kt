@@ -1,8 +1,8 @@
 package com.github.livingwithhippos.torbox.kmp.client.api
 
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.JobResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.JobsResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
+import com.github.livingwithhippos.torbox.kmp.client.model.JobDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 
 interface IntegrationsApi {
@@ -19,14 +19,14 @@ interface IntegrationsApi {
      *
      * These two APIs have been merged into one.
      */
-    suspend fun jobs(hash: String? = null): ApiResult<JobsResponseDto>
+    suspend fun jobs(hash: String? = null): ApiResult<ApiResponseListDto<JobDto>>
 
     /**
      * Gets a specific job using the Job's ID. To get the ID, you will have to Get All Jobs, and get the ID you want.
      *
      * [online documentation](https://api-docs.torbox.app/#07a30808-e06d-4e87-a38f-2595a9ae2bc4)
      */
-    suspend fun job(id: Int): ApiResult<JobResponseDto>
+    suspend fun job(id: Int): ApiResult<ApiResponseDto<JobDto>>
 
     /**
      * Cancels a job or deletes the job. Cancels while in progress (pending, uploading), or deletes the job any other time.
