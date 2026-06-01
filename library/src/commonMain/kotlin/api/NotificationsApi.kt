@@ -2,7 +2,6 @@ package com.github.livingwithhippos.torbox.kmp.client.api
 
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
-import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.NotificationDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 
@@ -36,7 +35,7 @@ interface NotificationsApi {
      *
      * Merged version of two APIs
      */
-    suspend fun clear(notificationId: Int?): ApiResult<GenericResponseDto>
+    suspend fun clear(notificationId: Int?): ApiResult<ApiResponseDto<String>>
 
     /**
      * Sends a test notification to all enabled notification types.
@@ -44,5 +43,5 @@ interface NotificationsApi {
      *
      * [online documentation](https://api-docs.torbox.app/#03709e2d-4c17-49cb-bcac-bf9c1c99c536)
      */
-    suspend fun sendTest(): ApiResult<GenericResponseDto>
+    suspend fun sendTest(): ApiResult<ApiResponseDto<String>>
 }

@@ -4,7 +4,6 @@ import com.github.livingwithhippos.torbox.kmp.client.api.GeneralApi
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ChangelogEntryDto
-import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.SpeedtestFileDto
 import com.github.livingwithhippos.torbox.kmp.client.model.StatsDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
@@ -17,7 +16,7 @@ import io.ktor.client.request.parameter
 class GeneralApiImpl(
     private val client: HttpClient,
 ) : GeneralApi {
-    override suspend fun upStatus(): ApiResult<GenericResponseDto> =
+    override suspend fun upStatus(): ApiResult<ApiResponseDto<String>> =
         executeRequest {
             // what happens if the api are failing? does this return success false?
             client.get("https://api.torbox.app") {

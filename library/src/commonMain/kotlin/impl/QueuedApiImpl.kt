@@ -1,9 +1,9 @@
 package com.github.livingwithhippos.torbox.kmp.client.impl
 
 import com.github.livingwithhippos.torbox.kmp.client.api.QueuedApi
+import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ControlQueuedDownloadsRequestDto
-import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.QueuedDownloadDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 import com.github.livingwithhippos.torbox.kmp.client.network.executeRequest
@@ -64,7 +64,7 @@ class QueuedApiImpl(
         queuedId: Int?,
         operation: String,
         all: Boolean?,
-    ): ApiResult<GenericResponseDto> {
+    ): ApiResult<ApiResponseDto<String>> {
         val normalizedOperation = operation.trim().lowercase()
         if (normalizedOperation !in listOf("delete", "start")) {
             return ApiResult.Failure.BadRequest(

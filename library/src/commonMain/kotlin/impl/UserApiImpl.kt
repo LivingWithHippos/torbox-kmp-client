@@ -7,7 +7,6 @@ import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
 import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeAuthorizationStartDto
 import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeTokenDataDto
 import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeTokenRequestDto
-import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ModifySearchEngineDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ModifySearchEngineRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ReferralDataDto
@@ -41,7 +40,7 @@ class UserApiImpl(
     private val uuidRegex =
         Regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$")
 
-    override suspend fun refreshToken(sessionToken: String): ApiResult<GenericResponseDto> {
+    override suspend fun refreshToken(sessionToken: String): ApiResult<ApiResponseDto<String>> {
         if (sessionToken.isBlank()) {
             return ApiResult.Failure.BadRequest(
                 IllegalArgumentException("sessionToken must not be blank"),
@@ -70,7 +69,7 @@ class UserApiImpl(
     override suspend fun addReferral(
         referral: String,
         validate: Boolean,
-    ): ApiResult<GenericResponseDto> {
+    ): ApiResult<ApiResponseDto<String>> {
         if (referral.isBlank()) {
             return ApiResult.Failure.BadRequest(
                 IllegalArgumentException("referral must not be blank"),
@@ -90,7 +89,7 @@ class UserApiImpl(
         }
     }
 
-    override suspend fun confirmationCode(): ApiResult<GenericResponseDto> =
+    override suspend fun confirmationCode(): ApiResult<ApiResponseDto<String>> =
         executeRequest {
             client.get("user/getconfirmation")
         }
@@ -161,7 +160,7 @@ class UserApiImpl(
         )
     }
 
-    override suspend fun editSettings(settings: UserSettingsRequestDto): ApiResult<GenericResponseDto> =
+    override suspend fun editSettings(settings: UserSettingsRequestDto): ApiResult<ApiResponseDto<String>> =
         executeRequest {
             client.put("user/settings/editsettings") {
                 contentType(ContentType.Application.Json)
@@ -180,7 +179,7 @@ class UserApiImpl(
         id: Int?,
         operation: String,
         all: Boolean?,
-    ): ApiResult<GenericResponseDto> {
+    ): ApiResult<ApiResponseDto<String>> {
         val normalized = operation.trim().lowercase()
         if (normalized !in listOf("enable", "disable", "check", "delete")) {
             return ApiResult.Failure.BadRequest(

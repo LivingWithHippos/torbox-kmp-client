@@ -4,7 +4,6 @@ import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
 import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeAuthorizationStartDto
 import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeTokenDataDto
-import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ModifySearchEngineDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ReferralDataDto
 import com.github.livingwithhippos.torbox.kmp.client.model.SearchEngineDto
@@ -26,7 +25,7 @@ interface UserApi {
      * @param sessionToken You can find the session_token in the localStorage of your browser on any TorBox.app page under the key torbox_session_token.
      *  This is a temporary token that only lasts for 1 hour, which is why it is used here to verify the identity of a user as well as their API token
      */
-    suspend fun refreshToken(sessionToken: String): ApiResult<GenericResponseDto>
+    suspend fun refreshToken(sessionToken: String): ApiResult<ApiResponseDto<String>>
 
     /**
      * Gets a users account data and information
@@ -48,14 +47,14 @@ interface UserApi {
     suspend fun addReferral(
         referral: String,
         validate: Boolean = false,
-    ): ApiResult<GenericResponseDto>
+    ): ApiResult<ApiResponseDto<String>>
 
     /**
      * Requests a 6-digit code to be sent to the user's email for verification.
      *
      * [online documentation](https://api-docs.torbox.app/#1c1bfac4-bf2f-4fad-9ae8-a12275be3bd1)
      */
-    suspend fun confirmationCode(): ApiResult<GenericResponseDto>
+    suspend fun confirmationCode(): ApiResult<ApiResponseDto<String>>
 
     /**
      * Starts the OAuth device code authorization process.
@@ -116,7 +115,7 @@ interface UserApi {
      *
      * @param settings A [UserSettingsRequestDto] containing the settings to update.
      */
-    suspend fun editSettings(settings: UserSettingsRequestDto): ApiResult<GenericResponseDto>
+    suspend fun editSettings(settings: UserSettingsRequestDto): ApiResult<ApiResponseDto<String>>
 
     /**
      * Gets all of user's configured search engines. Can pass an optional id to retrieve a specific search engine.
@@ -151,7 +150,7 @@ interface UserApi {
         id: Int?,
         operation: String,
         all: Boolean?,
-    ): ApiResult<GenericResponseDto>
+    ): ApiResult<ApiResponseDto<String>>
 
     /**
      * Edits a user's search engine.

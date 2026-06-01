@@ -1,6 +1,6 @@
 package com.github.livingwithhippos.torbox.kmp.client.api
 
-import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.JobResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.JobsResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
@@ -34,5 +34,5 @@ interface IntegrationsApi {
      *
      * [online documentation](https://api-docs.torbox.app/#50d0f0fa-f189-4883-9068-42a6937b59c6)
      */
-    suspend fun delete(id: Int): ApiResult<GenericResponseDto>
+    suspend fun delete(id: Int): ApiResult<ApiResponseDto<String>>
 }

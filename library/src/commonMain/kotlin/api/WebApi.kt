@@ -5,7 +5,6 @@ import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseMapDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateWebDownloadDto
-import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.HosterDto
 import com.github.livingwithhippos.torbox.kmp.client.model.WebDownloadDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
@@ -40,7 +39,7 @@ interface WebApi {
         webId: Int? = null,
         operation: String,
         all: Boolean? = null,
-    ): ApiResult<GenericResponseDto>
+    ): ApiResult<ApiResponseDto<String>>
 
     /**
      * Gets the user's web download list.
@@ -88,7 +87,7 @@ interface WebApi {
         userIp: String? = null,
         redirect: Boolean? = null,
         appendName: Boolean? = null,
-    ): ApiResult<GenericResponseDto>
+    ): ApiResult<ApiResponseDto<String>>
 
     /**
      * Takes in a list of comma separated web hashes and checks if the web download is cached.
@@ -224,5 +223,5 @@ interface WebApi {
         name: String? = null,
         tags: List<String>? = null,
         alternativeHashes: List<String>? = null,
-    ): ApiResult<GenericResponseDto>
+    ): ApiResult<ApiResponseDto<String>>
 }

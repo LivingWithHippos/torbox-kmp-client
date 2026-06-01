@@ -8,7 +8,6 @@ import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateWebDownloadDto
 import com.github.livingwithhippos.torbox.kmp.client.model.EditWebRequestDto
-import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.HosterDto
 import com.github.livingwithhippos.torbox.kmp.client.model.WebControlRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.WebDownloadDto
@@ -89,7 +88,7 @@ class WebApiImpl(
         userIp: String?,
         redirect: Boolean?,
         appendName: Boolean?,
-    ): ApiResult<GenericResponseDto> =
+    ): ApiResult<ApiResponseDto<String>> =
         executeRequest {
             client.get("webdl/requestdl") {
                 parameter("token", token)
@@ -170,7 +169,7 @@ class WebApiImpl(
         name: String?,
         tags: List<String>?,
         alternativeHashes: List<String>?,
-    ): ApiResult<GenericResponseDto> {
+    ): ApiResult<ApiResponseDto<String>> {
         if (name == null && tags == null && alternativeHashes == null) {
             return ApiResult.Failure.BadRequest(
                 IllegalArgumentException("At least one between name, tags, or alternativeHashes must be provided"),
@@ -196,7 +195,7 @@ class WebApiImpl(
         webId: Int?,
         operation: String,
         all: Boolean?,
-    ): ApiResult<GenericResponseDto> {
+    ): ApiResult<ApiResponseDto<String>> {
         val normalizedOperation = operation.trim().lowercase()
         if (normalizedOperation != "delete") {
             return ApiResult.Failure.BadRequest(

@@ -3,7 +3,6 @@ package com.github.livingwithhippos.torbox.kmp.client.api
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ChangelogEntryDto
-import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.SpeedtestFileDto
 import com.github.livingwithhippos.torbox.kmp.client.model.StatsDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
@@ -14,7 +13,7 @@ interface GeneralApi {
      *
      * [online documentation](https://api-docs.torbox.app/#2781b110-d116-4e17-92d9-4146149aad95)
      */
-    suspend fun upStatus(): ApiResult<GenericResponseDto>
+    suspend fun upStatus(): ApiResult<ApiResponseDto<String>>
 
     /**
      * Simply gets general stats about the TorBox service.

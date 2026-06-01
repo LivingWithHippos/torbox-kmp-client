@@ -1,7 +1,7 @@
 package com.github.livingwithhippos.torbox.kmp.client.api
 
+import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
-import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.RssFeedDto
 import com.github.livingwithhippos.torbox.kmp.client.model.RssFeedItemDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
@@ -24,7 +24,7 @@ interface RSSApi {
         passCheck: Boolean? = null,
         rssType: String? = null,
         torrentSeeding: Int? = null,
-    ): ApiResult<GenericResponseDto>
+    ): ApiResult<ApiResponseDto<String>>
 
     /**
      * Controls an RSS Feed. By sending the RSS feed's ID and the type of operation you want to perform,
@@ -42,7 +42,7 @@ interface RSSApi {
     suspend fun control(
         operation: String,
         rssFeedId: Int,
-    ): ApiResult<GenericResponseDto>
+    ): ApiResult<ApiResponseDto<String>>
 
     /**
      * Allows you to edit the RSS feed based on the RSS feed ID passed.
@@ -63,7 +63,7 @@ interface RSSApi {
         passCheck: Boolean? = null,
         rssType: String? = null,
         torrentSeeding: Int? = null,
-    ): ApiResult<GenericResponseDto>
+    ): ApiResult<ApiResponseDto<String>>
 
     /**
      * Gets all of a user's RSS feeds located on their account.

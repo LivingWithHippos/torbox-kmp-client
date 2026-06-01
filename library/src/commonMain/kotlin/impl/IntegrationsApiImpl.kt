@@ -1,7 +1,7 @@
 package com.github.livingwithhippos.torbox.kmp.client.impl
 
 import com.github.livingwithhippos.torbox.kmp.client.api.IntegrationsApi
-import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.JobResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.JobsResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
@@ -30,7 +30,7 @@ class IntegrationsApiImpl(
             client.get("integration/job/$id")
         }
 
-    override suspend fun delete(id: Int): ApiResult<GenericResponseDto> =
+    override suspend fun delete(id: Int): ApiResult<ApiResponseDto<String>> =
         executeRequest {
             client.delete("integration/job/$id")
         }

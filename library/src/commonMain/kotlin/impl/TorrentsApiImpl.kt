@@ -9,7 +9,6 @@ import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityRequ
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateTorrentDto
 import com.github.livingwithhippos.torbox.kmp.client.model.EditTorrentRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentResultDto
-import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.MagnetToFileRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentControlRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentDto
@@ -73,7 +72,7 @@ class TorrentsApiImpl(
         name: String?,
         asQueued: Boolean?,
         addOnlyIfCached: Boolean?,
-    ): ApiResult<GenericResponseDto> {
+    ): ApiResult<ApiResponseDto<String>> {
         if (fileBytes == null && magnet.isNullOrBlank()) {
             return ApiResult.Failure.BadRequest(
                 IllegalArgumentException("Either fileBytes or magnet must be provided"),
@@ -172,7 +171,7 @@ class TorrentsApiImpl(
         torrentId: Int?,
         operation: String,
         all: Boolean?,
-    ): ApiResult<GenericResponseDto> {
+    ): ApiResult<ApiResponseDto<String>> {
         val normalizedOperation = operation.trim().lowercase()
         if (normalizedOperation !in listOf("reannounce", "delete", "resume", "stop_seeding")) {
             return ApiResult.Failure.BadRequest(
@@ -203,7 +202,7 @@ class TorrentsApiImpl(
         name: String?,
         tags: List<String>?,
         alternativeHashes: List<String>?,
-    ): ApiResult<GenericResponseDto> {
+    ): ApiResult<ApiResponseDto<String>> {
         if (name == null && tags == null && alternativeHashes == null) {
             return ApiResult.Failure.BadRequest(
                 IllegalArgumentException("At least one between name, tags, or alternativeHashes must be provided"),
@@ -233,7 +232,7 @@ class TorrentsApiImpl(
         userIp: String?,
         redirect: Boolean?,
         appendName: Boolean?,
-    ): ApiResult<GenericResponseDto> =
+    ): ApiResult<ApiResponseDto<String>> =
         executeRequest {
             client.get("torrents/requestdl") {
                 parameter("token", token)
@@ -321,7 +320,7 @@ class TorrentsApiImpl(
                     return@fold ApiResult.Failure.Http(response.status.value, response.safeBodyText())
                 }
                 if (type == "magnet") {
-                    runCatching { response.body<GenericResponseDto>() }.fold(
+                    runCatching { response.body<ApiResponseDto<String>>() }.fold(
                         onSuccess = { parsed ->
                             if (parsed.success && parsed.data != null) {
                                 ApiResult.Success(ExportTorrentResultDto.Magnet(parsed.data))

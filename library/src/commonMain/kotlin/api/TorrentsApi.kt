@@ -6,7 +6,6 @@ import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseMapDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateTorrentDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentResultDto
-import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 
@@ -30,7 +29,7 @@ interface TorrentsApi {
         name: String? = null,
         asQueued: Boolean? = null,
         addOnlyIfCached: Boolean? = null,
-    ): ApiResult<GenericResponseDto>
+    ): ApiResult<ApiResponseDto<String>>
 
     /**
      * Creates a torrent under your account.
@@ -70,7 +69,7 @@ interface TorrentsApi {
         torrentId: Int? = null,
         operation: String,
         all: Boolean? = null,
-    ): ApiResult<GenericResponseDto>
+    ): ApiResult<ApiResponseDto<String>>
 
     /**
      * Updates a download item based on the item's ID.
@@ -104,7 +103,7 @@ interface TorrentsApi {
         name: String? = null,
         tags: List<String>? = null,
         alternativeHashes: List<String>? = null,
-    ): ApiResult<GenericResponseDto>
+    ): ApiResult<ApiResponseDto<String>>
 
     /**
      * Gets the user's torrent list. This gives you the needed information to perform other torrent actions.
@@ -192,7 +191,7 @@ interface TorrentsApi {
         userIp: String? = null,
         redirect: Boolean? = null,
         appendName: Boolean? = null,
-    ): ApiResult<GenericResponseDto>
+    ): ApiResult<ApiResponseDto<String>>
 
     /**
      * Takes in a list of comma separated torrent hashes and checks if the torrent is cached.

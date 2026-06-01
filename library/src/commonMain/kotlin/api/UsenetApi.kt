@@ -5,7 +5,6 @@ import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseMapDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateUsenetDto
-import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UsenetDownloadDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 
@@ -81,7 +80,7 @@ interface UsenetApi {
         usenetId: Int? = null,
         operation: String,
         all: Boolean? = null,
-    ): ApiResult<GenericResponseDto>
+    ): ApiResult<ApiResponseDto<String>>
 
     /**
      * Requests the download link from the server.
@@ -105,7 +104,7 @@ interface UsenetApi {
         userIp: String? = null,
         redirect: Boolean? = null,
         appendName: Boolean? = null,
-    ): ApiResult<GenericResponseDto>
+    ): ApiResult<ApiResponseDto<String>>
 
     /**
      * Takes in a list of comma separated usenet hashes and checks if the usenet download is cached.
@@ -208,5 +207,5 @@ interface UsenetApi {
         name: String? = null,
         tags: List<String>? = null,
         alternativeHashes: List<String>? = null,
-    ): ApiResult<GenericResponseDto>
+    ): ApiResult<ApiResponseDto<String>>
 }

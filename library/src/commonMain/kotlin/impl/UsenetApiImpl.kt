@@ -8,7 +8,6 @@ import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateUsenetDto
 import com.github.livingwithhippos.torbox.kmp.client.model.EditUsenetRequestDto
-import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UsenetControlRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UsenetDownloadDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
@@ -110,7 +109,7 @@ class UsenetApiImpl(
         usenetId: Int?,
         operation: String,
         all: Boolean?,
-    ): ApiResult<GenericResponseDto> {
+    ): ApiResult<ApiResponseDto<String>> {
         if (listOf("delete").contains(operation.lowercase()).not()) {
             return ApiResult.Failure.BadRequest(
                 IllegalArgumentException("Operation must be one of: delete"),
@@ -143,7 +142,7 @@ class UsenetApiImpl(
         userIp: String?,
         redirect: Boolean?,
         appendName: Boolean?,
-    ): ApiResult<GenericResponseDto> =
+    ): ApiResult<ApiResponseDto<String>> =
         executeRequest {
             client.get("usenet/requestdl") {
                 parameter("token", token)
@@ -215,7 +214,7 @@ class UsenetApiImpl(
         name: String?,
         tags: List<String>?,
         alternativeHashes: List<String>?,
-    ): ApiResult<GenericResponseDto> {
+    ): ApiResult<ApiResponseDto<String>> {
         if (name == null && tags == null && alternativeHashes == null) {
             return ApiResult.Failure.BadRequest(
                 IllegalArgumentException("At least one between name, tags, or alternativeHashes must be provided"),

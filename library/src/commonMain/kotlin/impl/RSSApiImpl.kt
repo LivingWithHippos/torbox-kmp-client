@@ -2,10 +2,10 @@ package com.github.livingwithhippos.torbox.kmp.client.impl
 
 import com.github.livingwithhippos.torbox.kmp.client.api.RSSApi
 import com.github.livingwithhippos.torbox.kmp.client.model.AddRssRequestDto
+import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ControlRssRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.EditRssRequestDto
-import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.RssFeedDto
 import com.github.livingwithhippos.torbox.kmp.client.model.RssFeedItemDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
@@ -31,7 +31,7 @@ class RSSApiImpl(
         passCheck: Boolean?,
         rssType: String?,
         torrentSeeding: Int?,
-    ): ApiResult<GenericResponseDto> {
+    ): ApiResult<ApiResponseDto<String>> {
         if (url.isBlank()) {
             return ApiResult.Failure.BadRequest(IllegalArgumentException("url must not be blank"))
         }
@@ -59,7 +59,7 @@ class RSSApiImpl(
     override suspend fun control(
         operation: String,
         rssFeedId: Int,
-    ): ApiResult<GenericResponseDto> {
+    ): ApiResult<ApiResponseDto<String>> {
         val normalized = operation.trim().lowercase()
         if (listOf("update", "delete", "resume", "pause").contains(normalized).not()) {
             return ApiResult.Failure.BadRequest(
@@ -90,7 +90,7 @@ class RSSApiImpl(
         passCheck: Boolean?,
         rssType: String?,
         torrentSeeding: Int?,
-    ): ApiResult<GenericResponseDto> =
+    ): ApiResult<ApiResponseDto<String>> =
         executeRequest {
             client.post("rss/modifyrss") {
                 contentType(ContentType.Application.Json)

@@ -3,7 +3,6 @@ package com.github.livingwithhippos.torbox.kmp.client.impl
 import com.github.livingwithhippos.torbox.kmp.client.api.NotificationsApi
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
-import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.NotificationDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 import com.github.livingwithhippos.torbox.kmp.client.network.executeRequest
@@ -37,7 +36,7 @@ class NotificationsApiImpl(
             client.get("notifications/mynotifications")
         }
 
-    override suspend fun clear(notificationId: Int?): ApiResult<GenericResponseDto> =
+    override suspend fun clear(notificationId: Int?): ApiResult<ApiResponseDto<String>> =
         executeRequest {
             if (notificationId != null) {
                 client.post("notifications/clear/$notificationId")
@@ -46,7 +45,7 @@ class NotificationsApiImpl(
             }
         }
 
-    override suspend fun sendTest(): ApiResult<GenericResponseDto> =
+    override suspend fun sendTest(): ApiResult<ApiResponseDto<String>> =
         executeRequest {
             client.post("notifications/test")
         }

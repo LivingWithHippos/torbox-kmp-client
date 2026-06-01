@@ -1,7 +1,7 @@
 package com.github.livingwithhippos.torbox.kmp.client.api
 
+import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
-import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.QueuedDownloadDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 
@@ -35,5 +35,5 @@ interface QueuedApi {
         queuedId: Int? = null,
         operation: String,
         all: Boolean? = null,
-    ): ApiResult<GenericResponseDto>
+    ): ApiResult<ApiResponseDto<String>>
 }
