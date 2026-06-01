@@ -24,10 +24,6 @@ sealed interface ApiResult<out T> {
             val body: String?,
         ) : Failure
 
-        data class Unknown(
-            val cause: Throwable,
-        ) : Failure
-
         data class NoSuccess<T>(
             val value: T,
         ) : Failure

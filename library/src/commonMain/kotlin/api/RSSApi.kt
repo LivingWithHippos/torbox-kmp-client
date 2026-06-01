@@ -80,7 +80,7 @@ interface RSSApi {
      *
      * **Status Key**
      *
-     * The "status" key tells the user selected status of the RSS feed. These statuses are not the same as the status key for the RSS items associated with the RSS feed. Each feed also includes a "status_message" key which gives a user friendly message about anything about the RSS feed, such as errors and explainations.
+     * The "status" key tells the user selected status of the RSS feed. These statuses are not the same as the status key for the RSS items associated with the RSS feed. Each feed also includes a "status_message" key which gives a user-friendly message about anything about the RSS feed, such as errors and explainations.
      *
      *     "active" the RSS feed is set to be scraped.
      *

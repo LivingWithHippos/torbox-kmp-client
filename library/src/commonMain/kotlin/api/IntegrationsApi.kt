@@ -29,7 +29,7 @@ interface IntegrationsApi {
     suspend fun job(id: Int): ApiResult<JobResponseDto>
 
     /**
-     * Cancels a job or deletes the job. Cancels while in progess (pending, uploading), or deletes the job any other time.
+     * Cancels a job or deletes the job. Cancels while in progress (pending, uploading), or deletes the job any other time.
      * It will delete it from the database completely.
      *
      * [online documentation](https://api-docs.torbox.app/#50d0f0fa-f189-4883-9068-42a6937b59c6)

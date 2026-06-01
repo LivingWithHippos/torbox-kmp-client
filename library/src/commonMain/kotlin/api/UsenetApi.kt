@@ -37,7 +37,7 @@ interface UsenetApi {
 
     /**
      * Creates a usenet download under your account.
-     * Simply send either a link, or an nzb file.
+     * Simply send either a link, or a nzb file.
      * Once they have been checked, they will begin downloading assuming your account has available active download slots, and they aren't too large.
      *
      * **Post Processing Options:**
