@@ -32,7 +32,7 @@ interface GeneralApi {
      *
      * The XML is returned, unparsed, as a string
      */
-    suspend fun changelogRSSFeed(): ApiResult<String>
+    suspend fun changelogRSSFeed(): ApiResult<ApiResponseDto<String>>
 
     /**
      * Gets most recent 100 changelogs from [https://feedback.torbox.app/changelog](https://feedback.torbox.app/changelog).

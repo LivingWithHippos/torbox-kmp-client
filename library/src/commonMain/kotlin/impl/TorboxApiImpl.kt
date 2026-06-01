@@ -14,7 +14,6 @@ import com.github.livingwithhippos.torbox.kmp.client.model.AddRssRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.AddSearchEngineRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
-import com.github.livingwithhippos.torbox.kmp.client.model.ApiSuccessResponse
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityObjectResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityRequestDto
@@ -63,10 +62,13 @@ import com.github.livingwithhippos.torbox.kmp.client.model.UserStatsDto
 import com.github.livingwithhippos.torbox.kmp.client.model.WebControlRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.WebDownloadDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
+import com.github.livingwithhippos.torbox.kmp.client.network.executeRequest
+import com.github.livingwithhippos.torbox.kmp.client.network.isSuccessOrRedirect
 import com.github.livingwithhippos.torbox.kmp.client.network.noAuth
+import com.github.livingwithhippos.torbox.kmp.client.network.safeBodyText
+import com.github.livingwithhippos.torbox.kmp.client.network.toFailure
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.plugins.ResponseException
 import io.ktor.client.request.delete
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
@@ -75,14 +77,10 @@ import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
-import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
-import kotlinx.serialization.SerializationException
 
 class TorboxApiImpl(
     private val client: HttpClient,
@@ -98,52 +96,6 @@ class TorboxApiImpl(
     StreamApi {
     private val uuidRegex =
         Regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$")
-
-    private suspend fun HttpResponse.safeBodyText(): String? = runCatching { bodyAsText() }.getOrNull()
-
-    private fun HttpStatusCode.isSuccessOrRedirect(): Boolean = value in 200..399
-
-    private fun toFailure(
-        throwable: Throwable,
-        body: String?,
-    ): ApiResult.Failure =
-        when (throwable) {
-            is ResponseException -> {
-                ApiResult.Failure.Http(
-                    throwable.response.status.value,
-                    body,
-                )
-            }
-
-            is SerializationException -> {
-                ApiResult.Failure.Serialization(throwable, body)
-            }
-
-            else -> {
-                ApiResult.Failure.Network(throwable)
-            }
-        }
-
-    private suspend inline fun <reified T : ApiSuccessResponse> executeRequest(noinline request: suspend () -> HttpResponse): ApiResult<T> =
-        runCatching { request() }.fold(
-            onSuccess = { response ->
-                if (response.status.isSuccessOrRedirect()) {
-                    runCatching { response.body<T>() }.fold(
-                        onSuccess = { parsed ->
-                            if (parsed.success) {
-                                ApiResult.Success(parsed)
-                            } else {
-                                ApiResult.Failure.NoSuccess(parsed)
-                            }
-                        },
-                        onFailure = { toFailure(it, response.safeBodyText()) },
-                    )
-                } else {
-                    ApiResult.Failure.Http(response.status.value, response.safeBodyText())
-                }
-            },
-            onFailure = { toFailure(it, null) },
-        )
 
     override suspend fun listTorrents(
         bypassCache: String?,
@@ -897,24 +849,12 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun changelogRSSFeed(): ApiResult<String> =
-        runCatching {
+    override suspend fun changelogRSSFeed(): ApiResult<ApiResponseDto<String>> =
+        executeRequest {
             client.get("changelogs/rss") {
                 noAuth()
             }
-        }.fold(
-            onSuccess = { response ->
-                if (!response.status.isSuccessOrRedirect()) {
-                    ApiResult.Failure.Http(response.status.value, response.safeBodyText())
-                } else {
-                    runCatching { response.bodyAsText() }.fold(
-                        onSuccess = { ApiResult.Success(it) },
-                        onFailure = { toFailure(it, null) },
-                    )
-                }
-            },
-            onFailure = { toFailure(it, null) },
-        )
+        }
 
     override suspend fun changelogJson(): ApiResult<ApiResponseListDto<ChangelogEntryDto>> =
         executeRequest {
@@ -945,32 +885,20 @@ class TorboxApiImpl(
         }
     }
 
-    override suspend fun rssFeed(token: String): ApiResult<String> {
+    override suspend fun rssFeed(token: String): ApiResult<ApiResponseDto<String>> {
         if (token.isBlank()) {
             return ApiResult.Failure.BadRequest(
                 IllegalArgumentException("token must not be blank"),
             )
         }
 
-        return runCatching {
+        return executeRequest {
             client.get("notifications/rss") {
                 // RSS notifications use token query param auth, not bearer auth header.
                 noAuth()
                 parameter("token", token)
             }
-        }.fold(
-            onSuccess = { response ->
-                if (!response.status.isSuccessOrRedirect()) {
-                    ApiResult.Failure.Http(response.status.value, response.safeBodyText())
-                } else {
-                    runCatching { response.bodyAsText() }.fold(
-                        onSuccess = { ApiResult.Success(it) },
-                        onFailure = { toFailure(it, null) },
-                    )
-                }
-            },
-            onFailure = { toFailure(it, null) },
-        )
+        }
     }
 
     override suspend fun jsonFeed(): ApiResult<ApiResponseListDto<NotificationDto>> =

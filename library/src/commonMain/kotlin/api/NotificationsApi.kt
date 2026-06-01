@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.torbox.kmp.client.api
 
+import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.NotificationDto
@@ -14,7 +15,7 @@ interface NotificationsApi {
      *
      * XML is returned as an unparsed string
      */
-    suspend fun rssFeed(token: String): ApiResult<String>
+    suspend fun rssFeed(token: String): ApiResult<ApiResponseDto<String>>
 
     /**
      * Gets your notifications in a JSON object that is easily parsable compared to the RSS Feed.
