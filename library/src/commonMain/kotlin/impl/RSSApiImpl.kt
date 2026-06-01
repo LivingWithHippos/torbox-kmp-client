@@ -56,7 +56,7 @@ class RSSApiImpl(
         }
     }
 
-    override suspend fun controlRss(
+    override suspend fun control(
         operation: String,
         rssFeedId: Int,
     ): ApiResult<GenericResponseDto> {
@@ -80,7 +80,7 @@ class RSSApiImpl(
         }
     }
 
-    override suspend fun editRss(
+    override suspend fun edit(
         rssFeedId: Int,
         name: String?,
         doRegex: String?,

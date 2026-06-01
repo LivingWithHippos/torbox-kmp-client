@@ -39,7 +39,7 @@ interface RSSApi {
      *
      * [online documentation](https://api-docs.torbox.app/#f89d49e9-4682-493d-a26b-591c8793ad13)
      */
-    suspend fun controlRss(
+    suspend fun control(
         operation: String,
         rssFeedId: Int,
     ): ApiResult<GenericResponseDto>
@@ -53,7 +53,7 @@ interface RSSApi {
      *
      * [online documentation](https://api-docs.torbox.app/#e69680e6-f21b-4613-ab70-80598b1ab838)
      */
-    suspend fun editRss(
+    suspend fun edit(
         rssFeedId: Int,
         name: String? = null,
         doRegex: String? = null,

@@ -3,8 +3,8 @@ package com.github.livingwithhippos.torbox.kmp.client.impl
 import com.github.livingwithhippos.torbox.kmp.client.api.WebApi
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
+import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseMapDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityDto
-import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityObjectResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateWebDownloadDto
 import com.github.livingwithhippos.torbox.kmp.client.model.EditWebRequestDto
@@ -29,7 +29,7 @@ import io.ktor.http.contentType
 class WebApiImpl(
     private val client: HttpClient,
 ) : WebApi {
-    override suspend fun listWeb(
+    override suspend fun list(
         bypassCache: String?,
         offset: Int?,
         limit: Int?,
@@ -45,7 +45,7 @@ class WebApiImpl(
             }
         }
 
-    override suspend fun getWeb(
+    override suspend fun get(
         bypassCache: String?,
         id: Int,
     ): ApiResult<ApiResponseDto<WebDownloadDto>> =
@@ -81,7 +81,7 @@ class WebApiImpl(
             }
         }
 
-    override suspend fun requestDownloadLink(
+    override suspend fun downloadLink(
         token: String,
         webId: Int,
         fileId: Int?,
@@ -102,7 +102,7 @@ class WebApiImpl(
             }
         }
 
-    override suspend fun listWebAvailability(
+    override suspend fun listAvailability(
         hashes: List<String>,
         listFiles: Boolean?,
     ): ApiResult<ApiResponseListDto<CacheAvailabilityDto>> =
@@ -116,10 +116,10 @@ class WebApiImpl(
             }
         }
 
-    override suspend fun listWebAvailabilityObject(
+    override suspend fun listAvailabilityObject(
         hashes: List<String>,
         listFiles: Boolean?,
-    ): ApiResult<CacheAvailabilityObjectResponseDto> =
+    ): ApiResult<ApiResponseMapDto<CacheAvailabilityDto>> =
         executeRequest {
             client.get("webdl/checkcached") {
                 hashes.forEach {
@@ -130,7 +130,7 @@ class WebApiImpl(
             }
         }
 
-    override suspend fun listWebAvailabilityBatchObject(hashes: List<String>): ApiResult<CacheAvailabilityObjectResponseDto> =
+    override suspend fun listAvailabilityBatchObject(hashes: List<String>): ApiResult<ApiResponseMapDto<CacheAvailabilityDto>> =
         executeRequest {
             client.post("webdl/checkcached") {
                 contentType(ContentType.Application.Json)
@@ -143,7 +143,7 @@ class WebApiImpl(
             }
         }
 
-    override suspend fun listWebAvailabilityBatch(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>> =
+    override suspend fun listAvailabilityBatch(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>> =
         executeRequest {
             client.post("webdl/checkcached") {
                 contentType(ContentType.Application.Json)
@@ -165,7 +165,7 @@ class WebApiImpl(
             }
         }
 
-    override suspend fun editWeb(
+    override suspend fun edit(
         webId: Int,
         name: String?,
         tags: List<String>?,
@@ -192,7 +192,7 @@ class WebApiImpl(
         }
     }
 
-    override suspend fun controlWebLink(
+    override suspend fun control(
         webId: Int?,
         operation: String,
         all: Boolean?,

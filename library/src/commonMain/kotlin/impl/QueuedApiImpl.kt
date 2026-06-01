@@ -60,7 +60,7 @@ class QueuedApiImpl(
         }
     }
 
-    override suspend fun controlQueued(
+    override suspend fun control(
         queuedId: Int?,
         operation: String,
         all: Boolean?,

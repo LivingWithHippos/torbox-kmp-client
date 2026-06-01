@@ -3,8 +3,8 @@ package com.github.livingwithhippos.torbox.kmp.client.impl
 import com.github.livingwithhippos.torbox.kmp.client.api.TorrentsApi
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
+import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseMapDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityDto
-import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityObjectResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateTorrentDto
 import com.github.livingwithhippos.torbox.kmp.client.model.EditTorrentRequestDto
@@ -36,7 +36,7 @@ import io.ktor.http.contentType
 class TorrentsApiImpl(
     private val client: HttpClient,
 ) : TorrentsApi {
-    override suspend fun listTorrents(
+    override suspend fun list(
         bypassCache: String?,
         offset: Int?,
         limit: Int?,
@@ -51,7 +51,7 @@ class TorrentsApiImpl(
             }
         }
 
-    override suspend fun getTorrent(
+    override suspend fun get(
         bypassCache: String?,
         id: Int,
     ): ApiResult<ApiResponseDto<TorrentDto>> =
@@ -168,7 +168,7 @@ class TorrentsApiImpl(
         }
     }
 
-    override suspend fun controlTorrent(
+    override suspend fun control(
         torrentId: Int?,
         operation: String,
         all: Boolean?,
@@ -198,7 +198,7 @@ class TorrentsApiImpl(
         }
     }
 
-    override suspend fun editTorrent(
+    override suspend fun edit(
         torrentId: Int,
         name: String?,
         tags: List<String>?,
@@ -225,7 +225,7 @@ class TorrentsApiImpl(
         }
     }
 
-    override suspend fun torrentDownloadLink(
+    override suspend fun downloadLink(
         token: String,
         torrentId: Int,
         fileId: Int?,
@@ -246,7 +246,7 @@ class TorrentsApiImpl(
             }
         }
 
-    override suspend fun listTorrentAvailability(
+    override suspend fun listAvailability(
         hashes: List<String>,
         listFiles: Boolean?,
     ): ApiResult<ApiResponseListDto<CacheAvailabilityDto>> =
@@ -260,10 +260,10 @@ class TorrentsApiImpl(
             }
         }
 
-    override suspend fun listTorrentAvailabilityObject(
+    override suspend fun listAvailabilityObject(
         hashes: List<String>,
         listFiles: Boolean?,
-    ): ApiResult<CacheAvailabilityObjectResponseDto> =
+    ): ApiResult<ApiResponseMapDto<CacheAvailabilityDto>> =
         executeRequest {
             client.get("torrents/checkcached") {
                 hashes.forEach {
@@ -274,7 +274,7 @@ class TorrentsApiImpl(
             }
         }
 
-    override suspend fun listTorrentAvailabilityBatchObject(hashes: List<String>): ApiResult<CacheAvailabilityObjectResponseDto> =
+    override suspend fun listAvailabilityBatchObject(hashes: List<String>): ApiResult<ApiResponseMapDto<CacheAvailabilityDto>> =
         executeRequest {
             client.post("torrents/checkcached") {
                 contentType(ContentType.Application.Json)
@@ -287,7 +287,7 @@ class TorrentsApiImpl(
             }
         }
 
-    override suspend fun listTorrentAvailabilityBatch(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>> =
+    override suspend fun listAvailabilityBatch(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>> =
         executeRequest {
             client.post("torrents/checkcached") {
                 contentType(ContentType.Application.Json)

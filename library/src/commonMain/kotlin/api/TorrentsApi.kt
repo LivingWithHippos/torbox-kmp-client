@@ -2,8 +2,8 @@ package com.github.livingwithhippos.torbox.kmp.client.api
 
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
+import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseMapDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityDto
-import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityObjectResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateTorrentDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentResultDto
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
@@ -66,7 +66,7 @@ interface TorrentsApi {
      *
      * [online documentation](https://api-docs.torbox.app/)
      */
-    suspend fun controlTorrent(
+    suspend fun control(
         torrentId: Int? = null,
         operation: String,
         all: Boolean? = null,
@@ -99,7 +99,7 @@ interface TorrentsApi {
      *
      * [online documentation](https://api-docs.torbox.app/#a436204c-b235-4323-91b0-769311740d68)
      */
-    suspend fun editTorrent(
+    suspend fun edit(
         torrentId: Int,
         name: String? = null,
         tags: List<String>? = null,
@@ -132,7 +132,7 @@ interface TorrentsApi {
      *
      * [online documentation](https://api-docs.torbox.app/#8fa2961a-da1e-410e-84c3-821b3f6b30cc)
      */
-    suspend fun listTorrents(
+    suspend fun list(
         bypassCache: String? = null,
         offset: Int? = null,
         limit: Int? = null,
@@ -164,7 +164,7 @@ interface TorrentsApi {
      *
      * [online documentation](https://api-docs.torbox.app/#8fa2961a-da1e-410e-84c3-821b3f6b30cc)
      */
-    suspend fun getTorrent(
+    suspend fun get(
         // todo: check if this is supported when using the id
         bypassCache: String? = null,
         id: Int,
@@ -184,7 +184,7 @@ interface TorrentsApi {
      *
      * [online documentation](https://api-docs.torbox.app/#cc4ceac8-7cb6-4be5-bf09-f949d9e9a458)
      */
-    suspend fun torrentDownloadLink(
+    suspend fun downloadLink(
         token: String,
         torrentId: Int,
         fileId: Int? = null,
@@ -205,7 +205,7 @@ interface TorrentsApi {
      *
      * [online documentation](https://api-docs.torbox.app/#99e1b7a7-bdf6-4884-af9d-bd9903a8ca63)
      */
-    suspend fun listTorrentAvailability(
+    suspend fun listAvailability(
         hashes: List<String>,
         listFiles: Boolean? = null,
     ): ApiResult<ApiResponseListDto<CacheAvailabilityDto>>
@@ -221,10 +221,10 @@ interface TorrentsApi {
      *
      * [online documentation](https://api-docs.torbox.app/#99e1b7a7-bdf6-4884-af9d-bd9903a8ca63)
      */
-    suspend fun listTorrentAvailabilityObject(
+    suspend fun listAvailabilityObject(
         hashes: List<String>,
         listFiles: Boolean? = null,
-    ): ApiResult<CacheAvailabilityObjectResponseDto>
+    ): ApiResult<ApiResponseMapDto<CacheAvailabilityDto>>
 
     /**
      * Takes in a list of comma separated torrent hashes and checks if the torrent is cached.
@@ -237,7 +237,7 @@ interface TorrentsApi {
      *
      * [online documentation](https://api-docs.torbox.app/#00718c3f-0147-4423-af4d-e50b94fea867)
      */
-    suspend fun listTorrentAvailabilityBatchObject(hashes: List<String>): ApiResult<CacheAvailabilityObjectResponseDto>
+    suspend fun listAvailabilityBatchObject(hashes: List<String>): ApiResult<ApiResponseMapDto<CacheAvailabilityDto>>
 
     /**
      * Takes in a list of comma separated torrent hashes and checks if the torrent is cached.
@@ -250,7 +250,7 @@ interface TorrentsApi {
      *
      * [online documentation](https://api-docs.torbox.app/)
      */
-    suspend fun listTorrentAvailabilityBatch(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>>
+    suspend fun listAvailabilityBatch(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>>
 
     /**
      * Exports the magnet or torrent file.

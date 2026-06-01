@@ -22,6 +22,14 @@ data class ApiResponseListDto<T>(
     val data: List<T>? = null,
 ) : ApiSuccessResponse
 
+@Serializable
+data class ApiResponseMapDto<T>(
+    override val success: Boolean,
+    val error: String?,
+    val detail: String,
+    val data: Map<String, T>? = null,
+) : ApiSuccessResponse
+
 /**
  * base response returned by the api. Data is always present and may be null, especially in errors.
  * The only precaution is to check for success = true when this is the return type
@@ -38,14 +46,6 @@ data class GenericResponseDto(
     val error: String?,
     val detail: String,
     val data: String? = null,
-) : ApiSuccessResponse
-
-@Serializable
-data class CacheAvailabilityObjectResponseDto(
-    override val success: Boolean,
-    val error: String?,
-    val detail: String,
-    val data: Map<String, CacheAvailabilityDto>?,
 ) : ApiSuccessResponse
 
 @Serializable

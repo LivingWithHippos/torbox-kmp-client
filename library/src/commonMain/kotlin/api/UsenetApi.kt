@@ -2,8 +2,8 @@ package com.github.livingwithhippos.torbox.kmp.client.api
 
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
+import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseMapDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityDto
-import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityObjectResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateUsenetDto
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UsenetDownloadDto
@@ -17,7 +17,7 @@ interface UsenetApi {
      *
      * [online documentation](https://api-docs.torbox.app/#b9de037f-fd97-4236-bd11-04535c9fe551)
      */
-    suspend fun listUsenet(
+    suspend fun list(
         bypassCache: String? = null,
         offset: Int? = null,
         limit: Int? = null,
@@ -30,7 +30,7 @@ interface UsenetApi {
      *
      * [online documentation](https://api-docs.torbox.app/#b9de037f-fd97-4236-bd11-04535c9fe551)
      */
-    suspend fun getUsenet(
+    suspend fun get(
         bypassCache: String? = null,
         id: Int,
     ): ApiResult<ApiResponseDto<UsenetDownloadDto>>
@@ -77,7 +77,7 @@ interface UsenetApi {
      *
      * [online documentation](https://api-docs.torbox.app/#39a94784-ff64-4387-80e1-b7cfb1232dbe)
      */
-    suspend fun controlUsenet(
+    suspend fun control(
         usenetId: Int? = null,
         operation: String,
         all: Boolean? = null,
@@ -96,7 +96,7 @@ interface UsenetApi {
      *
      * [online documentation](https://api-docs.torbox.app/#6fb5deaf-ea44-4cc8-a2c0-3a262a2ec521)
      */
-    suspend fun usenetDownloadLink(
+    suspend fun downloadLink(
         token: String,
         // todo: check if this is a string (it is in the control body JSON documentation) and update it everywhere
         usenetId: Int,
@@ -122,7 +122,7 @@ interface UsenetApi {
      *
      * Endpoint duplicated because of different response format in [getAvailabilityObject]
      */
-    suspend fun listUsenetAvailability(
+    suspend fun listAvailability(
         hashes: List<String>,
         listFiles: Boolean? = null,
     ): ApiResult<ApiResponseListDto<CacheAvailabilityDto>>
@@ -142,10 +142,10 @@ interface UsenetApi {
      *
      * Endpoint duplicated because of different response format in [getAvailabilityList]
      */
-    suspend fun listUsenetAvailabilityObject(
+    suspend fun listAvailabilityObject(
         hashes: List<String>,
         listFiles: Boolean? = null,
-    ): ApiResult<CacheAvailabilityObjectResponseDto>
+    ): ApiResult<ApiResponseMapDto<CacheAvailabilityDto>>
 
     /**
      * Takes in a list of comma separated usenet hashes and checks if the usenet download is cached.
@@ -160,7 +160,7 @@ interface UsenetApi {
      *
      * Endpoint duplicated because of different response format in [getAvailabilityBatchList]
      */
-    suspend fun listUsenetAvailabilityBatchObject(hashes: List<String>): ApiResult<CacheAvailabilityObjectResponseDto>
+    suspend fun listAvailabilityBatchObject(hashes: List<String>): ApiResult<ApiResponseMapDto<CacheAvailabilityDto>>
 
     /**
      * Takes in a list of comma separated usenet hashes and checks if the usenet download is cached.
@@ -175,7 +175,7 @@ interface UsenetApi {
      *
      * Endpoint duplicated because of different response format in [getAvailabilityBatchObject]
      */
-    suspend fun listUsenetAvailabilityBatch(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>>
+    suspend fun listAvailabilityBatch(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>>
 
     /**
      * Updates a download item based on the item's ID.
@@ -203,7 +203,7 @@ interface UsenetApi {
      *
      * [online documentation](https://api-docs.torbox.app/#cf0ab144-4e02-4fe7-aaab-738d7073918b)
      */
-    suspend fun editUsenet(
+    suspend fun edit(
         usenetId: Int,
         name: String? = null,
         tags: List<String>? = null,

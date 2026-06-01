@@ -3,8 +3,8 @@ package com.github.livingwithhippos.torbox.kmp.client.impl
 import com.github.livingwithhippos.torbox.kmp.client.api.UsenetApi
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
+import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseMapDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityDto
-import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityObjectResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateUsenetDto
 import com.github.livingwithhippos.torbox.kmp.client.model.EditUsenetRequestDto
@@ -29,7 +29,7 @@ import io.ktor.http.contentType
 class UsenetApiImpl(
     private val client: HttpClient,
 ) : UsenetApi {
-    override suspend fun listUsenet(
+    override suspend fun list(
         bypassCache: String?,
         offset: Int?,
         limit: Int?,
@@ -44,7 +44,7 @@ class UsenetApiImpl(
             }
         }
 
-    override suspend fun getUsenet(
+    override suspend fun get(
         bypassCache: String?,
         id: Int,
     ): ApiResult<ApiResponseDto<UsenetDownloadDto>> =
@@ -106,7 +106,7 @@ class UsenetApiImpl(
         }
     }
 
-    override suspend fun controlUsenet(
+    override suspend fun control(
         usenetId: Int?,
         operation: String,
         all: Boolean?,
@@ -135,7 +135,7 @@ class UsenetApiImpl(
         }
     }
 
-    override suspend fun usenetDownloadLink(
+    override suspend fun downloadLink(
         token: String,
         usenetId: Int,
         fileId: Int?,
@@ -156,7 +156,7 @@ class UsenetApiImpl(
             }
         }
 
-    override suspend fun listUsenetAvailability(
+    override suspend fun listAvailability(
         hashes: List<String>,
         listFiles: Boolean?,
     ): ApiResult<ApiResponseListDto<CacheAvailabilityDto>> =
@@ -170,10 +170,10 @@ class UsenetApiImpl(
             }
         }
 
-    override suspend fun listUsenetAvailabilityObject(
+    override suspend fun listAvailabilityObject(
         hashes: List<String>,
         listFiles: Boolean?,
-    ): ApiResult<CacheAvailabilityObjectResponseDto> =
+    ): ApiResult<ApiResponseMapDto<CacheAvailabilityDto>> =
         executeRequest {
             client.get("usenet/checkcached") {
                 hashes.forEach {
@@ -184,7 +184,7 @@ class UsenetApiImpl(
             }
         }
 
-    override suspend fun listUsenetAvailabilityBatchObject(hashes: List<String>): ApiResult<CacheAvailabilityObjectResponseDto> =
+    override suspend fun listAvailabilityBatchObject(hashes: List<String>): ApiResult<ApiResponseMapDto<CacheAvailabilityDto>> =
         executeRequest {
             client.post("usenet/checkcached") {
                 contentType(ContentType.Application.Json)
@@ -197,7 +197,7 @@ class UsenetApiImpl(
             }
         }
 
-    override suspend fun listUsenetAvailabilityBatch(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>> =
+    override suspend fun listAvailabilityBatch(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>> =
         executeRequest {
             client.post("usenet/checkcached") {
                 contentType(ContentType.Application.Json)
@@ -210,7 +210,7 @@ class UsenetApiImpl(
             }
         }
 
-    override suspend fun editUsenet(
+    override suspend fun edit(
         usenetId: Int,
         name: String?,
         tags: List<String>?,

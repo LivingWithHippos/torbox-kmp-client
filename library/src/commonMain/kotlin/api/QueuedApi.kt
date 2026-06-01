@@ -31,7 +31,7 @@ interface QueuedApi {
      *
      * [online documentation](https://api-docs.torbox.app/#2e9b7b90-5544-478d-8744-e04543f4f0b8)
      */
-    suspend fun controlQueued(
+    suspend fun control(
         queuedId: Int? = null,
         operation: String,
         all: Boolean? = null,
