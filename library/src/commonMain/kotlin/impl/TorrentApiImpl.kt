@@ -1,6 +1,6 @@
 package com.github.livingwithhippos.torbox.kmp.client.impl
 
-import com.github.livingwithhippos.torbox.kmp.client.api.TorrentsApi
+import com.github.livingwithhippos.torbox.kmp.client.api.TorrentApi
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseMapDto
@@ -32,9 +32,9 @@ import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
 
-class TorrentsApiImpl(
+class TorrentApiImpl(
     private val client: HttpClient,
-) : TorrentsApi {
+) : TorrentApi {
     override suspend fun list(
         bypassCache: String?,
         offset: Int?,

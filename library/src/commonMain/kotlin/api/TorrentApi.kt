@@ -9,7 +9,7 @@ import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentResultDt
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 
-interface TorrentsApi {
+interface TorrentApi {
     /**
      * Creates a torrent asynchronously under your account.
      * Simply send either a [magnet] link, or a torrent file.

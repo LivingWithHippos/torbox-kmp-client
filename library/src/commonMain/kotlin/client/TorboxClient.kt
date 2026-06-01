@@ -6,7 +6,7 @@ import com.github.livingwithhippos.torbox.kmp.client.api.NotificationsApi
 import com.github.livingwithhippos.torbox.kmp.client.api.QueuedApi
 import com.github.livingwithhippos.torbox.kmp.client.api.RSSApi
 import com.github.livingwithhippos.torbox.kmp.client.api.StreamApi
-import com.github.livingwithhippos.torbox.kmp.client.api.TorrentsApi
+import com.github.livingwithhippos.torbox.kmp.client.api.TorrentApi
 import com.github.livingwithhippos.torbox.kmp.client.api.UsenetApi
 import com.github.livingwithhippos.torbox.kmp.client.api.UserApi
 import com.github.livingwithhippos.torbox.kmp.client.api.WebApi
@@ -16,7 +16,7 @@ import com.github.livingwithhippos.torbox.kmp.client.impl.NotificationsApiImpl
 import com.github.livingwithhippos.torbox.kmp.client.impl.QueuedApiImpl
 import com.github.livingwithhippos.torbox.kmp.client.impl.RSSApiImpl
 import com.github.livingwithhippos.torbox.kmp.client.impl.StreamApiImpl
-import com.github.livingwithhippos.torbox.kmp.client.impl.TorrentsApiImpl
+import com.github.livingwithhippos.torbox.kmp.client.impl.TorrentApiImpl
 import com.github.livingwithhippos.torbox.kmp.client.impl.UsenetApiImpl
 import com.github.livingwithhippos.torbox.kmp.client.impl.UserApiImpl
 import com.github.livingwithhippos.torbox.kmp.client.impl.WebApiImpl
@@ -26,7 +26,7 @@ import com.github.livingwithhippos.torbox.kmp.client.network.platformEngineFacto
 import io.ktor.client.HttpClient
 
 class TorboxClient private constructor(
-    val torrents: TorrentsApi,
+    val torrent: TorrentApi,
     val web: WebApi,
     val usenet: UsenetApi,
     val general: GeneralApi,
@@ -42,7 +42,7 @@ class TorboxClient private constructor(
         fun create(config: RestClientConfig): TorboxClient {
             val client = createHttpClient(config, platformEngineFactory())
             return TorboxClient(
-                torrents = TorrentsApiImpl(client),
+                torrent = TorrentApiImpl(client),
                 web = WebApiImpl(client),
                 usenet = UsenetApiImpl(client),
                 general = GeneralApiImpl(client),
