@@ -10,7 +10,16 @@ import com.github.livingwithhippos.torbox.kmp.client.api.TorrentsApi
 import com.github.livingwithhippos.torbox.kmp.client.api.UsenetApi
 import com.github.livingwithhippos.torbox.kmp.client.api.UserApi
 import com.github.livingwithhippos.torbox.kmp.client.api.WebApi
-import com.github.livingwithhippos.torbox.kmp.client.impl.TorboxApiImpl
+import com.github.livingwithhippos.torbox.kmp.client.impl.GeneralApiImpl
+import com.github.livingwithhippos.torbox.kmp.client.impl.IntegrationsApiImpl
+import com.github.livingwithhippos.torbox.kmp.client.impl.NotificationsApiImpl
+import com.github.livingwithhippos.torbox.kmp.client.impl.QueuedApiImpl
+import com.github.livingwithhippos.torbox.kmp.client.impl.RSSApiImpl
+import com.github.livingwithhippos.torbox.kmp.client.impl.StreamApiImpl
+import com.github.livingwithhippos.torbox.kmp.client.impl.TorrentsApiImpl
+import com.github.livingwithhippos.torbox.kmp.client.impl.UsenetApiImpl
+import com.github.livingwithhippos.torbox.kmp.client.impl.UserApiImpl
+import com.github.livingwithhippos.torbox.kmp.client.impl.WebApiImpl
 import com.github.livingwithhippos.torbox.kmp.client.network.RestClientConfig
 import com.github.livingwithhippos.torbox.kmp.client.network.createHttpClient
 import com.github.livingwithhippos.torbox.kmp.client.network.platformEngineFactory
@@ -32,19 +41,17 @@ class TorboxClient private constructor(
     companion object {
         fun create(config: RestClientConfig): TorboxClient {
             val client = createHttpClient(config, platformEngineFactory())
-            // todo: since we split this rename all APIs to a shorter version, like torrents.create() etc.
-            val groupedApi = TorboxApiImpl(client)
             return TorboxClient(
-                torrents = groupedApi,
-                web = groupedApi,
-                usenet = groupedApi,
-                general = groupedApi,
-                notifications = groupedApi,
-                queued = groupedApi,
-                user = groupedApi,
-                rss = groupedApi,
-                integrations = groupedApi,
-                stream = groupedApi,
+                torrents = TorrentsApiImpl(client),
+                web = WebApiImpl(client),
+                usenet = UsenetApiImpl(client),
+                general = GeneralApiImpl(client),
+                notifications = NotificationsApiImpl(client),
+                queued = QueuedApiImpl(client),
+                user = UserApiImpl(client),
+                rss = RSSApiImpl(client),
+                integrations = IntegrationsApiImpl(client),
+                stream = StreamApiImpl(client),
                 httpClient = client,
             )
         }
