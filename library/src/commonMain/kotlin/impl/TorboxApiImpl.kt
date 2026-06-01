@@ -53,15 +53,15 @@ import com.github.livingwithhippos.torbox.kmp.client.model.StatsDto
 import com.github.livingwithhippos.torbox.kmp.client.model.StreamDto
 import com.github.livingwithhippos.torbox.kmp.client.model.SubscriptionDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentControlRequestDto
-import com.github.livingwithhippos.torbox.kmp.client.model.TorrentListResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.TorrentDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TransactionDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UsenetControlRequestDto
-import com.github.livingwithhippos.torbox.kmp.client.model.UsenetDownloadListResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.UsenetDownloadDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserDataDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserSettingsRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UserStatsDto
 import com.github.livingwithhippos.torbox.kmp.client.model.WebControlRequestDto
-import com.github.livingwithhippos.torbox.kmp.client.model.WebDownloadListResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.WebDownloadDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 import com.github.livingwithhippos.torbox.kmp.client.network.noAuth
 import io.ktor.client.HttpClient
@@ -145,22 +145,31 @@ class TorboxApiImpl(
             onFailure = { toFailure(it, null) },
         )
 
-    override suspend fun get(
+    override suspend fun listTorrents(
         bypassCache: String?,
-        id: Int?,
         offset: Int?,
         limit: Int?,
-    ): ApiResult<TorrentListResponseDto> =
+    ): ApiResult<ApiResponseListDto<TorrentDto>> =
         executeRequest {
             client.get("torrents/mylist") {
                 if (bypassCache != null) {
                     parameter("bypass_cache", "")
                 }
-                if (id != null) {
-                    parameter("id", id)
-                }
                 parameter("offset", offset)
                 parameter("limit", limit)
+            }
+        }
+
+    override suspend fun getTorrent(
+        bypassCache: String?,
+        id: Int,
+    ): ApiResult<ApiResponseDto<TorrentDto>> =
+        executeRequest {
+            client.get("torrents/mylist") {
+                if (bypassCache != null) {
+                    parameter("bypass_cache", "")
+                }
+                parameter("id", id)
             }
         }
 
@@ -345,7 +354,7 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun getTorrentAvailabilityList(
+    override suspend fun listTorrentAvailability(
         hashes: List<String>,
         listFiles: Boolean?,
     ): ApiResult<ApiResponseListDto<CacheAvailabilityDto>> =
@@ -359,7 +368,7 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun getTorrentAvailabilityObject(
+    override suspend fun listTorrentAvailabilityObject(
         hashes: List<String>,
         listFiles: Boolean?,
     ): ApiResult<CacheAvailabilityObjectResponseDto> =
@@ -373,7 +382,7 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun getTorrentAvailabilityBatchObject(hashes: List<String>): ApiResult<CacheAvailabilityObjectResponseDto> =
+    override suspend fun listTorrentAvailabilityBatchObject(hashes: List<String>): ApiResult<CacheAvailabilityObjectResponseDto> =
         executeRequest {
             client.post("torrents/checkcached") {
                 contentType(ContentType.Application.Json)
@@ -386,7 +395,7 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun getTorrentAvailabilityBatchList(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>> =
+    override suspend fun listTorrentAvailabilityBatch(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>> =
         executeRequest {
             client.post("torrents/checkcached") {
                 contentType(ContentType.Application.Json)
@@ -471,23 +480,32 @@ class TorboxApiImpl(
         )
     }
 
-    override suspend fun list(
+    override suspend fun listWeb(
         bypassCache: String?,
-        id: Int?,
         offset: Int?,
         limit: Int?,
-    ): ApiResult<WebDownloadListResponseDto> =
+    ): ApiResult<ApiResponseListDto<WebDownloadDto>> =
         executeRequest {
             client.get("webdl/mylist") {
                 // todo: check if this changes the response format
                 if (bypassCache != null) {
                     parameter("bypass_cache", "")
                 }
-                if (id != null) {
-                    parameter("id", id)
-                }
                 parameter("offset", offset)
                 parameter("limit", limit)
+            }
+        }
+
+    override suspend fun getWeb(
+        bypassCache: String?,
+        id: Int,
+    ): ApiResult<ApiResponseDto<WebDownloadDto>> =
+        executeRequest {
+            client.get("webdl/mylist") {
+                if (bypassCache != null) {
+                    parameter("bypass_cache", "")
+                }
+                parameter("id", id)
             }
         }
 
@@ -535,7 +553,7 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun getWebAvailabilityList(
+    override suspend fun listWebAvailability(
         hashes: List<String>,
         listFiles: Boolean?,
     ): ApiResult<ApiResponseListDto<CacheAvailabilityDto>> =
@@ -549,7 +567,7 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun getWebAvailabilityObject(
+    override suspend fun listWebAvailabilityObject(
         hashes: List<String>,
         listFiles: Boolean?,
     ): ApiResult<CacheAvailabilityObjectResponseDto> =
@@ -563,7 +581,7 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun getWebAvailabilityBatchObject(hashes: List<String>): ApiResult<CacheAvailabilityObjectResponseDto> =
+    override suspend fun listWebAvailabilityBatchObject(hashes: List<String>): ApiResult<CacheAvailabilityObjectResponseDto> =
         executeRequest {
             client.post("webdl/checkcached") {
                 contentType(ContentType.Application.Json)
@@ -576,7 +594,7 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun getWebAvailabilityBatchList(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>> =
+    override suspend fun listWebAvailabilityBatch(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>> =
         executeRequest {
             client.post("webdl/checkcached") {
                 contentType(ContentType.Application.Json)
@@ -655,22 +673,31 @@ class TorboxApiImpl(
         }
     }
 
-    override suspend fun get(
+    override suspend fun listUsenet(
         bypassCache: String?,
-        id: Int?,
         offset: Int?,
         limit: Int?,
-    ): ApiResult<UsenetDownloadListResponseDto> =
+    ): ApiResult<ApiResponseListDto<UsenetDownloadDto>> =
         executeRequest {
             client.get("usenet/mylist") {
                 if (bypassCache != null) {
                     parameter("bypass_cache", "")
                 }
-                if (id != null) {
-                    parameter("id", id)
-                }
                 parameter("offset", offset)
                 parameter("limit", limit)
+            }
+        }
+
+    override suspend fun getUsenet(
+        bypassCache: String?,
+        id: Int,
+    ): ApiResult<ApiResponseDto<UsenetDownloadDto>> =
+        executeRequest {
+            client.get("usenet/mylist") {
+                if (bypassCache != null) {
+                    parameter("bypass_cache", "")
+                }
+                parameter("id", id)
             }
         }
 
@@ -773,7 +800,7 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun getUsenetAvailabilityList(
+    override suspend fun listUsenetAvailability(
         hashes: List<String>,
         listFiles: Boolean?,
     ): ApiResult<ApiResponseListDto<CacheAvailabilityDto>> =
@@ -787,7 +814,7 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun getUsenetAvailabilityObject(
+    override suspend fun listUsenetAvailabilityObject(
         hashes: List<String>,
         listFiles: Boolean?,
     ): ApiResult<CacheAvailabilityObjectResponseDto> =
@@ -801,7 +828,7 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun getUsenetAvailabilityBatchObject(hashes: List<String>): ApiResult<CacheAvailabilityObjectResponseDto> =
+    override suspend fun listUsenetAvailabilityBatchObject(hashes: List<String>): ApiResult<CacheAvailabilityObjectResponseDto> =
         executeRequest {
             client.post("usenet/checkcached") {
                 contentType(ContentType.Application.Json)
@@ -814,7 +841,7 @@ class TorboxApiImpl(
             }
         }
 
-    override suspend fun getUsenetAvailabilityBatchList(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>> =
+    override suspend fun listUsenetAvailabilityBatch(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>> =
         executeRequest {
             client.post("usenet/checkcached") {
                 contentType(ContentType.Application.Json)

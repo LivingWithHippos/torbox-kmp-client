@@ -1,18 +1,7 @@
 package com.github.livingwithhippos.torbox.kmp.client.model
 
-import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerializationException
-import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
-import kotlinx.serialization.json.JsonArray
-import kotlinx.serialization.json.JsonDecoder
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonEncoder
-import kotlinx.serialization.json.JsonNull
-import kotlinx.serialization.json.JsonObject
 
 @Serializable
 data class CreateWebDownloadDto(
@@ -22,15 +11,6 @@ data class CreateWebDownloadDto(
     @SerialName("jdownloader_id") val jdownloaderId: String?,
     @SerialName("link_list") val linkList: List<String>?, // missing if already queued
 )
-
-@Serializable
-data class WebDownloadListResponseDto(
-    override val success: Boolean,
-    val error: String?,
-    val detail: String,
-    @Serializable(with = WebDownloadDataSerializer::class)
-    val data: List<WebDownloadDto>?,
-) : ApiSuccessResponse
 
 @Serializable
 data class WebDownloadDto(
@@ -75,45 +55,6 @@ data class WebDownloadFileDto(
     @SerialName("absolute_path") val absolutePath: String,
     @SerialName("opensubtitles_hash") val opensubtitlesHash: String?,
 )
-
-/**
- * this custom serializer is used to avoid creating two data classes whose only difference is returning a list of downloads
- * or a single downloads in the data field. We return a list with the download instead of the download object.
- */
-@Serializable
-object WebDownloadDataSerializer : KSerializer<List<WebDownloadDto>?> {
-    override val descriptor: SerialDescriptor = JsonElement.serializer().descriptor
-
-    override fun deserialize(decoder: Decoder): List<WebDownloadDto>? {
-        val jsonDecoder =
-            decoder as? JsonDecoder
-                ?: throw SerializationException("WebDownloadDataSerializer can be used only with Json format")
-
-        return when (val element = jsonDecoder.decodeJsonElement()) {
-            JsonNull -> null
-            is JsonArray -> element.map { jsonDecoder.json.decodeFromJsonElement(WebDownloadDto.serializer(), it) }
-            is JsonObject -> listOf(jsonDecoder.json.decodeFromJsonElement(WebDownloadDto.serializer(), element))
-            else -> throw SerializationException("Expected data to be object, array, or null")
-        }
-    }
-
-    override fun serialize(
-        encoder: Encoder,
-        value: List<WebDownloadDto>?,
-    ) {
-        val jsonEncoder =
-            encoder as? JsonEncoder
-                ?: throw SerializationException("WebDownloadDataSerializer can be used only with Json format")
-
-        val element =
-            when {
-                value == null -> JsonNull
-                else -> JsonArray(value.map { jsonEncoder.json.encodeToJsonElement(WebDownloadDto.serializer(), it) })
-            }
-
-        jsonEncoder.encodeJsonElement(element)
-    }
-}
 
 @Serializable
 data class HosterDto(

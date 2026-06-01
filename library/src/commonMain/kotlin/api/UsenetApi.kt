@@ -6,7 +6,7 @@ import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityObjectResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateUsenetDto
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.UsenetDownloadListResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.UsenetDownloadDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 
 interface UsenetApi {
@@ -17,12 +17,23 @@ interface UsenetApi {
      *
      * [online documentation](https://api-docs.torbox.app/#b9de037f-fd97-4236-bd11-04535c9fe551)
      */
-    suspend fun get(
+    suspend fun listUsenet(
         bypassCache: String? = null,
-        id: Int? = null,
         offset: Int? = null,
         limit: Int? = null,
-    ): ApiResult<UsenetDownloadListResponseDto>
+    ): ApiResult<ApiResponseListDto<UsenetDownloadDto>>
+
+    /**
+     * Gets a user's usenet download.
+     * This gives you the needed information to perform other usenet actions.
+     * Unlike Torrents, this information is updated on its own every 5 seconds for live usenet downloads.
+     *
+     * [online documentation](https://api-docs.torbox.app/#b9de037f-fd97-4236-bd11-04535c9fe551)
+     */
+    suspend fun getUsenet(
+        bypassCache: String? = null,
+        id: Int,
+    ): ApiResult<ApiResponseDto<UsenetDownloadDto>>
 
     /**
      * Creates a usenet download under your account.
@@ -111,7 +122,7 @@ interface UsenetApi {
      *
      * Endpoint duplicated because of different response format in [getAvailabilityObject]
      */
-    suspend fun getUsenetAvailabilityList(
+    suspend fun listUsenetAvailability(
         hashes: List<String>,
         listFiles: Boolean? = null,
     ): ApiResult<ApiResponseListDto<CacheAvailabilityDto>>
@@ -131,7 +142,7 @@ interface UsenetApi {
      *
      * Endpoint duplicated because of different response format in [getAvailabilityList]
      */
-    suspend fun getUsenetAvailabilityObject(
+    suspend fun listUsenetAvailabilityObject(
         hashes: List<String>,
         listFiles: Boolean? = null,
     ): ApiResult<CacheAvailabilityObjectResponseDto>
@@ -149,7 +160,7 @@ interface UsenetApi {
      *
      * Endpoint duplicated because of different response format in [getAvailabilityBatchList]
      */
-    suspend fun getUsenetAvailabilityBatchObject(hashes: List<String>): ApiResult<CacheAvailabilityObjectResponseDto>
+    suspend fun listUsenetAvailabilityBatchObject(hashes: List<String>): ApiResult<CacheAvailabilityObjectResponseDto>
 
     /**
      * Takes in a list of comma separated usenet hashes and checks if the usenet download is cached.
@@ -164,7 +175,7 @@ interface UsenetApi {
      *
      * Endpoint duplicated because of different response format in [getAvailabilityBatchObject]
      */
-    suspend fun getUsenetAvailabilityBatchList(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>>
+    suspend fun listUsenetAvailabilityBatch(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>>
 
     /**
      * Updates a download item based on the item's ID.

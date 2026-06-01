@@ -7,7 +7,7 @@ import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityObje
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateWebDownloadDto
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.HosterDto
-import com.github.livingwithhippos.torbox.kmp.client.model.WebDownloadListResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.WebDownloadDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 
 interface WebApi {
@@ -49,12 +49,23 @@ interface WebApi {
      *
      * [online documentation](https://api-docs.torbox.app/#3739daf4-b586-4555-80d2-57e5670ee7ca)
      */
-    suspend fun list(
+    suspend fun listWeb(
         bypassCache: String? = null,
-        id: Int? = null,
         offset: Int? = null,
         limit: Int? = null,
-    ): ApiResult<WebDownloadListResponseDto>
+    ): ApiResult<ApiResponseListDto<WebDownloadDto>>
+
+    /**
+     * Gets a user's web download from its id.
+     * This gives you the needed information to perform other usenet actions.
+     * Unlike Torrents, this information is updated on its own every 5 seconds for live web downloads.
+     *
+     * [online documentation](https://api-docs.torbox.app/#3739daf4-b586-4555-80d2-57e5670ee7ca)
+     */
+    suspend fun getWeb(
+        bypassCache: String? = null,
+        id: Int,
+    ): ApiResult<ApiResponseDto<WebDownloadDto>>
 
     /**
      * Requests the download link from the server.
@@ -92,9 +103,9 @@ interface WebApi {
      *
      * [online documentation](https://api-docs.torbox.app/#6beae110-9977-4f22-bf35-4a521c927ff0)
      *
-     * Endpoint duplicated because of different response format in [getWebAvailabilityObject]
+     * Endpoint duplicated because of different response format in [listWebAvailabilityObject]
      */
-    suspend fun getWebAvailabilityList(
+    suspend fun listWebAvailability(
         hashes: List<String>,
         listFiles: Boolean? = null,
     ): ApiResult<ApiResponseListDto<CacheAvailabilityDto>>
@@ -112,9 +123,9 @@ interface WebApi {
      *
      * [online documentation](https://api-docs.torbox.app/#6beae110-9977-4f22-bf35-4a521c927ff0)
      *
-     * Endpoint duplicated because of different response format in [getWebAvailabilityList]
+     * Endpoint duplicated because of different response format in [listWebAvailability]
      */
-    suspend fun getWebAvailabilityObject(
+    suspend fun listWebAvailabilityObject(
         hashes: List<String>,
         listFiles: Boolean? = null,
     ): ApiResult<CacheAvailabilityObjectResponseDto>
@@ -130,9 +141,9 @@ interface WebApi {
      *
      * [online documentation](https://api-docs.torbox.app/#f31c99fa-07f3-4cca-a00d-c12e2a09213f)
      *
-     * Endpoint duplicated because of different response format in [getWebAvailabilityBatchList]
+     * Endpoint duplicated because of different response format in [listWebAvailabilityBatch]
      */
-    suspend fun getWebAvailabilityBatchObject(hashes: List<String>): ApiResult<CacheAvailabilityObjectResponseDto>
+    suspend fun listWebAvailabilityBatchObject(hashes: List<String>): ApiResult<CacheAvailabilityObjectResponseDto>
 
     /**
      * Takes in a list of comma separated web hashes and checks if the web download is cached.
@@ -145,9 +156,9 @@ interface WebApi {
      *
      * [online documentation](https://api-docs.torbox.app/#f31c99fa-07f3-4cca-a00d-c12e2a09213f)
      *
-     * Endpoint duplicated because of different response format in [getWebAvailabilityBatchObject]
+     * Endpoint duplicated because of different response format in [listWebAvailabilityBatchObject]
      */
-    suspend fun getWebAvailabilityBatchList(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>>
+    suspend fun listWebAvailabilityBatch(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>>
 
     /**
      * A dynamic list of hosters that TorBox is capable of downloading through its paid service.

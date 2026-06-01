@@ -1,27 +1,7 @@
 package com.github.livingwithhippos.torbox.kmp.client.model
 
-import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerializationException
-import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
-import kotlinx.serialization.json.JsonArray
-import kotlinx.serialization.json.JsonDecoder
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonEncoder
-import kotlinx.serialization.json.JsonNull
-import kotlinx.serialization.json.JsonObject
-
-@Serializable
-data class TorrentListResponseDto(
-    override val success: Boolean,
-    val error: String?,
-    val detail: String,
-    @Serializable(with = TorrentDataSerializer::class)
-    val data: List<TorrentDto>?,
-) : ApiSuccessResponse
 
 @Serializable
 data class TorrentDto(
@@ -130,44 +110,5 @@ sealed class ExportTorrentResultDto {
         }
 
         override fun hashCode(): Int = bytes.contentHashCode()
-    }
-}
-
-/**
- * this custom serializer is used to avoid creating two data classes whose only difference is returning a list of torrents
- * or a single torrent in the data field. We return a list with the torrent instead of the torrent object.
- */
-@Serializable
-object TorrentDataSerializer : KSerializer<List<TorrentDto>?> {
-    override val descriptor: SerialDescriptor = JsonElement.serializer().descriptor
-
-    override fun deserialize(decoder: Decoder): List<TorrentDto>? {
-        val jsonDecoder =
-            decoder as? JsonDecoder
-                ?: throw SerializationException("TorrentDataSerializer can be used only with Json format")
-
-        return when (val element = jsonDecoder.decodeJsonElement()) {
-            JsonNull -> null
-            is JsonArray -> element.map { jsonDecoder.json.decodeFromJsonElement(TorrentDto.serializer(), it) }
-            is JsonObject -> listOf(jsonDecoder.json.decodeFromJsonElement(TorrentDto.serializer(), element))
-            else -> throw SerializationException("Expected data to be object, array, or null")
-        }
-    }
-
-    override fun serialize(
-        encoder: Encoder,
-        value: List<TorrentDto>?,
-    ) {
-        val jsonEncoder =
-            encoder as? JsonEncoder
-                ?: throw SerializationException("TorrentDataSerializer can be used only with Json format")
-
-        val element =
-            when {
-                value == null -> JsonNull
-                else -> JsonArray(value.map { jsonEncoder.json.encodeToJsonElement(TorrentDto.serializer(), it) })
-            }
-
-        jsonEncoder.encodeJsonElement(element)
     }
 }

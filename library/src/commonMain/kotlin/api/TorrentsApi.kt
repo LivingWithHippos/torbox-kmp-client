@@ -7,7 +7,7 @@ import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityObje
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateTorrentDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentResultDto
 import com.github.livingwithhippos.torbox.kmp.client.model.GenericResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.TorrentListResponseDto
+import com.github.livingwithhippos.torbox.kmp.client.model.TorrentDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 
 interface TorrentsApi {
@@ -132,12 +132,43 @@ interface TorrentsApi {
      *
      * [online documentation](https://api-docs.torbox.app/#8fa2961a-da1e-410e-84c3-821b3f6b30cc)
      */
-    suspend fun get(
+    suspend fun listTorrents(
         bypassCache: String? = null,
-        id: Int? = null,
         offset: Int? = null,
         limit: Int? = null,
-    ): ApiResult<TorrentListResponseDto>
+    ): ApiResult<ApiResponseListDto<TorrentDto>>
+
+    /**
+     * Get a user's torrent by id.
+     * This information only gets updated every 600 seconds, or when the Request Update On Torrent request is sent to the relay API.
+     *
+     * Download States:
+     *
+     *     "downloading" -> The torrent is currently downloading.
+     *
+     *     "uploading" -> The torrent is currently seeding.
+     *
+     *     "stalled (no seeds)" -> The torrent is trying to download, but there are no seeds connected to download from.
+     *
+     *     "paused" -> The torrent is paused.
+     *
+     *     "completed" -> The torrent is completely downloaded. Do not use this for download completion status.
+     *
+     *     "cached" -> The torrent is cached from the server.
+     *
+     *     "metaDL" -> The torrent is downloading metadata from the hoard.
+     *
+     *     "checkingResumeData" -> The torrent is checking resumable data.
+     *
+     * All other statuses are basic qBittorrent states. [Check out here for the full list](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-4.1)#torrent-management).
+     *
+     * [online documentation](https://api-docs.torbox.app/#8fa2961a-da1e-410e-84c3-821b3f6b30cc)
+     */
+    suspend fun getTorrent(
+        // todo: check if this is supported when using the id
+        bypassCache: String? = null,
+        id: Int,
+    ): ApiResult<ApiResponseDto<TorrentDto>>
 
     /**
      * Requests the download link from the server.
@@ -174,7 +205,7 @@ interface TorrentsApi {
      *
      * [online documentation](https://api-docs.torbox.app/#99e1b7a7-bdf6-4884-af9d-bd9903a8ca63)
      */
-    suspend fun getTorrentAvailabilityList(
+    suspend fun listTorrentAvailability(
         hashes: List<String>,
         listFiles: Boolean? = null,
     ): ApiResult<ApiResponseListDto<CacheAvailabilityDto>>
@@ -190,7 +221,7 @@ interface TorrentsApi {
      *
      * [online documentation](https://api-docs.torbox.app/#99e1b7a7-bdf6-4884-af9d-bd9903a8ca63)
      */
-    suspend fun getTorrentAvailabilityObject(
+    suspend fun listTorrentAvailabilityObject(
         hashes: List<String>,
         listFiles: Boolean? = null,
     ): ApiResult<CacheAvailabilityObjectResponseDto>
@@ -206,7 +237,7 @@ interface TorrentsApi {
      *
      * [online documentation](https://api-docs.torbox.app/#00718c3f-0147-4423-af4d-e50b94fea867)
      */
-    suspend fun getTorrentAvailabilityBatchObject(hashes: List<String>): ApiResult<CacheAvailabilityObjectResponseDto>
+    suspend fun listTorrentAvailabilityBatchObject(hashes: List<String>): ApiResult<CacheAvailabilityObjectResponseDto>
 
     /**
      * Takes in a list of comma separated torrent hashes and checks if the torrent is cached.
@@ -219,7 +250,7 @@ interface TorrentsApi {
      *
      * [online documentation](https://api-docs.torbox.app/)
      */
-    suspend fun getTorrentAvailabilityBatchList(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>>
+    suspend fun listTorrentAvailabilityBatch(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>>
 
     /**
      * Exports the magnet or torrent file.
