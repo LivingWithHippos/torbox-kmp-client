@@ -1,2 +1,14 @@
 [tools]
 node = "24"
+
+# if mise is installed you can create and set the variables for testing in the mise.local.toml file, which is git-ignored
+# check if the tests need this or the local.properties file (see example.local.proerties for that)
+# [env]
+# TEST_BEARER_TOKEN = '12ab34cd-...'
+# TEST_TORRENT_ID = 12345678
+# TEST_MAGNET_LINK = 'magnet:?xt=urn:btih:1234567'
+# TEST_TORRENT_HASH = "123456..."
+# TEST_MAGNET_HASH = "123456..."
+# TEST_WEB_ID = 12345678
+# TEST_WEB_HASH = "123456..."
+# HOSTER_LINK = 'https://megahosterlink.lmao/file/123456.rar.html'

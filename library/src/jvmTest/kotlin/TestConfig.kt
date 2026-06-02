@@ -30,13 +30,27 @@ object TestConfig {
         props.getProperty("test.torrentFilePath")
             ?: error("test.torrentFilePath missing from local.properties")
 
+    /**
+     * This may be the Torbox inner hash, not the magnet one, use [magnetHash] for that
+     */
     val torrentHash: String get() =
         props.getProperty("test.torrentHash")
             ?: error("test.torrentHash missing from local.properties")
 
+    /**
+     * the standard magnet/torrent hash
+     */
+    val magnetHash: String get() =
+        props.getProperty("test.torremagnetHashntHash")
+            ?: error("test.magnetHash missing from local.properties")
+
     val webDownloadId: Int get() =
         props.getProperty("test.webDownloadId")?.toInt()
             ?: error("test.webDownloadId missing from local.properties")
+
+    val webHash: String get() =
+        props.getProperty("test.webHash")
+            ?: error("test.webHash missing from local.properties")
 
     val hosterLink: String get() =
         props.getProperty("test.hosterLink")
