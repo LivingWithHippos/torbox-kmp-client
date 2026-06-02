@@ -11,8 +11,5 @@ xcuserdata
 .kotlin
 #So we don't accidentally commit our private keys
 *.gpg
-/gradlew
-/gradle/wrapper/gradle-wrapper.jar
-gradlew.bat
 kotlin-js-store/yarn.lock
 mise.local.toml
