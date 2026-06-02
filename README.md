@@ -35,6 +35,65 @@ suspend fun main() {
 
 The syntax is similar to [the official APIs](https://api-docs.torbox.app/), the categories are the same, so `General -> Get Up Status` becomes `client.general.upStatus()`
 
+The response objects are mostly modeled like this:
+
+```kt
+// class modeling the http call result
+
+sealed interface ApiResult<out T> {
+    data class Success<T>(
+        val value: T,
+    ) : ApiResult<T>
+
+    sealed interface Failure : ApiResult<Nothing> {
+        data class Http(
+            val code: Int,
+            val body: String?,
+        ) : Failure
+
+        data class BadRequest(
+            val cause: Throwable,
+        ) : Failure
+
+        data class Network(
+            val cause: Throwable,
+        ) : Failure
+
+        data class Serialization(
+            val cause: Throwable,
+            val body: String?,
+        ) : Failure
+
+        data class NoSuccess<T>(
+            val value: T,
+        ) : Failure
+    }
+}
+
+interface ApiSuccessResponse {
+    val success: Boolean
+}
+
+// class modeling the basic response, practically always returned by the service
+@Serializable
+data class ApiResponseDto<T>(
+    override val success: Boolean,
+    val error: String?,
+    val detail: String,
+    val data: T? = null,
+) : ApiSuccessResponse
+```
+
+and `val data: T` has the requested data, depending on the requested API
+
+A successful response to the `torrent.get()` function returns `ApiResult<ApiResponseDto<TorrentDto>>`, and the `magnet` field inside `TorrentDto` can be accessed like this:
+
+```kt
+if (response is ApiResult.Success) {
+    println(response.value.data.magnet)
+}
+```
+
 ## Notes
 
 You can generate/retrieve [the API token here](https://torbox.app/settings?section=account)
