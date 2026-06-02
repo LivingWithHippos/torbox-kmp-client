@@ -1,8 +1,8 @@
-package com.github.livingwithhippos.torbox.kmp.client
+package com.github.livingwithhippos.torbox
 
-import com.github.livingwithhippos.torbox.kmp.client.client.TorboxClient
-import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
-import com.github.livingwithhippos.torbox.kmp.client.network.RestClientConfig
+import com.github.livingwithhippos.torbox.client.TorboxClient
+import com.github.livingwithhippos.torbox.network.ApiResult
+import com.github.livingwithhippos.torbox.network.RestClientConfig
 import io.ktor.client.plugins.logging.LogLevel
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test

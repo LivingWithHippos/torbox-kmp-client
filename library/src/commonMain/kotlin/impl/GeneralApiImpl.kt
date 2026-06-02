@@ -1,14 +1,14 @@
-package com.github.livingwithhippos.torbox.kmp.client.impl
+package com.github.livingwithhippos.torbox.impl
 
-import com.github.livingwithhippos.torbox.kmp.client.api.GeneralApi
-import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
-import com.github.livingwithhippos.torbox.kmp.client.model.ChangelogEntryDto
-import com.github.livingwithhippos.torbox.kmp.client.model.SpeedtestFileDto
-import com.github.livingwithhippos.torbox.kmp.client.model.StatsDto
-import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
-import com.github.livingwithhippos.torbox.kmp.client.network.executeRequest
-import com.github.livingwithhippos.torbox.kmp.client.network.noAuth
+import com.github.livingwithhippos.torbox.api.GeneralApi
+import com.github.livingwithhippos.torbox.model.ApiResponseDto
+import com.github.livingwithhippos.torbox.model.ApiResponseListDto
+import com.github.livingwithhippos.torbox.model.ChangelogEntryDto
+import com.github.livingwithhippos.torbox.model.SpeedtestFileDto
+import com.github.livingwithhippos.torbox.model.StatsDto
+import com.github.livingwithhippos.torbox.network.ApiResult
+import com.github.livingwithhippos.torbox.network.executeRequest
+import com.github.livingwithhippos.torbox.network.noAuth
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get

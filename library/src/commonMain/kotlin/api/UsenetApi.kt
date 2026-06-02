@@ -1,12 +1,12 @@
-package com.github.livingwithhippos.torbox.kmp.client.api
+package com.github.livingwithhippos.torbox.api
 
-import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
-import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseMapDto
-import com.github.livingwithhippos.torbox.kmp.client.model.CacheDto
-import com.github.livingwithhippos.torbox.kmp.client.model.CreateUsenetDto
-import com.github.livingwithhippos.torbox.kmp.client.model.UsenetDownloadDto
-import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
+import com.github.livingwithhippos.torbox.model.ApiResponseDto
+import com.github.livingwithhippos.torbox.model.ApiResponseListDto
+import com.github.livingwithhippos.torbox.model.ApiResponseMapDto
+import com.github.livingwithhippos.torbox.model.CacheDto
+import com.github.livingwithhippos.torbox.model.CreateUsenetDto
+import com.github.livingwithhippos.torbox.model.UsenetDownloadDto
+import com.github.livingwithhippos.torbox.network.ApiResult
 
 interface UsenetApi {
     /**

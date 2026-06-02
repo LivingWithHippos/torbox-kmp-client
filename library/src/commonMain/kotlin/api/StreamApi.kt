@@ -1,9 +1,9 @@
-package com.github.livingwithhippos.torbox.kmp.client.api
+package com.github.livingwithhippos.torbox.api
 
-import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.CreatedStreamDto
-import com.github.livingwithhippos.torbox.kmp.client.model.StreamDto
-import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
+import com.github.livingwithhippos.torbox.model.ApiResponseDto
+import com.github.livingwithhippos.torbox.model.CreatedStreamDto
+import com.github.livingwithhippos.torbox.model.StreamDto
+import com.github.livingwithhippos.torbox.network.ApiResult
 
 interface StreamApi {
     /**

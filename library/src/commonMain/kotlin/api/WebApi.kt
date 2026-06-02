@@ -1,13 +1,13 @@
-package com.github.livingwithhippos.torbox.kmp.client.api
+package com.github.livingwithhippos.torbox.api
 
-import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
-import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseMapDto
-import com.github.livingwithhippos.torbox.kmp.client.model.CacheDto
-import com.github.livingwithhippos.torbox.kmp.client.model.CreateWebDownloadDto
-import com.github.livingwithhippos.torbox.kmp.client.model.HosterDto
-import com.github.livingwithhippos.torbox.kmp.client.model.WebDownloadDto
-import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
+import com.github.livingwithhippos.torbox.model.ApiResponseDto
+import com.github.livingwithhippos.torbox.model.ApiResponseListDto
+import com.github.livingwithhippos.torbox.model.ApiResponseMapDto
+import com.github.livingwithhippos.torbox.model.CacheDto
+import com.github.livingwithhippos.torbox.model.CreateWebDownloadDto
+import com.github.livingwithhippos.torbox.model.HosterDto
+import com.github.livingwithhippos.torbox.model.WebDownloadDto
+import com.github.livingwithhippos.torbox.network.ApiResult
 
 interface WebApi {
     /**

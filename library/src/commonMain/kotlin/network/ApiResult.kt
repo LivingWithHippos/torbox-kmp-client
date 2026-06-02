@@ -1,4 +1,4 @@
-package com.github.livingwithhippos.torbox.kmp.client.network
+package com.github.livingwithhippos.torbox.network
 
 sealed interface ApiResult<out T> {
     data class Success<T>(

@@ -1,4 +1,4 @@
-package com.github.livingwithhippos.torbox.kmp.client
+package com.github.livingwithhippos.torbox
 
 import java.io.File
 import java.io.FileInputStream

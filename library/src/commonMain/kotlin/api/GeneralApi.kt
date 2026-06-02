@@ -1,11 +1,11 @@
-package com.github.livingwithhippos.torbox.kmp.client.api
+package com.github.livingwithhippos.torbox.api
 
-import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
-import com.github.livingwithhippos.torbox.kmp.client.model.ChangelogEntryDto
-import com.github.livingwithhippos.torbox.kmp.client.model.SpeedtestFileDto
-import com.github.livingwithhippos.torbox.kmp.client.model.StatsDto
-import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
+import com.github.livingwithhippos.torbox.model.ApiResponseDto
+import com.github.livingwithhippos.torbox.model.ApiResponseListDto
+import com.github.livingwithhippos.torbox.model.ChangelogEntryDto
+import com.github.livingwithhippos.torbox.model.SpeedtestFileDto
+import com.github.livingwithhippos.torbox.model.StatsDto
+import com.github.livingwithhippos.torbox.network.ApiResult
 
 interface GeneralApi {
     /**

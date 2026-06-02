@@ -1,11 +1,11 @@
-package com.github.livingwithhippos.torbox.kmp.client.impl
+package com.github.livingwithhippos.torbox.impl
 
-import com.github.livingwithhippos.torbox.kmp.client.api.IntegrationsApi
-import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
-import com.github.livingwithhippos.torbox.kmp.client.model.JobDto
-import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
-import com.github.livingwithhippos.torbox.kmp.client.network.executeRequest
+import com.github.livingwithhippos.torbox.api.IntegrationsApi
+import com.github.livingwithhippos.torbox.model.ApiResponseDto
+import com.github.livingwithhippos.torbox.model.ApiResponseListDto
+import com.github.livingwithhippos.torbox.model.JobDto
+import com.github.livingwithhippos.torbox.network.ApiResult
+import com.github.livingwithhippos.torbox.network.executeRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.request.delete
 import io.ktor.client.request.get

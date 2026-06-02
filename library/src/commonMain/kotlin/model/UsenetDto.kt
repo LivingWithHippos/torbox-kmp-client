@@ -1,4 +1,4 @@
-package com.github.livingwithhippos.torbox.kmp.client.model
+package com.github.livingwithhippos.torbox.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

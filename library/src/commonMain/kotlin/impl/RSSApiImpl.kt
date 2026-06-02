@@ -1,15 +1,15 @@
-package com.github.livingwithhippos.torbox.kmp.client.impl
+package com.github.livingwithhippos.torbox.impl
 
-import com.github.livingwithhippos.torbox.kmp.client.api.RSSApi
-import com.github.livingwithhippos.torbox.kmp.client.model.AddRssRequestDto
-import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
-import com.github.livingwithhippos.torbox.kmp.client.model.ControlRssRequestDto
-import com.github.livingwithhippos.torbox.kmp.client.model.EditRssRequestDto
-import com.github.livingwithhippos.torbox.kmp.client.model.RssFeedDto
-import com.github.livingwithhippos.torbox.kmp.client.model.RssFeedItemDto
-import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
-import com.github.livingwithhippos.torbox.kmp.client.network.executeRequest
+import com.github.livingwithhippos.torbox.api.RSSApi
+import com.github.livingwithhippos.torbox.model.AddRssRequestDto
+import com.github.livingwithhippos.torbox.model.ApiResponseDto
+import com.github.livingwithhippos.torbox.model.ApiResponseListDto
+import com.github.livingwithhippos.torbox.model.ControlRssRequestDto
+import com.github.livingwithhippos.torbox.model.EditRssRequestDto
+import com.github.livingwithhippos.torbox.model.RssFeedDto
+import com.github.livingwithhippos.torbox.model.RssFeedItemDto
+import com.github.livingwithhippos.torbox.network.ApiResult
+import com.github.livingwithhippos.torbox.network.executeRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter

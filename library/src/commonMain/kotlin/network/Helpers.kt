@@ -1,6 +1,6 @@
-package com.github.livingwithhippos.torbox.kmp.client.network
+package com.github.livingwithhippos.torbox.network
 
-import com.github.livingwithhippos.torbox.kmp.client.model.ApiSuccessResponse
+import com.github.livingwithhippos.torbox.model.ApiSuccessResponse
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ResponseException
 import io.ktor.client.statement.HttpResponse

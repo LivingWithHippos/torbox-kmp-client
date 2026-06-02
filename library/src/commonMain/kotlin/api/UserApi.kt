@@ -1,19 +1,19 @@
-package com.github.livingwithhippos.torbox.kmp.client.api
+package com.github.livingwithhippos.torbox.api
 
-import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
-import com.github.livingwithhippos.torbox.kmp.client.model.DashboardFilterDto
-import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeAuthorizationStartDto
-import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeTokenDataDto
-import com.github.livingwithhippos.torbox.kmp.client.model.ModifySearchEngineDto
-import com.github.livingwithhippos.torbox.kmp.client.model.ReferralDataDto
-import com.github.livingwithhippos.torbox.kmp.client.model.SearchEngineDto
-import com.github.livingwithhippos.torbox.kmp.client.model.SubscriptionDto
-import com.github.livingwithhippos.torbox.kmp.client.model.TransactionDto
-import com.github.livingwithhippos.torbox.kmp.client.model.UserDataDto
-import com.github.livingwithhippos.torbox.kmp.client.model.UserSettingsRequestDto
-import com.github.livingwithhippos.torbox.kmp.client.model.UserStatsDto
-import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
+import com.github.livingwithhippos.torbox.model.ApiResponseDto
+import com.github.livingwithhippos.torbox.model.ApiResponseListDto
+import com.github.livingwithhippos.torbox.model.DashboardFilterDto
+import com.github.livingwithhippos.torbox.model.DeviceCodeAuthorizationStartDto
+import com.github.livingwithhippos.torbox.model.DeviceCodeTokenDataDto
+import com.github.livingwithhippos.torbox.model.ModifySearchEngineDto
+import com.github.livingwithhippos.torbox.model.ReferralDataDto
+import com.github.livingwithhippos.torbox.model.SearchEngineDto
+import com.github.livingwithhippos.torbox.model.SubscriptionDto
+import com.github.livingwithhippos.torbox.model.TransactionDto
+import com.github.livingwithhippos.torbox.model.UserDataDto
+import com.github.livingwithhippos.torbox.model.UserSettingsRequestDto
+import com.github.livingwithhippos.torbox.model.UserStatsDto
+import com.github.livingwithhippos.torbox.network.ApiResult
 
 interface UserApi {
     /**

@@ -1,11 +1,11 @@
-package com.github.livingwithhippos.torbox.kmp.client.impl
+package com.github.livingwithhippos.torbox.impl
 
-import com.github.livingwithhippos.torbox.kmp.client.api.StreamApi
-import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.CreatedStreamDto
-import com.github.livingwithhippos.torbox.kmp.client.model.StreamDto
-import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
-import com.github.livingwithhippos.torbox.kmp.client.network.executeRequest
+import com.github.livingwithhippos.torbox.api.StreamApi
+import com.github.livingwithhippos.torbox.model.ApiResponseDto
+import com.github.livingwithhippos.torbox.model.CreatedStreamDto
+import com.github.livingwithhippos.torbox.model.StreamDto
+import com.github.livingwithhippos.torbox.network.ApiResult
+import com.github.livingwithhippos.torbox.network.executeRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter

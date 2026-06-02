@@ -1,10 +1,10 @@
-package com.github.livingwithhippos.torbox.kmp.client.api
+package com.github.livingwithhippos.torbox.api
 
-import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
-import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
-import com.github.livingwithhippos.torbox.kmp.client.model.RssFeedDto
-import com.github.livingwithhippos.torbox.kmp.client.model.RssFeedItemDto
-import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
+import com.github.livingwithhippos.torbox.model.ApiResponseDto
+import com.github.livingwithhippos.torbox.model.ApiResponseListDto
+import com.github.livingwithhippos.torbox.model.RssFeedDto
+import com.github.livingwithhippos.torbox.model.RssFeedItemDto
+import com.github.livingwithhippos.torbox.network.ApiResult
 
 interface RSSApi {
     /**

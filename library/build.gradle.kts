@@ -8,13 +8,13 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 }
 
-group = "com.github.livingwithhippos"
+group = "io.github.livingwithhippos"
 version = "0.1.0"
 
 kotlin {
     jvm()
     androidLibrary {
-        namespace = "com.github.livingwithhippos.torbox.kmp.client"
+        namespace = "io.github.livingwithhippos.torbox"
         compileSdk =
             libs.versions.android.compileSdk
                 .get()
@@ -112,7 +112,7 @@ mavenPublishing {
 
     signAllPublications()
 
-    coordinates(group.toString(), "library", version.toString())
+    coordinates(group.toString(), "torbox-kmp-client", version.toString())
 
     pom {
         name = "Torbox KMP Client"

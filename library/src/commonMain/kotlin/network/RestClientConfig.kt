@@ -1,6 +1,6 @@
-package com.github.livingwithhippos.torbox.kmp.client.network
+package com.github.livingwithhippos.torbox.network
 
-import com.github.livingwithhippos.torbox.kmp.client.BASE_URL
+import com.github.livingwithhippos.torbox.BASE_URL
 import io.ktor.client.plugins.logging.LogLevel
 
 data class RestClientConfig(
