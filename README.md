@@ -1,8 +1,8 @@
 # torbox-kmp-client
 
-This is a kotlin multi platform library, created to easily interact with [Torbox](https://torbox.app). It's still in beta, until 1.0.0 breaking changes and/or bugs may occur.
+This is a Kotlin multi platform library, created to easily interact with [Torbox](https://torbox.app). It's still in beta; until `1.0.0` breaking changes and/or bugs may occur.
 
-This is my first library so I cannot talk about the quality of the work, but it's small enough that with some testing. AI has been used in small amounts to quickly refactor code after changes.
+This is my first library, so I'm open to feedback, but it's small enough that with some testing it should be good enough. AI has been used in small amounts to quickly refactor code after changes.
 
 ## Importing the library
 
