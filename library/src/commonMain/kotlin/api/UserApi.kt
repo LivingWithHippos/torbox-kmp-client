@@ -2,6 +2,7 @@ package com.github.livingwithhippos.torbox.kmp.client.api
 
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
+import com.github.livingwithhippos.torbox.kmp.client.model.DashboardFilterDto
 import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeAuthorizationStartDto
 import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeTokenDataDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ModifySearchEngineDto
@@ -54,7 +55,7 @@ interface UserApi {
      *
      * [online documentation](https://api-docs.torbox.app/#1c1bfac4-bf2f-4fad-9ae8-a12275be3bd1)
      */
-    suspend fun confirmationCode(): ApiResult<ApiResponseDto<String>>
+    suspend fun requestConfirmationCode(): ApiResult<ApiResponseDto<String>>
 
     /**
      * Starts the OAuth device code authorization process.
@@ -115,7 +116,69 @@ interface UserApi {
      *
      * @param settings A [UserSettingsRequestDto] containing the settings to update.
      */
-    suspend fun editSettings(settings: UserSettingsRequestDto): ApiResult<ApiResponseDto<String>>
+    suspend fun edit(
+        emailNotifications: Boolean? = null,
+        webNotifications: Boolean? = null,
+        mobileNotifications: Boolean? = null,
+        rssNotifications: Boolean? = null,
+        downloadSpeedInTab: Boolean? = null,
+        showTrackerInTorrents: Boolean? = null,
+        stremioQuality: List<Int>? = null,
+        stremioResolution: List<Int>? = null,
+        stremioLanguage: List<Int>? = null,
+        stremioCache: List<Int>? = null,
+        stremioSizeLower: Long? = null,
+        googleDriveFolderId: String? = null,
+        onedriveSavePath: String? = null,
+        discordId: String? = null,
+        discordNotifications: Boolean? = null,
+        stremioAllowAdult: Boolean? = null,
+        stremioSeedTorrents: Int? = null,
+        seedTorrents: Int? = null,
+        allowZipped: Boolean? = null,
+        stremioAllowZipped: Boolean? = null,
+        onefichierFolderId: String? = null,
+        gofileFolderId: String? = null,
+        jdownloaderNotifications: Boolean? = null,
+        webhookNotifications: Boolean? = null,
+        webhookUrl: String? = null,
+        telegramNotifications: Boolean? = null,
+        telegramId: String? = null,
+        megaEmail: String? = null,
+        megaPassword: String? = null,
+        stremioSort: String? = null,
+        cdnSelection: String? = null,
+        stremioUseCustomSearchEngines: Boolean? = null,
+        stremioResultSort: String? = null,
+        webdavUseLocalFiles: Boolean? = null,
+        stremioLegacyYourMedia: Boolean? = null,
+        stremioOnlyYourMediaStreams: Boolean? = null,
+        stremioDisableYourMediaStreams: Boolean? = null,
+        webdavUseFolderView: Boolean? = null,
+        webdavFlatten: Boolean? = null,
+        stremioLimitPerResolutionTorrent: Int? = null,
+        stremioLimitPerResolutionUsenet: Int? = null,
+        stremioSizeUpper: Long? = null,
+        stremioTorrentSeedersCutoff: Int? = null,
+        pixeldrainApiKey: String? = null,
+        onefichierApiKey: String? = null,
+        gofileApiKey: String? = null,
+        patreonId: String? = null,
+        stremioWaitForDownloadUsenet: Boolean? = null,
+        stremioWaitForDownloadTorrent: Boolean? = null,
+        stremioDisableFilteredNote: Boolean? = null,
+        stremioEmojiInDescription: Boolean? = null,
+        dashboardFilter: DashboardFilterDto? = null,
+        webPlayerAlwaysTranscode: Boolean? = null,
+        webPlayerAlwaysSkipIntro: Boolean? = null,
+        webPlayerAudioPreferredLanguage: String? = null,
+        webPlayerSubtitlePreferredLanguage: String? = null,
+        webPlayerDisablePrestreamSelector: Boolean? = null,
+        dashboardSort: String? = null,
+        webPlayerDisableNextUpDialogue: Boolean? = null,
+        webPlayerEnableScrobbling: Boolean? = null,
+        appendFilenameToLinks: Boolean? = null,
+    ): ApiResult<ApiResponseDto<String>>
 
     /**
      * Gets all of user's configured search engines. Can pass an optional id to retrieve a specific search engine.

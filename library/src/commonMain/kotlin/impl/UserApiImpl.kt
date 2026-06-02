@@ -4,6 +4,7 @@ import com.github.livingwithhippos.torbox.kmp.client.api.UserApi
 import com.github.livingwithhippos.torbox.kmp.client.model.AddSearchEngineRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
+import com.github.livingwithhippos.torbox.kmp.client.model.DashboardFilterDto
 import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeAuthorizationStartDto
 import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeTokenDataDto
 import com.github.livingwithhippos.torbox.kmp.client.model.DeviceCodeTokenRequestDto
@@ -33,6 +34,7 @@ import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
+import kotlinx.serialization.SerialName
 
 class UserApiImpl(
     private val client: HttpClient,
@@ -89,7 +91,7 @@ class UserApiImpl(
         }
     }
 
-    override suspend fun confirmationCode(): ApiResult<ApiResponseDto<String>> =
+    override suspend fun requestConfirmationCode(): ApiResult<ApiResponseDto<String>> =
         executeRequest {
             client.get("user/getconfirmation")
         }
@@ -160,11 +162,137 @@ class UserApiImpl(
         )
     }
 
-    override suspend fun editSettings(settings: UserSettingsRequestDto): ApiResult<ApiResponseDto<String>> =
+    override suspend fun edit(
+        emailNotifications: Boolean?,
+        webNotifications: Boolean?,
+        mobileNotifications: Boolean?,
+        rssNotifications: Boolean?,
+        downloadSpeedInTab: Boolean?,
+        showTrackerInTorrents: Boolean?,
+        stremioQuality: List<Int>?,
+        stremioResolution: List<Int>?,
+        stremioLanguage: List<Int>?,
+        stremioCache: List<Int>?,
+        stremioSizeLower: Long?,
+        googleDriveFolderId: String?,
+        onedriveSavePath: String?,
+        discordId: String?,
+        discordNotifications: Boolean?,
+        stremioAllowAdult: Boolean?,
+        stremioSeedTorrents: Int?,
+        seedTorrents: Int?,
+        allowZipped: Boolean?,
+        stremioAllowZipped: Boolean?,
+        onefichierFolderId: String?,
+        gofileFolderId: String?,
+        jdownloaderNotifications: Boolean?,
+        webhookNotifications: Boolean?,
+        webhookUrl: String?,
+        telegramNotifications: Boolean?,
+        telegramId: String?,
+        megaEmail: String?,
+        megaPassword: String?,
+        stremioSort: String?,
+        cdnSelection: String?,
+        stremioUseCustomSearchEngines: Boolean?,
+        stremioResultSort: String?,
+        webdavUseLocalFiles: Boolean?,
+        stremioLegacyYourMedia: Boolean?,
+        stremioOnlyYourMediaStreams: Boolean?,
+        stremioDisableYourMediaStreams: Boolean?,
+        webdavUseFolderView: Boolean?,
+        webdavFlatten: Boolean?,
+        stremioLimitPerResolutionTorrent: Int?,
+        stremioLimitPerResolutionUsenet: Int?,
+        stremioSizeUpper: Long?,
+        stremioTorrentSeedersCutoff: Int?,
+        pixeldrainApiKey: String?,
+        onefichierApiKey: String?,
+        gofileApiKey: String?,
+        patreonId: String?,
+        stremioWaitForDownloadUsenet: Boolean?,
+        stremioWaitForDownloadTorrent: Boolean?,
+        stremioDisableFilteredNote: Boolean?,
+        stremioEmojiInDescription: Boolean?,
+        dashboardFilter: DashboardFilterDto?,
+        webPlayerAlwaysTranscode: Boolean?,
+        webPlayerAlwaysSkipIntro: Boolean?,
+        webPlayerAudioPreferredLanguage: String?,
+        webPlayerSubtitlePreferredLanguage: String?,
+        webPlayerDisablePrestreamSelector: Boolean?,
+        dashboardSort: String?,
+        webPlayerDisableNextUpDialogue: Boolean?,
+        webPlayerEnableScrobbling: Boolean?,
+        appendFilenameToLinks: Boolean?,
+    ): ApiResult<ApiResponseDto<String>> =
         executeRequest {
             client.put("user/settings/editsettings") {
                 contentType(ContentType.Application.Json)
-                setBody(settings)
+                setBody(
+                    UserSettingsRequestDto(
+                        emailNotifications = emailNotifications,
+                        webNotifications = webNotifications,
+                        mobileNotifications = mobileNotifications,
+                        rssNotifications = rssNotifications,
+                        downloadSpeedInTab = downloadSpeedInTab,
+                        showTrackerInTorrents = showTrackerInTorrents,
+                        stremioQuality = stremioQuality,
+                        stremioResolution = stremioResolution,
+                        stremioLanguage = stremioLanguage,
+                        stremioCache = stremioCache,
+                        stremioSizeLower = stremioSizeLower,
+                        googleDriveFolderId = googleDriveFolderId,
+                        onedriveSavePath = onedriveSavePath,
+                        discordId = discordId,
+                        discordNotifications = discordNotifications,
+                        stremioAllowAdult = stremioAllowAdult,
+                        stremioSeedTorrents = stremioSeedTorrents,
+                        seedTorrents = seedTorrents,
+                        allowZipped = allowZipped,
+                        stremioAllowZipped = stremioAllowZipped,
+                        onefichierFolderId = onefichierFolderId,
+                        gofileFolderId = gofileFolderId,
+                        jdownloaderNotifications = jdownloaderNotifications,
+                        webhookNotifications = webhookNotifications,
+                        webhookUrl = webhookUrl,
+                        telegramNotifications = telegramNotifications,
+                        telegramId = telegramId,
+                        megaEmail = megaEmail,
+                        megaPassword = megaPassword,
+                        stremioSort = stremioSort,
+                        cdnSelection = cdnSelection,
+                        stremioUseCustomSearchEngines = stremioUseCustomSearchEngines,
+                        stremioResultSort = stremioResultSort,
+                        webdavUseLocalFiles = webdavUseLocalFiles,
+                        stremioLegacyYourMedia = stremioLegacyYourMedia,
+                        stremioOnlyYourMediaStreams = stremioOnlyYourMediaStreams,
+                        stremioDisableYourMediaStreams = stremioDisableYourMediaStreams,
+                        webdavUseFolderView = webdavUseFolderView,
+                        webdavFlatten = webdavFlatten,
+                        stremioLimitPerResolutionTorrent = stremioLimitPerResolutionTorrent,
+                        stremioLimitPerResolutionUsenet = stremioLimitPerResolutionUsenet,
+                        stremioSizeUpper = stremioSizeUpper,
+                        stremioTorrentSeedersCutoff = stremioTorrentSeedersCutoff,
+                        pixeldrainApiKey = pixeldrainApiKey,
+                        onefichierApiKey = onefichierApiKey,
+                        gofileApiKey = gofileApiKey,
+                        patreonId = patreonId,
+                        stremioWaitForDownloadUsenet = stremioWaitForDownloadUsenet,
+                        stremioWaitForDownloadTorrent = stremioWaitForDownloadTorrent,
+                        stremioDisableFilteredNote = stremioDisableFilteredNote,
+                        stremioEmojiInDescription = stremioEmojiInDescription,
+                        dashboardFilter = dashboardFilter,
+                        webPlayerAlwaysTranscode = webPlayerAlwaysTranscode,
+                        webPlayerAlwaysSkipIntro = webPlayerAlwaysSkipIntro,
+                        webPlayerAudioPreferredLanguage = webPlayerAudioPreferredLanguage,
+                        webPlayerSubtitlePreferredLanguage = webPlayerSubtitlePreferredLanguage,
+                        webPlayerDisablePrestreamSelector = webPlayerDisablePrestreamSelector,
+                        dashboardSort = dashboardSort,
+                        webPlayerDisableNextUpDialogue = webPlayerDisableNextUpDialogue,
+                        webPlayerEnableScrobbling = webPlayerEnableScrobbling,
+                        appendFilenameToLinks = appendFilenameToLinks,
+                    ),
+                )
             }
         }
 
