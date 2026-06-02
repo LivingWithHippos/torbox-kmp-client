@@ -116,27 +116,30 @@ mavenPublishing {
 
     pom {
         name = "Torbox KMP Client"
-        description = "A client library for Torbox"
+        description = "An unofficial KMP client library for Torbox"
         inceptionYear = "2026"
         url = "https://github.com/LivingWithHippos/torbox-kmp-client"
         licenses {
             license {
-                name = "XXX"
-                url = "YYY"
-                distribution = "ZZZ"
+                name = "GNU General Public License v3.0"
+                url = "https://spdx.org/licenses/GPL-3.0-or-later.html"
+                distribution = "https://spdx.org/licenses/GPL-3.0-or-later.html"
             }
         }
         developers {
             developer {
-                id = "XXX"
+                id = "livingwithhippos"
                 name = "LivingWithHippos"
-                url = "ZZZ"
+                email = "livingwithhippos@gmail.com"
+                url = "https://github.com/LivingWithHippos"
+                organization = "LivingWithHippos"
+                organizationUrl = "https://github.com/LivingWithHippos"
             }
         }
         scm {
-            url = "XXX"
-            connection = "YYY"
-            developerConnection = "ZZZ"
+            url = "https://github.com/LivingWithHippos/torbox-kmp-client/tree/master"
+            connection = "scm:git:git://github.com/LivingWithHippos/torbox-kmp-client.git"
+            developerConnection = "scm:git:ssh://git@github.com/LivingWithHippos/torbox-kmp-client.git"
         }
     }
 }
