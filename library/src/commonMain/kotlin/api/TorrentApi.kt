@@ -3,7 +3,7 @@ package com.github.livingwithhippos.torbox.kmp.client.api
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseMapDto
-import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityDto
+import com.github.livingwithhippos.torbox.kmp.client.model.CacheDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateTorrentDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentResultDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentDto
@@ -213,7 +213,7 @@ interface TorrentApi {
     suspend fun listAvailability(
         hashes: List<String>,
         listFiles: Boolean? = null,
-    ): ApiResult<ApiResponseListDto<CacheAvailabilityDto>>
+    ): ApiResult<ApiResponseListDto<CacheDto>>
 
     /**
      * Takes in a list of comma separated torrent hashes and checks if the torrent is cached.
@@ -229,7 +229,7 @@ interface TorrentApi {
     suspend fun listAvailabilityObject(
         hashes: List<String>,
         listFiles: Boolean? = null,
-    ): ApiResult<ApiResponseMapDto<CacheAvailabilityDto>>
+    ): ApiResult<ApiResponseMapDto<CacheDto>>
 
     /**
      * Takes in a list of comma separated torrent hashes and checks if the torrent is cached.
@@ -242,7 +242,7 @@ interface TorrentApi {
      *
      * [online documentation](https://api-docs.torbox.app/#00718c3f-0147-4423-af4d-e50b94fea867)
      */
-    suspend fun listAvailabilityBatchObject(hashes: List<String>): ApiResult<ApiResponseMapDto<CacheAvailabilityDto>>
+    suspend fun listAvailabilityBatchObject(hashes: List<String>): ApiResult<ApiResponseMapDto<CacheDto>>
 
     /**
      * Takes in a list of comma separated torrent hashes and checks if the torrent is cached.
@@ -255,7 +255,7 @@ interface TorrentApi {
      *
      * [online documentation](https://api-docs.torbox.app/)
      */
-    suspend fun listAvailabilityBatch(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>>
+    suspend fun listAvailabilityBatch(hashes: List<String>): ApiResult<ApiResponseListDto<CacheDto>>
 
     /**
      * Exports the magnet or torrent file.

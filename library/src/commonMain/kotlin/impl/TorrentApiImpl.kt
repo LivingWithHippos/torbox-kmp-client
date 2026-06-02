@@ -4,8 +4,8 @@ import com.github.livingwithhippos.torbox.kmp.client.api.TorrentApi
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseMapDto
-import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityDto
-import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityRequestDto
+import com.github.livingwithhippos.torbox.kmp.client.model.CacheDto
+import com.github.livingwithhippos.torbox.kmp.client.model.CacheRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateTorrentDto
 import com.github.livingwithhippos.torbox.kmp.client.model.EditTorrentRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentResultDto
@@ -244,7 +244,7 @@ class TorrentApiImpl(
     override suspend fun listAvailability(
         hashes: List<String>,
         listFiles: Boolean?,
-    ): ApiResult<ApiResponseListDto<CacheAvailabilityDto>> =
+    ): ApiResult<ApiResponseListDto<CacheDto>> =
         executeRequest {
             client.get("torrents/checkcached") {
                 hashes.forEach {
@@ -258,7 +258,7 @@ class TorrentApiImpl(
     override suspend fun listAvailabilityObject(
         hashes: List<String>,
         listFiles: Boolean?,
-    ): ApiResult<ApiResponseMapDto<CacheAvailabilityDto>> =
+    ): ApiResult<ApiResponseMapDto<CacheDto>> =
         executeRequest {
             client.get("torrents/checkcached") {
                 hashes.forEach {
@@ -269,26 +269,26 @@ class TorrentApiImpl(
             }
         }
 
-    override suspend fun listAvailabilityBatchObject(hashes: List<String>): ApiResult<ApiResponseMapDto<CacheAvailabilityDto>> =
+    override suspend fun listAvailabilityBatchObject(hashes: List<String>): ApiResult<ApiResponseMapDto<CacheDto>> =
         executeRequest {
             client.post("torrents/checkcached") {
                 parameter("format", "object")
                 contentType(ContentType.Application.Json)
                 setBody(
-                    CacheAvailabilityRequestDto(
+                    CacheRequestDto(
                         hashes = hashes,
                     ),
                 )
             }
         }
 
-    override suspend fun listAvailabilityBatch(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>> =
+    override suspend fun listAvailabilityBatch(hashes: List<String>): ApiResult<ApiResponseListDto<CacheDto>> =
         executeRequest {
             client.post("torrents/checkcached") {
                 parameter("format", "list")
                 contentType(ContentType.Application.Json)
                 setBody(
-                    CacheAvailabilityRequestDto(
+                    CacheRequestDto(
                         hashes = hashes,
                     ),
                 )

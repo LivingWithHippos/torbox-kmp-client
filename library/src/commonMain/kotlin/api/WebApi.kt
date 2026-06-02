@@ -3,7 +3,7 @@ package com.github.livingwithhippos.torbox.kmp.client.api
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseMapDto
-import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityDto
+import com.github.livingwithhippos.torbox.kmp.client.model.CacheDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateWebDownloadDto
 import com.github.livingwithhippos.torbox.kmp.client.model.HosterDto
 import com.github.livingwithhippos.torbox.kmp.client.model.WebDownloadDto
@@ -116,7 +116,7 @@ interface WebApi {
     suspend fun listAvailability(
         hashes: List<String>,
         listFiles: Boolean? = null,
-    ): ApiResult<ApiResponseListDto<CacheAvailabilityDto>>
+    ): ApiResult<ApiResponseListDto<CacheDto>>
 
     /**
      * Takes in a list of comma separated web hashes and checks if the web download is cached.
@@ -136,7 +136,7 @@ interface WebApi {
     suspend fun listAvailabilityObject(
         hashes: List<String>,
         listFiles: Boolean? = null,
-    ): ApiResult<ApiResponseMapDto<CacheAvailabilityDto>>
+    ): ApiResult<ApiResponseMapDto<CacheDto>>
 
     /**
      * Takes in a list of comma separated web hashes and checks if the web download is cached.
@@ -151,7 +151,7 @@ interface WebApi {
      *
      * Endpoint duplicated because of different response format in [listAvailabilityBatch]
      */
-    suspend fun listAvailabilityBatchObject(hashes: List<String>): ApiResult<ApiResponseMapDto<CacheAvailabilityDto>>
+    suspend fun listAvailabilityBatchObject(hashes: List<String>): ApiResult<ApiResponseMapDto<CacheDto>>
 
     /**
      * Takes in a list of comma separated web hashes and checks if the web download is cached.
@@ -166,7 +166,7 @@ interface WebApi {
      *
      * Endpoint duplicated because of different response format in [listAvailabilityBatchObject]
      */
-    suspend fun listAvailabilityBatch(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>>
+    suspend fun listAvailabilityBatch(hashes: List<String>): ApiResult<ApiResponseListDto<CacheDto>>
 
     /**
      * A dynamic list of hosters that TorBox is capable of downloading through its paid service.

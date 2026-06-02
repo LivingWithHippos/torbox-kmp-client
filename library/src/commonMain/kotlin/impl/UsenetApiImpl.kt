@@ -4,8 +4,8 @@ import com.github.livingwithhippos.torbox.kmp.client.api.UsenetApi
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseMapDto
-import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityDto
-import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityRequestDto
+import com.github.livingwithhippos.torbox.kmp.client.model.CacheDto
+import com.github.livingwithhippos.torbox.kmp.client.model.CacheRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateUsenetDto
 import com.github.livingwithhippos.torbox.kmp.client.model.EditUsenetRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UsenetControlRequestDto
@@ -154,7 +154,7 @@ class UsenetApiImpl(
     override suspend fun listAvailability(
         hashes: List<String>,
         listFiles: Boolean?,
-    ): ApiResult<ApiResponseListDto<CacheAvailabilityDto>> =
+    ): ApiResult<ApiResponseListDto<CacheDto>> =
         executeRequest {
             client.get("usenet/checkcached") {
                 hashes.forEach {
@@ -168,7 +168,7 @@ class UsenetApiImpl(
     override suspend fun listAvailabilityObject(
         hashes: List<String>,
         listFiles: Boolean?,
-    ): ApiResult<ApiResponseMapDto<CacheAvailabilityDto>> =
+    ): ApiResult<ApiResponseMapDto<CacheDto>> =
         executeRequest {
             client.get("usenet/checkcached") {
                 hashes.forEach {
@@ -179,26 +179,26 @@ class UsenetApiImpl(
             }
         }
 
-    override suspend fun listAvailabilityBatchObject(hashes: List<String>): ApiResult<ApiResponseMapDto<CacheAvailabilityDto>> =
+    override suspend fun listAvailabilityBatchObject(hashes: List<String>): ApiResult<ApiResponseMapDto<CacheDto>> =
         executeRequest {
             client.post("usenet/checkcached") {
                 parameter("format", "object")
                 contentType(ContentType.Application.Json)
                 setBody(
-                    CacheAvailabilityRequestDto(
+                    CacheRequestDto(
                         hashes = hashes,
                     ),
                 )
             }
         }
 
-    override suspend fun listAvailabilityBatch(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>> =
+    override suspend fun listAvailabilityBatch(hashes: List<String>): ApiResult<ApiResponseListDto<CacheDto>> =
         executeRequest {
             client.post("usenet/checkcached") {
                 parameter("format", "list")
                 contentType(ContentType.Application.Json)
                 setBody(
-                    CacheAvailabilityRequestDto(
+                    CacheRequestDto(
                         hashes = hashes,
                     ),
                 )

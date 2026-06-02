@@ -32,7 +32,7 @@ data class ApiResponseMapDto<T>(
 ) : ApiSuccessResponse
 
 @Serializable
-data class CacheAvailabilityDto(
+data class CacheDto(
     val name: String,
     val size: Long,
     val hash: String,
@@ -50,6 +50,6 @@ data class CacheFileDto(
 )
 
 @Serializable
-data class CacheAvailabilityRequestDto(
+data class CacheRequestDto(
     val hashes: List<String>,
 )

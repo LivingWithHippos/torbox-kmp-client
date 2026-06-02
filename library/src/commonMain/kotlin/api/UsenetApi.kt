@@ -3,7 +3,7 @@ package com.github.livingwithhippos.torbox.kmp.client.api
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseMapDto
-import com.github.livingwithhippos.torbox.kmp.client.model.CacheAvailabilityDto
+import com.github.livingwithhippos.torbox.kmp.client.model.CacheDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateUsenetDto
 import com.github.livingwithhippos.torbox.kmp.client.model.UsenetDownloadDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
@@ -124,7 +124,7 @@ interface UsenetApi {
     suspend fun listAvailability(
         hashes: List<String>,
         listFiles: Boolean? = null,
-    ): ApiResult<ApiResponseListDto<CacheAvailabilityDto>>
+    ): ApiResult<ApiResponseListDto<CacheDto>>
 
     /**
      * Takes in a list of comma separated usenet hashes and checks if the usenet download is cached.
@@ -144,7 +144,7 @@ interface UsenetApi {
     suspend fun listAvailabilityObject(
         hashes: List<String>,
         listFiles: Boolean? = null,
-    ): ApiResult<ApiResponseMapDto<CacheAvailabilityDto>>
+    ): ApiResult<ApiResponseMapDto<CacheDto>>
 
     /**
      * Takes in a list of comma separated usenet hashes and checks if the usenet download is cached.
@@ -159,7 +159,7 @@ interface UsenetApi {
      *
      * Endpoint duplicated because of different response format in [getAvailabilityBatchList]
      */
-    suspend fun listAvailabilityBatchObject(hashes: List<String>): ApiResult<ApiResponseMapDto<CacheAvailabilityDto>>
+    suspend fun listAvailabilityBatchObject(hashes: List<String>): ApiResult<ApiResponseMapDto<CacheDto>>
 
     /**
      * Takes in a list of comma separated usenet hashes and checks if the usenet download is cached.
@@ -174,7 +174,7 @@ interface UsenetApi {
      *
      * Endpoint duplicated because of different response format in [getAvailabilityBatchObject]
      */
-    suspend fun listAvailabilityBatch(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>>
+    suspend fun listAvailabilityBatch(hashes: List<String>): ApiResult<ApiResponseListDto<CacheDto>>
 
     /**
      * Updates a download item based on the item's ID.
