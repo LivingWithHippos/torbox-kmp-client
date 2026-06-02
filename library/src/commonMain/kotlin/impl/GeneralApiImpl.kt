@@ -10,8 +10,11 @@ import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 import com.github.livingwithhippos.torbox.kmp.client.network.executeRequest
 import com.github.livingwithhippos.torbox.kmp.client.network.noAuth
 import io.ktor.client.HttpClient
+import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
+import io.ktor.client.statement.bodyAsText
+import io.ktor.http.isSuccess
 
 class GeneralApiImpl(
     private val client: HttpClient,
@@ -31,11 +34,19 @@ class GeneralApiImpl(
             }
         }
 
-    override suspend fun changelogRSSFeed(): ApiResult<ApiResponseDto<String>> =
-        executeRequest {
-            client.get("changelogs/rss") {
-                noAuth()
+    override suspend fun changelogRSSFeed(): ApiResult<String> =
+        runCatching {
+            val response =
+                client.get("changelogs/rss") {
+                    noAuth()
+                }
+            if (response.status.isSuccess()) {
+                ApiResult.Success(response.body<String>())
+            } else {
+                ApiResult.Failure.Http(response.status.value, response.bodyAsText())
             }
+        }.getOrElse {
+            ApiResult.Failure.Network(it)
         }
 
     override suspend fun changelogJson(): ApiResult<ApiResponseListDto<ChangelogEntryDto>> =
