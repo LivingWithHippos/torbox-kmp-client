@@ -114,7 +114,6 @@ interface UserApi {
      *
      * [online documentation](https://api-docs.torbox.app/#263427ea-0129-4f59-a0e4-11ef3e9364f4)
      *
-     * @param settings A [UserSettingsRequestDto] containing the settings to update.
      */
     suspend fun edit(
         emailNotifications: Boolean? = null,
@@ -168,6 +167,7 @@ interface UserApi {
         stremioWaitForDownloadTorrent: Boolean? = null,
         stremioDisableFilteredNote: Boolean? = null,
         stremioEmojiInDescription: Boolean? = null,
+        // todo: decide if we should also split this into its arguments
         dashboardFilter: DashboardFilterDto? = null,
         webPlayerAlwaysTranscode: Boolean? = null,
         webPlayerAlwaysSkipIntro: Boolean? = null,
