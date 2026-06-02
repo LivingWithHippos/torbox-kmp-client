@@ -10,7 +10,6 @@ This is my first library so I cannot talk about the quality of the work, but it'
 
 ```kts
 dependencies {
-    ...
     implementation("io.github.livingwithhippos:torbox-kmp-client:0.1.0")
 }
 ```
@@ -33,7 +32,7 @@ suspend fun main() {
 
 ## Structure
 
-The syntax is similar to [the official APIs](https://api-docs.torbox.app/), the categories are the same, so `General -> Get Up Status` becomes `client.general.upStatus()`
+The syntax is similar to [the official APIs](https://api-docs.torbox.app/), the categories are the same, so `General -> Get Up Status` becomes `client.general.upStatus()`, usually if no verb is specified it's a request to `get` the resource. Common verbs are `control` and `edit`.
 
 The response objects are mostly modeled like this:
 
