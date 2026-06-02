@@ -55,13 +55,10 @@ interface TorrentApi {
      *
      * Operations are either:
      *
-     *     **reannounce** reannounces the torrent to get new peers
-     *
-     *     **delete** deletes the torrent from the client and your account permanently
-     *
-     *     **resume** resumes a paused torrent
-     *
-     *     **stop_seeding** stops seeding a torrent
+     * - **reannounce** reannounces the torrent to get new peers
+     * - **delete** deletes the torrent from the client and your account permanently
+     * - **resume** resumes a paused torrent
+     * - **stop_seeding** stops seeding a torrent
      *
      * [online documentation](https://api-docs.torbox.app/)
      */
@@ -129,10 +126,19 @@ interface TorrentApi {
      *
      * All other statuses are basic qBittorrent states. [Check out here for the full list](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-(qBittorrent-4.1)#torrent-management).
      *
+     * **PARAMS**
+     *
+     * [bypassCache] Allows you to bypass the cached data, and always get fresh information. Useful if constantly querying for fresh download stats.
+     * Otherwise, we request that you save our database a few calls.
+     *
+     * [offset] Determines the offset of items to get from the database. Default is 0. Optional.
+     *
+     * [limit] Determines the number of items to receive per request. Default is 1000. Optional.
+     *
      * [online documentation](https://api-docs.torbox.app/#8fa2961a-da1e-410e-84c3-821b3f6b30cc)
      */
     suspend fun list(
-        bypassCache: String? = null,
+        bypassCache: Boolean? = null,
         offset: Int? = null,
         limit: Int? = null,
     ): ApiResult<ApiResponseListDto<TorrentDto>>
@@ -165,7 +171,7 @@ interface TorrentApi {
      */
     suspend fun get(
         // todo: check if this is supported when using the id
-        bypassCache: String? = null,
+        bypassCache: Boolean? = null,
         id: Int,
     ): ApiResult<ApiResponseDto<TorrentDto>>
 

@@ -49,9 +49,7 @@ class QueuedApiImpl(
 
         return executeRequest {
             client.get("queued/getqueued") {
-                if (bypassCache == true) {
-                    parameter("bypass_cache", "")
-                }
+                bypassCache?.let { parameter("bypass_cache", it) }
                 id?.let { parameter("id", it) }
                 offset?.let { parameter("offset", it) }
                 limit?.let { parameter("limit", it) }

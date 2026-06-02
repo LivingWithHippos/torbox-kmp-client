@@ -17,7 +17,7 @@ interface UsenetApi {
      * [online documentation](https://api-docs.torbox.app/#b9de037f-fd97-4236-bd11-04535c9fe551)
      */
     suspend fun list(
-        bypassCache: String? = null,
+        bypassCache: Boolean? = null,
         offset: Int? = null,
         limit: Int? = null,
     ): ApiResult<ApiResponseListDto<UsenetDownloadDto>>
@@ -30,7 +30,7 @@ interface UsenetApi {
      * [online documentation](https://api-docs.torbox.app/#b9de037f-fd97-4236-bd11-04535c9fe551)
      */
     suspend fun get(
-        bypassCache: String? = null,
+        bypassCache: Boolean? = null,
         id: Int,
     ): ApiResult<ApiResponseDto<UsenetDownloadDto>>
 

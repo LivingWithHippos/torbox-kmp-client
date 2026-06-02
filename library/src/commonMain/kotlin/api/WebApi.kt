@@ -46,10 +46,19 @@ interface WebApi {
      * This gives you the needed information to perform other usenet actions.
      * Unlike Torrents, this information is updated on its own every 5 seconds for live web downloads.
      *
+     * **PARAMS**
+     *
+     * [bypassCache] Allows you to bypass the cached data, and always get fresh information. Useful if constantly querying for fresh download stats.
+     * Otherwise, we request that you save our database a few calls.
+     *
+     * [offset] Determines the offset of items to get from the database. Default is 0. Optional.
+     *
+     * [limit] Determines the number of items to receive per request. Default is 1000. Optional.
+     *
      * [online documentation](https://api-docs.torbox.app/#3739daf4-b586-4555-80d2-57e5670ee7ca)
      */
     suspend fun list(
-        bypassCache: String? = null,
+        bypassCache: Boolean? = null,
         offset: Int? = null,
         limit: Int? = null,
     ): ApiResult<ApiResponseListDto<WebDownloadDto>>
@@ -62,7 +71,7 @@ interface WebApi {
      * [online documentation](https://api-docs.torbox.app/#3739daf4-b586-4555-80d2-57e5670ee7ca)
      */
     suspend fun get(
-        bypassCache: String? = null,
+        bypassCache: Boolean? = null,
         id: Int,
     ): ApiResult<ApiResponseDto<WebDownloadDto>>
 

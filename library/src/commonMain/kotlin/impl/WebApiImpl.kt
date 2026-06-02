@@ -29,30 +29,25 @@ class WebApiImpl(
     private val client: HttpClient,
 ) : WebApi {
     override suspend fun list(
-        bypassCache: String?,
+        bypassCache: Boolean?,
         offset: Int?,
         limit: Int?,
     ): ApiResult<ApiResponseListDto<WebDownloadDto>> =
         executeRequest {
             client.get("webdl/mylist") {
-                // todo: check if this changes the response format
-                if (bypassCache != null) {
-                    parameter("bypass_cache", "")
-                }
-                parameter("offset", offset)
-                parameter("limit", limit)
+                bypassCache?.let { parameter("bypass_cache", it) }
+                offset?.let { parameter("offset", it) }
+                limit?.let { parameter("limit", it) }
             }
         }
 
     override suspend fun get(
-        bypassCache: String?,
+        bypassCache: Boolean?,
         id: Int,
     ): ApiResult<ApiResponseDto<WebDownloadDto>> =
         executeRequest {
             client.get("webdl/mylist") {
-                if (bypassCache != null) {
-                    parameter("bypass_cache", "")
-                }
+                bypassCache?.let { parameter("bypass_cache", it) }
                 parameter("id", id)
             }
         }
