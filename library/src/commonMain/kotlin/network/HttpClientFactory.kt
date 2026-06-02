@@ -24,6 +24,16 @@ fun HttpRequestBuilder.noAuth() {
     attributes.put(NoAuth, true)
 }
 
+fun logLevelToEnum(level: String): LogLevel =
+    when (level.lowercase()) {
+        "none" -> LogLevel.NONE
+        "info" -> LogLevel.INFO
+        "headers" -> LogLevel.HEADERS
+        "body" -> LogLevel.BODY
+        "all" -> LogLevel.ALL
+        else -> LogLevel.NONE
+    }
+
 fun createHttpClient(
     config: RestClientConfig,
     engineFactory: HttpClientEngineFactory<*>,
@@ -41,9 +51,11 @@ fun createHttpClient(
             )
         }
 
-        if (config.logLevel != LogLevel.NONE) {
+        val logLevel = logLevelToEnum(config.logLevel)
+
+        if (logLevel != LogLevel.NONE) {
             install(Logging) {
-                level = config.logLevel
+                level = logLevel
                 logger =
                     object : KtorLogger {
                         override fun log(message: String) {

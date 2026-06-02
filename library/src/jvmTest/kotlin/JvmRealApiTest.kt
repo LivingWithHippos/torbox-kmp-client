@@ -13,7 +13,7 @@ import kotlin.test.assertTrue
  * populate the local properties file like the example and readd them to test real responses
  */
 class JvmRealApiTest {
-    private val client = TorboxClient.create(RestClientConfig(bearerToken = TestConfig.bearerToken, logLevel = LogLevel.INFO))
+    private val client = TorboxClient.create(RestClientConfig(bearerToken = TestConfig.bearerToken, logLevel = "info"))
 
     /***********
      * TORRENT *
