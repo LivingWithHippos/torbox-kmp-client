@@ -8,10 +8,11 @@ import com.github.livingwithhippos.torbox.kmp.client.model.CacheDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateTorrentDto
 import com.github.livingwithhippos.torbox.kmp.client.model.EditTorrentRequestDto
-import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentResultDto
+import com.github.livingwithhippos.torbox.kmp.client.model.ExportResultDto
 import com.github.livingwithhippos.torbox.kmp.client.model.MagnetToFileRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentControlRequestDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentDto
+import com.github.livingwithhippos.torbox.kmp.client.model.TorrentInfoDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 import com.github.livingwithhippos.torbox.kmp.client.network.executeRequest
 import com.github.livingwithhippos.torbox.kmp.client.network.isSuccessOrRedirect
@@ -298,8 +299,9 @@ class TorrentApiImpl(
     override suspend fun export(
         torrentId: Int,
         type: String,
-    ): ApiResult<ExportTorrentResultDto> {
-        if (type != "magnet" && type != "file") {
+    ): ApiResult<ExportResultDto> {
+        val normalizedType = type.trim().lowercase()
+        if (normalizedType !in listOf("magnet", "file")) {
             return ApiResult.Failure.BadRequest(
                 IllegalArgumentException("type must be \"magnet\" or \"file\""),
             )
@@ -308,18 +310,18 @@ class TorrentApiImpl(
         return runCatching {
             client.get("torrents/exportdata") {
                 parameter("torrent_id", torrentId)
-                parameter("type", type)
+                parameter("type", normalizedType)
             }
         }.fold(
             onSuccess = { response ->
                 if (!response.status.isSuccessOrRedirect()) {
                     return@fold ApiResult.Failure.Http(response.status.value, response.safeBodyText())
                 }
-                if (type == "magnet") {
+                if (normalizedType == "magnet") {
                     runCatching { response.body<ApiResponseDto<String>>() }.fold(
                         onSuccess = { parsed ->
                             if (parsed.success && parsed.data != null) {
-                                ApiResult.Success(ExportTorrentResultDto.Magnet(parsed.data))
+                                ApiResult.Success(ExportResultDto.Magnet(parsed.data))
                             } else {
                                 ApiResult.Failure.NoSuccess(parsed)
                             }
@@ -327,7 +329,7 @@ class TorrentApiImpl(
                         onFailure = { toFailure(it, response.safeBodyText()) },
                     )
                 } else {
-                    runCatching { ExportTorrentResultDto.File(response.body<ByteArray>()) }.fold(
+                    runCatching { ExportResultDto.Torrent(response.body<ByteArray>()) }.fold(
                         onSuccess = { ApiResult.Success(it) },
                         // don't attempt to stringify binary payloads as error body
                         onFailure = { toFailure(it, null) },
@@ -336,6 +338,74 @@ class TorrentApiImpl(
             },
             onFailure = { toFailure(it, null) },
         )
+    }
+
+    override suspend fun info(
+        hash: String,
+        timeout: Int?,
+        cacheLookup: Boolean?,
+    ): ApiResult<ApiResponseDto<TorrentInfoDto>> =
+        executeRequest {
+            client.get("torrents/torrentinfo") {
+                parameter("hash", hash)
+                parameter("timeout", timeout)
+                parameter("use_cache_lookup", cacheLookup)
+            }
+        }
+
+    override suspend fun fullInfo(
+        magnet: String?,
+        file: ByteArray?,
+        fileName: String?,
+        hash: String?,
+        timeout: Int?,
+        cacheLookup: Boolean?,
+        peersOnly: Boolean?,
+    ): ApiResult<ApiResponseDto<TorrentInfoDto>> {
+        if (file == null && magnet.isNullOrBlank() && hash.isNullOrBlank()) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("Either a torrent file, hash or magnet must be provided"),
+            )
+        } else if ((file != null && hash != null) ||
+            (file != null && !magnet.isNullOrBlank()) ||
+            (hash != null && !magnet.isNullOrBlank())
+        ) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("Only one between file, hash or magnet must be provided"),
+            )
+        }
+
+        // fixme: this does not seem to be working when using a file
+
+        return executeRequest {
+            client.post("torrents/torrentinfo") {
+                setBody(
+                    MultiPartFormDataContent(
+                        formData {
+                            if (file != null) {
+                                append(
+                                    key = "file",
+                                    value = file,
+                                    headers =
+                                        Headers.build {
+                                            append(HttpHeaders.ContentType, "application/x-bittorrent")
+                                            append(
+                                                HttpHeaders.ContentDisposition,
+                                                "filename=\"${fileName ?: "file.torrent"}\"",
+                                            )
+                                        },
+                                )
+                            }
+                            magnet?.takeIf { it.isNotBlank() }?.let { append("magnet", it) }
+                            hash?.takeIf { it.isNotBlank() }?.let { append("hash", it) }
+                            timeout?.let { append("timeout", it) }
+                            cacheLookup?.let { append("use_cache_lookup", it) }
+                            peersOnly?.let { append("peers_only", it) }
+                        },
+                    ),
+                )
+            }
+        }
     }
 
     override suspend fun magnetToFile(magnet: String): ApiResult<ByteArray> {

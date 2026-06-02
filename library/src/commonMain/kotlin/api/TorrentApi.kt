@@ -5,11 +5,30 @@ import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseListDto
 import com.github.livingwithhippos.torbox.kmp.client.model.ApiResponseMapDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CacheDto
 import com.github.livingwithhippos.torbox.kmp.client.model.CreateTorrentDto
-import com.github.livingwithhippos.torbox.kmp.client.model.ExportTorrentResultDto
+import com.github.livingwithhippos.torbox.kmp.client.model.ExportResultDto
 import com.github.livingwithhippos.torbox.kmp.client.model.TorrentDto
+import com.github.livingwithhippos.torbox.kmp.client.model.TorrentInfoDto
 import com.github.livingwithhippos.torbox.kmp.client.network.ApiResult
 
 interface TorrentApi {
+    /**
+     * Creates a torrent under your account.
+     * Simply send **either** a magnet link, or a torrent file. Once they have bee
+     * n checked, they will begin downloading assuming your account has available active download slots, and they aren't too large.
+     *
+     * [online documentation](https://api-docs.torbox.app/#062b717f-4866-4fc0-a3e6-6e4c2520eefa)
+     */
+    suspend fun create(
+        fileBytes: ByteArray? = null,
+        fileName: String? = null,
+        magnet: String? = null,
+        seed: Int? = null,
+        allowZip: Boolean? = null,
+        name: String? = null,
+        asQueued: Boolean? = null,
+        addOnlyIfCached: Boolean? = null,
+    ): ApiResult<ApiResponseDto<CreateTorrentDto>>
+
     /**
      * Creates a torrent asynchronously under your account.
      * Simply send either a [magnet] link, or a torrent file.
@@ -30,24 +49,6 @@ interface TorrentApi {
         asQueued: Boolean? = null,
         addOnlyIfCached: Boolean? = null,
     ): ApiResult<ApiResponseDto<String>>
-
-    /**
-     * Creates a torrent under your account.
-     * Simply send **either** a magnet link, or a torrent file. Once they have bee
-     * n checked, they will begin downloading assuming your account has available active download slots, and they aren't too large.
-     *
-     * [online documentation](https://api-docs.torbox.app/#062b717f-4866-4fc0-a3e6-6e4c2520eefa)
-     */
-    suspend fun create(
-        fileBytes: ByteArray? = null,
-        fileName: String? = null,
-        magnet: String? = null,
-        seed: Int? = null,
-        allowZip: Boolean? = null,
-        name: String? = null,
-        asQueued: Boolean? = null,
-        addOnlyIfCached: Boolean? = null,
-    ): ApiResult<ApiResponseDto<CreateTorrentDto>>
 
     /**
      * Controls a torrent.
@@ -257,26 +258,71 @@ interface TorrentApi {
      */
     suspend fun listAvailabilityBatch(hashes: List<String>): ApiResult<ApiResponseListDto<CacheDto>>
 
+    // fixme: this returns 200 ok but an empty body, server issue?
+
     /**
      * Exports the magnet or torrent file.
      * Requires a [type] to be passed:
      *
-     * - "magnet" -> [ExportTorrentResultDto.Magnet]
-     * - "file"   -> [ExportTorrentResultDto.File]
+     * - "magnet" -> [ExportResultDto.Magnet]
+     * - "file"   -> [ExportResultDto.Torrent]
      *
      * [online documentation](https://api-docs.torbox.app/#3847e19a-0de7-4956-a072-4c4d41d0ff6c)
      */
     suspend fun export(
         torrentId: Int,
         type: String,
-    ): ApiResult<ExportTorrentResultDto>
+    ): ApiResult<ExportResultDto>
 
     /**
-     * Converts any [magnet] to a torrent file.
+     * A general route that allows you to give a hash, and TorBox will return data about the torrent.
+     * This data is retrieved from the bittorrent network, so expect it to take some time.
+     * If the request goes longer than 10 seconds, TorBox will cancel it.
+     * You can adjust this if you like, but the default is 10 seconds.
+     * This route is cached as well, so subsequent requests will be instant.
+     *
+     * **It is not recommended to use this for checking TorBox's cache. Please use the GET /checkcache endpoint instead.**
+     *
+     * [online documentation](https://api-docs.torbox.app/#3c12e03c-1fe2-4cc2-b886-095e4d4c6075)
+     */
+    suspend fun info(
+        hash: String,
+        timeout: Int? = null,
+        cacheLookup: Boolean? = null,
+    ): ApiResult<ApiResponseDto<TorrentInfoDto>>
+
+    /**
+     * Same as the [info] GET route, but allows posting data such as magnet, and torrent files.
+     *
+     * Hashes will have precedence over magnets, and magnets will have precedence over torrent files.
+     *
+     * Only proper torrent files are accepted.
+     *
+     * At least one of hash, magnet, or torrent file is required.
+     *
+     * A general route that allows you to give a hash, and TorBox will return data about the torrent. This data is retrieved from the bittorrent network, so expect it to take some time. If the request goes longer than 10 seconds, TorBox will cancel it. You can adjust this if you like, but the default is 10 seconds. This route is cached as well, so subsequent requests will be instant.
+     *
+     * **It is not recommended to use this for checking TorBox's cache. Please use the GET /checkcache endpoint instead.**
+     *
+     * [online documentation](https://api-docs.torbox.app/#660e3f57-100a-4689-8b0c-881fa6819e53)
+     */
+    suspend fun fullInfo(
+        magnet: String? = null,
+        file: ByteArray? = null,
+        fileName: String? = null,
+        hash: String? = null,
+        timeout: Int? = null,
+        cacheLookup: Boolean? = null,
+        peersOnly: Boolean? = null,
+    ): ApiResult<ApiResponseDto<TorrentInfoDto>>
+
+    /**
+     * Converts a [magnet] to a torrent file.
      * Does not require the magnet to be on your TorBox account or in the TorBox cache.
      * Free endpoint for public use.
      *
      * [online documentation](https://api-docs.torbox.app/#543e7f9f-a875-4112-8570-34a32b28764b)
+     *
      */
     suspend fun magnetToFile(magnet: String): ApiResult<ByteArray>
 }

@@ -71,7 +71,7 @@ class GeneralApiImpl(
         return executeRequest {
             client.get("speedtest") {
                 noAuth()
-                normalizedTestLength?.let { parameter("test_length", it) }
+                parameter("test_length", normalizedTestLength)
                 region?.takeIf { it.isNotBlank() }?.let { parameter("region", it) }
                 userIp?.takeIf { it.isNotBlank() }?.let { parameter("user_ip", it) }
             }

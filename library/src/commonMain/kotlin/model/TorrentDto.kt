@@ -62,6 +62,23 @@ data class TorrentFileDto(
 )
 
 @Serializable
+data class TorrentInfoDto(
+    val name: String,
+    val hash: String,
+    val size: Long,
+    val trackers: List<String>,
+    val seeds: Int,
+    val peers: Int,
+    val files: List<TorrentInfoFileDto>,
+)
+
+@Serializable
+data class TorrentInfoFileDto(
+    val name: String,
+    val size: Long,
+)
+
+@Serializable
 data class CreateTorrentDto(
     val hash: String,
     @SerialName("torrent_id") val torrentId: Long,
@@ -92,19 +109,19 @@ data class MagnetToFileRequestDto(
 )
 
 /** Sealed result for exportTorrentData — caller gets either a magnet string or raw .torrent bytes */
-sealed class ExportTorrentResultDto {
+sealed class ExportResultDto {
     data class Magnet(
         val magnet: String,
-    ) : ExportTorrentResultDto()
+    ) : ExportResultDto()
 
-    data class File(
+    data class Torrent(
         val bytes: ByteArray,
-    ) : ExportTorrentResultDto() {
+    ) : ExportResultDto() {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other == null || this::class != other::class) return false
 
-            other as File
+            other as Torrent
 
             return bytes.contentEquals(other.bytes)
         }
