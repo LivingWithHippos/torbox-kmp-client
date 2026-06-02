@@ -1,8 +1,8 @@
 # torbox-kmp-client
 
-This is a kotlin multi platform library, created to easily interact with [Torbox](https://torbox.app)
+This is a kotlin multi platform library, created to easily interact with [Torbox](https://torbox.app). It's still in beta, until 1.0.0 breaking changes and/or bugs may occur.
 
-This library is still in beta, until 1.0.0 breaking changes and/or bugs may occur.
+This is my first library so I cannot talk about the quality of the work, but it's small enough that with some testing. AI has been used in small amounts to quickly refactor code after changes.
 
 ## Importing the library
 
@@ -33,8 +33,16 @@ suspend fun main() {
 
 ## Structure
 
-The syntax is similar to [the official APIs](https://api-docs.torbox.app/), the categories are the same and they contain the relative functions, so `General -> Get Up Status` becomes `client.general.upStatus()`
+The syntax is similar to [the official APIs](https://api-docs.torbox.app/), the categories are the same, so `General -> Get Up Status` becomes `client.general.upStatus()`
 
 ## Notes
 
 You can generate/retrieve [the API token here](https://torbox.app/settings?section=account)
+
+## Donate
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/E1E412NFX7)
+
+Subscribe to Torbox [with my referral link](https://torbox.app/subscription?referral=dba208d7-f53e-4711-96db-97c7051799bc)
+
+... more will follow
