@@ -134,7 +134,7 @@ class UsenetApiImpl(
         token: String,
         usenetId: Int,
         fileId: Int?,
-        zipLink: String?,
+        zipLink: Boolean?,
         userIp: String?,
         redirect: Boolean?,
         appendName: Boolean?,

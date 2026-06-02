@@ -224,7 +224,7 @@ class TorrentApiImpl(
         token: String,
         torrentId: Int,
         fileId: Int?,
-        zipLink: String?,
+        zipLink: Boolean?,
         userIp: String?,
         redirect: Boolean?,
         appendName: Boolean?,

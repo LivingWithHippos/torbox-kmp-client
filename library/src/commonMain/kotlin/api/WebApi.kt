@@ -92,7 +92,7 @@ interface WebApi {
         token: String,
         webId: Int,
         fileId: Int? = null,
-        zipLink: String? = null,
+        zipLink: Boolean? = null,
         userIp: String? = null,
         redirect: Boolean? = null,
         appendName: Boolean? = null,
