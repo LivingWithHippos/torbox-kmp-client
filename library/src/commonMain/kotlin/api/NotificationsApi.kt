@@ -14,7 +14,7 @@ interface NotificationsApi {
      *
      * XML is returned as an unparsed string
      */
-    suspend fun rssFeed(token: String): ApiResult<ApiResponseDto<String>>
+    suspend fun rssFeed(token: String): ApiResult<String>
 
     /**
      * Gets your notifications in a JSON object that is easily parsable compared to the RSS Feed.
