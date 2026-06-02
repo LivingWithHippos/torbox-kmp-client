@@ -127,10 +127,10 @@ class WebApiImpl(
     override suspend fun listAvailabilityBatchObject(hashes: List<String>): ApiResult<ApiResponseMapDto<CacheAvailabilityDto>> =
         executeRequest {
             client.post("webdl/checkcached") {
+                parameter("format", "object")
                 contentType(ContentType.Application.Json)
                 setBody(
                     CacheAvailabilityRequestDto(
-                        format = "object",
                         hashes = hashes,
                     ),
                 )
@@ -140,10 +140,10 @@ class WebApiImpl(
     override suspend fun listAvailabilityBatch(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>> =
         executeRequest {
             client.post("webdl/checkcached") {
+                parameter("format", "list")
                 contentType(ContentType.Application.Json)
                 setBody(
                     CacheAvailabilityRequestDto(
-                        format = "list",
                         hashes = hashes,
                     ),
                 )

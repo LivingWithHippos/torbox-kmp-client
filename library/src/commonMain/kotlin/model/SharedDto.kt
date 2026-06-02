@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.torbox.kmp.client.model
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 interface ApiSuccessResponse {
@@ -35,10 +36,20 @@ data class CacheAvailabilityDto(
     val name: String,
     val size: Long,
     val hash: String,
+    val files: List<CacheFileDto>?,
+)
+
+@Serializable
+data class CacheFileDto(
+    val id: Int,
+    val name: String,
+    val size: Long,
+    @SerialName("opensubtitles_hash") val opensubtitlesHash: String?,
+    @SerialName("short_name") val shortName: String?,
+    val mimeType: String?,
 )
 
 @Serializable
 data class CacheAvailabilityRequestDto(
-    val format: String? = null,
     val hashes: List<String>,
 )

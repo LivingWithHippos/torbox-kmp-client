@@ -272,10 +272,10 @@ class TorrentApiImpl(
     override suspend fun listAvailabilityBatchObject(hashes: List<String>): ApiResult<ApiResponseMapDto<CacheAvailabilityDto>> =
         executeRequest {
             client.post("torrents/checkcached") {
+                parameter("format", "object")
                 contentType(ContentType.Application.Json)
                 setBody(
                     CacheAvailabilityRequestDto(
-                        format = "object",
                         hashes = hashes,
                     ),
                 )
@@ -285,10 +285,10 @@ class TorrentApiImpl(
     override suspend fun listAvailabilityBatch(hashes: List<String>): ApiResult<ApiResponseListDto<CacheAvailabilityDto>> =
         executeRequest {
             client.post("torrents/checkcached") {
+                parameter("format", "list")
                 contentType(ContentType.Application.Json)
                 setBody(
                     CacheAvailabilityRequestDto(
-                        format = "list",
                         hashes = hashes,
                     ),
                 )
