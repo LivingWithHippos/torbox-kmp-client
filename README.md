@@ -97,6 +97,8 @@ if (response is ApiResult.Success) {
 
 You can generate/retrieve [the API token here](https://torbox.app/settings?section=account)
 
+A test file, without the `@Test` keyword since it's using the real API, is available under `jvmTest`
+
 ## Donate
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/E1E412NFX7)
