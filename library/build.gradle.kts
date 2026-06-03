@@ -53,8 +53,10 @@ kotlin {
             }
         }
         // browser {
-        //     webpackTask {
-        //         enabled = true
+        //     testTask {
+        //         useKarma {
+        //             useFirefox()
+        //         }
         //     }
         // }
         useEsModules()
@@ -62,7 +64,6 @@ kotlin {
         // generateTypeScriptDefinitions()
         compilerOptions {
             optIn.add("kotlin.js.ExperimentalJsExport")
-            // target = "es2015"
         }
     }
 
