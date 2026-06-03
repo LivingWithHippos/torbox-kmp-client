@@ -58,7 +58,7 @@ kotlin {
         //     }
         // }
         useEsModules()
-        binaries.executable()
+        binaries.library()
         // generateTypeScriptDefinitions()
         compilerOptions {
             optIn.add("kotlin.js.ExperimentalJsExport")
