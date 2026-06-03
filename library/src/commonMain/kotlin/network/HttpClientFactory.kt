@@ -79,9 +79,7 @@ fun createHttpClient(
             url(config.baseUrl)
             val skipAuth = attributes.getOrNull(NoAuth) == true
             if (!skipAuth) {
-                config.bearerToken?.let { token ->
-                    header(HttpHeaders.Authorization, "Bearer $token")
-                }
+                header(HttpHeaders.Authorization, "Bearer ${config.bearerToken}")
             }
             headers.append(HttpHeaders.Accept, ContentType.Application.Json)
             config.defaultHeaders.forEach { (k, v) -> headers.append(k, v) }
