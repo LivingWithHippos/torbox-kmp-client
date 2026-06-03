@@ -2,7 +2,9 @@
 
 This is a Kotlin multi platform library, created to easily interact with [Torbox](https://torbox.app). It's still in beta; until `1.0.0` breaking changes and/or bugs may occur.
 
-This is my first library, so I'm open to feedback, but it's small enough that with some testing it should be good enough. AI has been used in small amounts to quickly refactor code after changes.
+!! The library is currently working only for Kotlin/JVM targets, other targets are either broken or untested !!
+
+This is my first library, please provide feedback if possible. AI has been used in small amounts to quickly refactor code after changes.
 
 ## Importing the library
 
@@ -45,27 +47,8 @@ sealed interface ApiResult<out T> {
     ) : ApiResult<T>
 
     sealed interface Failure : ApiResult<Nothing> {
-        data class Http(
-            val code: Int,
-            val body: String?,
-        ) : Failure
-
-        data class BadRequest(
-            val cause: Throwable,
-        ) : Failure
-
-        data class Network(
-            val cause: Throwable,
-        ) : Failure
-
-        data class Serialization(
-            val cause: Throwable,
-            val body: String?,
-        ) : Failure
-
-        data class NoSuccess<T>(
-            val value: T,
-        ) : Failure
+        ...
+        // failure classes
     }
 }
 
