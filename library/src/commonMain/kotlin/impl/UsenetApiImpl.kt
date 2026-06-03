@@ -70,6 +70,10 @@ class UsenetApiImpl(
             return ApiResult.Failure.BadRequest(
                 IllegalArgumentException("Either one between fileBytes or link must be provided"),
             )
+        } else if (postProcessing != null && postProcessing !in listOf(-1, 0, 1, 2, 3)) {
+            return ApiResult.Failure.BadRequest(
+                IllegalArgumentException("Post processing must be between -1 (default) and 3"),
+            )
         }
 
         return executeRequest {
@@ -91,7 +95,10 @@ class UsenetApiImpl(
                                         },
                                 )
                             }
+                            link?.takeIf { it.isNotBlank() }?.let { append("link", it) }
                             name?.takeIf { it.isNotBlank() }?.let { append("name", it) }
+                            password?.takeIf { it.isNotBlank() }?.let { append("password", it) }
+                            postProcessing?.let { append("post_processing", it.toString()) }
                             asQueued?.let { append("as_queued", it.toString()) }
                             addOnlyIfCached?.let { append("add_only_if_cached", it.toString()) }
                         },
