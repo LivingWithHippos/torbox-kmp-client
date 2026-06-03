@@ -1,5 +1,5 @@
 [versions]
-agp = "8.13.0"
+agp = "8.13.2"
 kotlin = "2.3.21"
 kotlinx-browser = "0.5.0"
 android-minSdk = "24"
@@ -8,7 +8,7 @@ vanniktechMavenPublish = "0.36.0"
 ktor-client = "3.5.0"
 serialization = "1.11.0"
 kotlinx-coroutines = "1.11.0"
-logback = "1.5.32"
+logback = "1.5.34"
 slf4j = "1.7.36"
 kermit = "2.1.0"
 
