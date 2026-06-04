@@ -8,11 +8,13 @@ This is my first library, please provide feedback if possible. AI has been used 
 
 ## Importing the library
 
+[https://central.sonatype.com/artifact/io.github.livingwithhippos/torbox-kmp-client](https://central.sonatype.com/artifact/io.github.livingwithhippos/torbox-kmp-client)
+
 **build.gradle.kts**
 
 ```kts
 dependencies {
-    implementation("io.github.livingwithhippos:torbox-kmp-client:0.1.0")
+    implementation("io.github.livingwithhippos:torbox-kmp-client:0.1.1")
 }
 ```
 
