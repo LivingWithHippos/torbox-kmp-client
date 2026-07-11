@@ -4,7 +4,6 @@ import com.github.livingwithhippos.torbox.BASE_URL
 
 data class RestClientConfig(
     val bearerToken: String,
-    val baseUrl: String = BASE_URL,
     val requestTimeoutMs: Long = 60_000,
     val connectTimeoutMs: Long = 60_000,
     val socketTimeoutMs: Long = 60_000,
