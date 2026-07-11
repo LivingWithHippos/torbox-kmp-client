@@ -14,7 +14,7 @@ This is my first library, please provide feedback if possible. AI has been used 
 
 ```kts
 dependencies {
-    implementation("io.github.livingwithhippos:torbox-kmp-client:0.1.1")
+    implementation("io.github.livingwithhippos:torbox-kmp-client:0.1.2")
 }
 ```
 
@@ -36,7 +36,7 @@ suspend fun main() {
 
 ## Structure
 
-The syntax is similar to [the official APIs](https://api-docs.torbox.app/), the categories are the same, so `General -> Get Up Status` becomes `client.general.upStatus()`, usually if no verb is specified it's a request to `get` the resource. Common verbs are `control` and `edit`.
+The syntax is similar to [the official APIs](https://api-docs.torbox.app/), the categories are the same, so `General -> Get Up Status` becomes `client.general.upStatus()`, usually if no verb is specified it's a request to `get` the resource.
 
 The response objects are mostly modeled like this:
 
