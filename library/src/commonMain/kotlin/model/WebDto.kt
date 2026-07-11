@@ -27,7 +27,7 @@ data class WebDownloadDto(
     val progress: Double,
     val size: Long,
     @SerialName("download_id") val downloadId: String?,
-    val files: List<WebDownloadFileDto>,
+    val files: List<WebDownloadFileDto>?,
     val active: Boolean,
     val cached: Boolean,
     @SerialName("download_present") val downloadPresent: Boolean,

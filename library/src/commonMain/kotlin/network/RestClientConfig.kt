@@ -1,10 +1,12 @@
 package com.github.livingwithhippos.torbox.network
 
-import com.github.livingwithhippos.torbox.BASE_URL
-
+/**
+ * A basic configuration for the TorBox client.
+ * The [logLevel] can be none (default), info, headers, body and all.
+ * The bearer token may be printed with some of these levels, so only change them for debugging.
+ */
 data class RestClientConfig(
-    val bearerToken: String,
-    val baseUrl: String = BASE_URL,
+    var bearerToken: String,
     val requestTimeoutMs: Long = 60_000,
     val connectTimeoutMs: Long = 60_000,
     val socketTimeoutMs: Long = 60_000,

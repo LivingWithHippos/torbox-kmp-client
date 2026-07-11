@@ -1,5 +1,6 @@
 package com.github.livingwithhippos.torbox.network
 
+import com.github.livingwithhippos.torbox.BASE_URL
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.plugins.HttpTimeout
@@ -76,7 +77,7 @@ fun createHttpClient(
         }
 
         defaultRequest {
-            url(config.baseUrl)
+            url(BASE_URL)
             val skipAuth = attributes.getOrNull(NoAuth) == true
             if (!skipAuth) {
                 header(HttpHeaders.Authorization, "Bearer ${config.bearerToken}")
