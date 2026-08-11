@@ -28,7 +28,7 @@ data class TorrentDto(
     @SerialName("download_present") val downloadPresent: Boolean,
     val files: List<TorrentFileDto>?,
     @SerialName("download_path") val downloadPath: String?,
-    val availability: Int,
+    val availability: Float,
     @SerialName("download_finished") val downloadFinished: Boolean,
     val tracker: String?,
     @SerialName("total_uploaded") val totalUploaded: Long,
@@ -41,7 +41,7 @@ data class TorrentDto(
     @SerialName("tracker_message") val trackerMessage: String?,
     @SerialName("cached_at") val cachedAt: String?,
     @SerialName("private") val isPrivate: Boolean,
-    @SerialName("alternative_hashes") val alternativeHashes: List<String>,
+    @SerialName("alternative_hashes") val alternativeHashes: List<String>?,
     val tags: List<String>,
 )
 
@@ -49,7 +49,7 @@ data class TorrentDto(
 data class TorrentFileDto(
     val id: Int,
     val md5: String?,
-    val hash: String,
+    val hash: String?,
     val name: String,
     val size: Long,
     val zipped: Boolean,
@@ -64,7 +64,7 @@ data class TorrentFileDto(
 @Serializable
 data class TorrentInfoDto(
     val name: String,
-    val hash: String,
+    val hash: String?,
     val size: Long,
     val trackers: List<String>,
     val seeds: Int,
