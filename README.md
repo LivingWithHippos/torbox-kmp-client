@@ -22,7 +22,12 @@ dependencies {
 
 ```kt
 suspend fun main() {
-    val client = TorboxClient.create(TorboxClientConfig(), TorboxAuthState(bearerToken = "YOUR-API-TOKEN")
+    val client = TorboxClient.create(TorboxClientConfig(), TorboxAuthState(bearerToken = "YOUR-API-TOKEN"))
+
+    // you can also create one without token
+    // val client = TorboxClient.create(TorboxClientConfig())
+    // and update it when you retrieve it
+    // client.updateBearerToken("YOUR-API-TOKEN")
 
     // retrieve the torrent list
     val response = client.torrent.list()
