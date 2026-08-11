@@ -14,7 +14,7 @@ This is my first library, please provide feedback if possible. AI has been used 
 
 ```kts
 dependencies {
-    implementation("io.github.livingwithhippos:torbox-kmp-client:0.1.2")
+    implementation("io.github.livingwithhippos:torbox-kmp-client:0.1.3")
 }
 ```
 
@@ -22,7 +22,7 @@ dependencies {
 
 ```kt
 suspend fun main() {
-    val client = TorboxClient.create(RestClientConfig(bearerToken = "YOUR-API-TOKEN"))
+    val client = TorboxClient.create(TorboxClientConfig(), TorboxAuthState(bearerToken = "YOUR-API-TOKEN")
 
     // retrieve the torrent list
     val response = client.torrent.list()
