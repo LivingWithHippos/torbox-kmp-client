@@ -41,7 +41,7 @@ object TestConfig {
      * the standard magnet/torrent hash
      */
     val magnetHash: String get() =
-        props.getProperty("test.torremagnetHashntHash")
+        props.getProperty("test.magnetHash")
             ?: error("test.magnetHash missing from local.properties")
 
     val webDownloadId: Int get() =
