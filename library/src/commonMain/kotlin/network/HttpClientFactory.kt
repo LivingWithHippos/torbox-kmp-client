@@ -36,7 +36,8 @@ fun logLevelToEnum(level: String): LogLevel =
     }
 
 fun createHttpClient(
-    config: RestClientConfig,
+    config: TorboxClientConfig,
+    authState: TorboxAuthState,
     engineFactory: HttpClientEngineFactory<*>,
 ): HttpClient =
     HttpClient(engineFactory) {
@@ -78,9 +79,10 @@ fun createHttpClient(
 
         defaultRequest {
             url(BASE_URL)
-            val skipAuth = attributes.getOrNull(NoAuth) == true
+            // skip the auth if not required or the token is missing
+            val skipAuth = attributes.getOrNull(NoAuth) == true || authState.bearerToken.isBlank()
             if (!skipAuth) {
-                header(HttpHeaders.Authorization, "Bearer ${config.bearerToken}")
+                header(HttpHeaders.Authorization, "Bearer ${authState.bearerToken}")
             }
             headers.append(HttpHeaders.Accept, ContentType.Application.Json)
             config.defaultHeaders.forEach { (k, v) -> headers.append(k, v) }

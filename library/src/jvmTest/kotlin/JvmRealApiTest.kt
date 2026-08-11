@@ -2,8 +2,8 @@ package com.github.livingwithhippos.torbox
 
 import com.github.livingwithhippos.torbox.client.TorboxClient
 import com.github.livingwithhippos.torbox.network.ApiResult
-import com.github.livingwithhippos.torbox.network.RestClientConfig
-import io.ktor.client.plugins.logging.LogLevel
+import com.github.livingwithhippos.torbox.network.TorboxAuthState
+import com.github.livingwithhippos.torbox.network.TorboxClientConfig
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertTrue
@@ -13,7 +13,7 @@ import kotlin.test.assertTrue
  * populate the local properties file like the example and readd them to test real responses
  */
 class JvmRealApiTest {
-    private val client = TorboxClient.create(RestClientConfig(bearerToken = TestConfig.bearerToken, logLevel = "info"))
+    private val client = TorboxClient.create(TorboxClientConfig(logLevel = "info"), TorboxAuthState(TestConfig.bearerToken))
 
     /***********
      * TORRENT *
