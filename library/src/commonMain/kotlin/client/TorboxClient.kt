@@ -20,7 +20,8 @@ import com.github.livingwithhippos.torbox.impl.TorrentApiImpl
 import com.github.livingwithhippos.torbox.impl.UsenetApiImpl
 import com.github.livingwithhippos.torbox.impl.UserApiImpl
 import com.github.livingwithhippos.torbox.impl.WebApiImpl
-import com.github.livingwithhippos.torbox.network.RestClientConfig
+import com.github.livingwithhippos.torbox.network.TorboxAuthState
+import com.github.livingwithhippos.torbox.network.TorboxClientConfig
 import com.github.livingwithhippos.torbox.network.createHttpClient
 import com.github.livingwithhippos.torbox.network.platformEngineFactory
 import io.ktor.client.HttpClient
@@ -37,10 +38,15 @@ class TorboxClient private constructor(
     val integrations: IntegrationsApi,
     val stream: StreamApi,
     private val httpClient: HttpClient,
+    private val authState: TorboxAuthState,
 ) {
     companion object {
-        fun create(config: RestClientConfig): TorboxClient {
-            val client = createHttpClient(config, platformEngineFactory())
+        fun create(
+            config: TorboxClientConfig,
+            authState: TorboxAuthState = TorboxAuthState(),
+        ): TorboxClient {
+            val client =
+                createHttpClient(config = config, authState = authState, engineFactory = platformEngineFactory())
             return TorboxClient(
                 torrent = TorrentApiImpl(client),
                 web = WebApiImpl(client),
@@ -53,8 +59,13 @@ class TorboxClient private constructor(
                 integrations = IntegrationsApiImpl(client),
                 stream = StreamApiImpl(client),
                 httpClient = client,
+                authState = authState,
             )
         }
+    }
+
+    fun updateBearerToken(token: String) {
+        authState.bearerToken = token
     }
 
     fun close() = httpClient.close()
