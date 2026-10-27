@@ -2,7 +2,9 @@
 
 **Version 0.1.4**
 
-- fixed nullable server
+- fixed nullable server key
+- updated other models default values
+- all lists are not nullable but empty by default
 - updated libraries
 
 **Version 0.1.3**
