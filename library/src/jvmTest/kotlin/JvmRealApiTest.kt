@@ -46,7 +46,7 @@ class JvmRealApiTest {
 
     fun `torrent list`() =
         runBlocking {
-            val response = client.torrent.list()
+            val response = client.torrent.list(limit=2)
             assertTrue { response is ApiResult.Success && response.value.success }
             // println(response)
         }
