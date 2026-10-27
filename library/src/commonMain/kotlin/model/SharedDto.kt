@@ -46,7 +46,7 @@ data class CacheFileDto(
     val size: Long,
     @SerialName("opensubtitles_hash") val opensubtitlesHash: String?,
     @SerialName("short_name") val shortName: String?,
-    val mimeType: String?,
+    val mimetype: String?,
 )
 
 @Serializable

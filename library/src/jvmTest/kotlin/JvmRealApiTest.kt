@@ -5,7 +5,6 @@ import com.github.livingwithhippos.torbox.network.ApiResult
 import com.github.livingwithhippos.torbox.network.TorboxAuthState
 import com.github.livingwithhippos.torbox.network.TorboxClientConfig
 import kotlinx.coroutines.runBlocking
-import kotlin.test.Test
 import kotlin.test.assertTrue
 
 /**
@@ -46,7 +45,7 @@ class JvmRealApiTest {
 
     fun `torrent list`() =
         runBlocking {
-            val response = client.torrent.list()
+            val response = client.torrent.list(limit = 2)
             assertTrue { response is ApiResult.Success && response.value.success }
             // println(response)
         }
@@ -169,10 +168,10 @@ class JvmRealApiTest {
             val response = client.web.control(webId = TestConfig.webDownloadId, operation = "delete")
             assertTrue { response is ApiResult.Success && response.value.success }
         }
-    
+
     fun `web list`() =
         runBlocking {
-            val response = client.web.list()
+            val response = client.web.list(limit = 2)
             assertTrue { response is ApiResult.Success && response.value.success }
         }
 
