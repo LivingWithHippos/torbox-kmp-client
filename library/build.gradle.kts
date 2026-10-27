@@ -10,11 +10,11 @@ plugins {
 }
 
 group = "io.github.livingwithhippos"
-version = "0.1.4"
+version = "0.1.5"
 
 kotlin {
     jvm()
-    androidLibrary {
+    android {
         namespace = "io.github.livingwithhippos.torbox"
         compileSdk =
             libs.versions.android.compileSdk
@@ -26,10 +26,8 @@ kotlin {
                 .toInt()
 
         withJava() // enable java compilation support
-        withHostTestBuilder {}.configure {}
-        withDeviceTestBuilder {
-            sourceSetTreeName = "test"
-        }
+        withHostTest {}
+        withDeviceTest {}
 
         compilerOptions {
             jvmTarget = JvmTarget.JVM_11

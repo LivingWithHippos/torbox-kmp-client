@@ -1,6 +1,6 @@
 # CHANGELOG
 
-**Version 0.1.4**
+**Version 0.1.5**
 
 - fixed nullable server key
 - updated other models default values
