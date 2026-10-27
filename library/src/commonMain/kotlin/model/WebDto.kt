@@ -35,7 +35,7 @@ data class WebDownloadDto(
     @SerialName("expires_at") val expiresAt: String?,
     val error: String?,
     @SerialName("cached_at") val cachedAt: String?,
-    val server: Int,
+    val server: Int?,
     @SerialName("alternative_hashes") val alternativeHashes: List<String>,
     val tags: List<String>,
 )

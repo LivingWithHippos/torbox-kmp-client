@@ -1,5 +1,10 @@
 # CHANGELOG
 
+**Version 0.1.4**
+
+- fixed nullable server
+- updated libraries
+
 **Version 0.1.3**
 
 - breaking: changed configuration structure

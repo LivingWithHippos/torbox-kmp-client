@@ -2,7 +2,7 @@
 node = "24"
 
 # if mise is installed you can create and set the variables for testing in the mise.local.toml file, which is git-ignored
-# check if the tests need this or the local.properties file (see example.local.proerties for that)
+# check if the tests need this or the local.properties file (see example.local.properties for that)
 # [env]
 # TEST_BEARER_TOKEN = '12ab34cd-...'
 # TEST_TORRENT_ID = 12345678

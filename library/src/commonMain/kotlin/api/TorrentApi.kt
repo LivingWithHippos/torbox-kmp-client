@@ -61,7 +61,7 @@ interface TorrentApi {
      * - **resume** resumes a paused torrent
      * - **stop_seeding** stops seeding a torrent
      *
-     * [online documentation](https://api-docs.torbox.app/)
+     * [online documentation](https://api-docs.torbox.app/#7192d165-a4f0-4588-9792-1b54766a1447)
      */
     suspend fun control(
         torrentId: Int? = null,

@@ -1,4 +1,5 @@
-import com.android.build.api.dsl.androidLibrary
+import java.io.FileInputStream
+import java.util.Properties
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -9,7 +10,7 @@ plugins {
 }
 
 group = "io.github.livingwithhippos"
-version = "0.1.3"
+version = "0.1.4"
 
 kotlin {
     jvm()
@@ -30,14 +31,8 @@ kotlin {
             sourceSetTreeName = "test"
         }
 
-        compilations.configureEach {
-            compileTaskProvider.configure {
-                compilerOptions {
-                    jvmTarget.set(
-                        JvmTarget.JVM_11,
-                    )
-                }
-            }
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_11
         }
     }
     iosX64()
@@ -48,7 +43,30 @@ kotlin {
         nodejs {
             testTask {
                 useMocha {
-                    timeout = "10s"
+                    timeout = "20s"
+                }
+
+                val localPropsFile = rootProject.file("local.properties")
+                val localProps = Properties().apply {
+                    if (localPropsFile.exists()) {
+                        FileInputStream(localPropsFile).use { load(it) }
+                    }
+                }
+                val keyMapping = mapOf(
+                    "TEST_BEARER_TOKEN" to "test.bearerToken",
+                    "TEST_TORRENT_ID" to "test.torrentId",
+                    "TEST_MAGNET_LINK" to "test.magnetLink",
+                    "TEST_TORRENT_HASH" to "test.torrentHash",
+                    "TEST_MAGNET_HASH" to "test.magnetHash",
+                    "TEST_WEB_ID" to "test.webDownloadId",
+                    "TEST_WEB_HASH" to "test.webHash",
+                    "HOSTER_LINK" to "test.hosterLink",
+                )
+                keyMapping.forEach { (envKey, propKey) ->
+                    val value = System.getenv(envKey) ?: localProps.getProperty(propKey)
+                    if (value != null) {
+                        environment(envKey, value)
+                    }
                 }
             }
         }

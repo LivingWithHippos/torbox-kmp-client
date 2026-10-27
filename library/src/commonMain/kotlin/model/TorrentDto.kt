@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 data class TorrentDto(
     val id: Int,
     @SerialName("auth_id") val authId: String,
-    val server: Int,
+    val server: Int?,
     val hash: String,
     val name: String,
     val magnet: String?,

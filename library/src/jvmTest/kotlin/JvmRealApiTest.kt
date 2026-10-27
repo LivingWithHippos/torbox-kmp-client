@@ -13,7 +13,8 @@ import kotlin.test.assertTrue
  * populate the local properties file like the example and readd them to test real responses
  */
 class JvmRealApiTest {
-    private val client = TorboxClient.create(TorboxClientConfig(logLevel = "info"), TorboxAuthState(TestConfig.bearerToken))
+    private val client =
+        TorboxClient.create(TorboxClientConfig(logLevel = "info"), TorboxAuthState(TestConfig.bearerToken))
 
     /***********
      * TORRENT *
@@ -75,7 +76,8 @@ class JvmRealApiTest {
 
     fun `torrent list availability object`() =
         runBlocking {
-            val response = client.torrent.listAvailabilityObject(hashes = listOf(TestConfig.torrentHash), listFiles = false)
+            val response =
+                client.torrent.listAvailabilityObject(hashes = listOf(TestConfig.torrentHash), listFiles = false)
             assertTrue { response is ApiResult.Success && response.value.success }
         }
 
@@ -167,7 +169,7 @@ class JvmRealApiTest {
             val response = client.web.control(webId = TestConfig.webDownloadId, operation = "delete")
             assertTrue { response is ApiResult.Success && response.value.success }
         }
-
+    
     fun `web list`() =
         runBlocking {
             val response = client.web.list()
