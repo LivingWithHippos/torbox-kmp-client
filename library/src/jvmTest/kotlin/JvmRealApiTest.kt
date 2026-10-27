@@ -172,7 +172,7 @@ class JvmRealApiTest {
     
     fun `web list`() =
         runBlocking {
-            val response = client.web.list()
+            val response = client.web.list(limit=2)
             assertTrue { response is ApiResult.Success && response.value.success }
         }
 
