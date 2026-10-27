@@ -49,7 +49,7 @@ data class UsenetDownloadDto(
     @SerialName("download_present") val downloadPresent: Boolean,
     @SerialName("download_finished") val downloadFinished: Boolean,
     @SerialName("expires_at") val expiresAt: String?,
-    val server: Int,
+    val server: Int?,
     @SerialName("cached_at") val cachedAt: String?,
     @SerialName("alternative_hashes") val alternativeHashes: List<String> = emptyList(),
     val tags: List<String> = emptyList(),
