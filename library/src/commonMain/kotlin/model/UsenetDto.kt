@@ -59,15 +59,15 @@ data class UsenetDownloadDto(
 data class UsenetDownloadFileDto(
     val id: Int,
     val md5: String?,
-    val hash: String,
+    val hash: String? = null,
     val name: String,
     val size: Long,
-    val zipped: Boolean,
+    val zipped: Boolean = false,
     @SerialName("s3_path") val s3Path: String,
-    val infected: Boolean,
+    val infected: Boolean = false,
     val mimetype: String,
     @SerialName("short_name") val shortName: String,
-    @SerialName("absolute_path") val absolutePath: String,
+    @SerialName("absolute_path") val absolutePath: String? = null,
     @SerialName("opensubtitles_hash") val opensubtitlesHash: String?,
 )
 

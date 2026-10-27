@@ -27,7 +27,7 @@ data class WebDownloadDto(
     val progress: Double,
     val size: Long,
     @SerialName("download_id") val downloadId: String?,
-    val files: List<WebDownloadFileDto>?,
+    val files: List<WebDownloadFileDto> = emptyList(),
     val active: Boolean,
     val cached: Boolean,
     @SerialName("download_present") val downloadPresent: Boolean,
@@ -36,8 +36,8 @@ data class WebDownloadDto(
     val error: String?,
     @SerialName("cached_at") val cachedAt: String?,
     val server: Int?,
-    @SerialName("alternative_hashes") val alternativeHashes: List<String>,
-    val tags: List<String>,
+    @SerialName("alternative_hashes") val alternativeHashes: List<String> = emptyList(),
+    val tags: List<String> = emptyList(),
     @SerialName("airlocked")
     val airLocked: Boolean? = null,
 )
@@ -46,15 +46,15 @@ data class WebDownloadDto(
 data class WebDownloadFileDto(
     val id: Int,
     val md5: String?,
-    val hash: String,
+    val hash: String? = null,
     val name: String,
     val size: Long,
-    val zipped: Boolean,
+    val zipped: Boolean = false,
     @SerialName("s3_path") val s3Path: String,
-    val infected: Boolean,
+    val infected: Boolean = false,
     val mimetype: String,
     @SerialName("short_name") val shortName: String,
-    @SerialName("absolute_path") val absolutePath: String,
+    @SerialName("absolute_path") val absolutePath: String? = null,
     @SerialName("opensubtitles_hash") val opensubtitlesHash: String?,
 )
 
@@ -68,13 +68,13 @@ data class HosterDto(
     val status: Boolean,
     val type: String,
     val note: String?,
-    val nsfw: Boolean,
+    val nsfw: Boolean = false,
     @SerialName("daily_link_limit") val dailyLinkLimit: Int,
     @SerialName("daily_link_used") val dailyLinkUsed: Int,
     @SerialName("daily_bandwidth_limit") val dailyBandwidthLimit: Long,
     @SerialName("daily_bandwidth_used") val dailyBandwidthUsed: Long,
-    @SerialName("per_link_size_limit") val perLinkSizeLimit: Long,
-    val regex: String,
+    @SerialName("per_link_size_limit") val perLinkSizeLimit: Long? = null,
+    val regex: String? = null,
 )
 
 @Serializable

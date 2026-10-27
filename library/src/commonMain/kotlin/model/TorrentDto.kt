@@ -26,7 +26,7 @@ data class TorrentDto(
     @SerialName("torrent_file") val torrentFile: Boolean,
     @SerialName("expires_at") val expiresAt: String?,
     @SerialName("download_present") val downloadPresent: Boolean,
-    val files: List<TorrentFileDto>?,
+    val files: List<TorrentFileDto> = emptyList(),
     @SerialName("download_path") val downloadPath: String?,
     val availability: Float,
     @SerialName("download_finished") val downloadFinished: Boolean,
@@ -41,23 +41,23 @@ data class TorrentDto(
     @SerialName("tracker_message") val trackerMessage: String?,
     @SerialName("cached_at") val cachedAt: String?,
     @SerialName("private") val isPrivate: Boolean,
-    @SerialName("alternative_hashes") val alternativeHashes: List<String>?,
-    val tags: List<String>,
+    @SerialName("alternative_hashes") val alternativeHashes: List<String> = emptyList(),
+    val tags: List<String> = emptyList(),
 )
 
 @Serializable
 data class TorrentFileDto(
     val id: Int,
     val md5: String?,
-    val hash: String?,
+    val hash: String? = null,
     val name: String,
     val size: Long,
-    val zipped: Boolean,
+    val zipped: Boolean = false,
     @SerialName("s3_path") val s3Path: String,
-    val infected: Boolean,
+    val infected: Boolean = false,
     val mimetype: String,
     @SerialName("short_name") val shortName: String,
-    @SerialName("absolute_path") val absolutePath: String,
+    @SerialName("absolute_path") val absolutePath: String? = null,
     @SerialName("opensubtitles_hash") val opensubtitlesHash: String?,
 )
 
