@@ -14,7 +14,7 @@ This is my first library, please provide feedback if possible. AI has been used 
 
 ```kts
 dependencies {
-    implementation("io.github.livingwithhippos:torbox-kmp-client:0.1.3")
+    implementation("io.github.livingwithhippos:torbox-kmp-client:0.1.4")
 }
 ```
 
