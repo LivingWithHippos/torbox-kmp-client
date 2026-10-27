@@ -38,6 +38,8 @@ data class WebDownloadDto(
     val server: Int?,
     @SerialName("alternative_hashes") val alternativeHashes: List<String>,
     val tags: List<String>,
+    @SerialName("airlocked")
+    val airLocked: Boolean? = null,
 )
 
 @Serializable
