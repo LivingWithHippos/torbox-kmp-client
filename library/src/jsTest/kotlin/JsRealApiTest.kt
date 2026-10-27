@@ -79,7 +79,8 @@ class JsRealApiTest {
 
     fun torrentListAvailabilityObject() =
         runTest {
-            val response = client.torrent.listAvailabilityObject(hashes = listOf(JsTestConfig.torrentHash), listFiles = false)
+            val response =
+                client.torrent.listAvailabilityObject(hashes = listOf(JsTestConfig.torrentHash), listFiles = false)
             assertTrue { response is ApiResult.Success && response.value.success }
         }
 
