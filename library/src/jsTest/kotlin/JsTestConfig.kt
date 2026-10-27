@@ -1,3 +1,5 @@
+package com.github.livingwithhippos.torbox
+
 object JsTestConfig {
     // In Node.js environment, access process.env directly
     private val env: dynamic
