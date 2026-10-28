@@ -26,6 +26,8 @@ import com.github.livingwithhippos.torbox.network.noAuth
 import com.github.livingwithhippos.torbox.network.safeBodyText
 import com.github.livingwithhippos.torbox.network.toFailure
 import io.ktor.client.HttpClient
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
@@ -37,6 +39,7 @@ import io.ktor.http.contentType
 
 class UserApiImpl(
     private val client: HttpClient,
+    private val dispatcher: CoroutineDispatcher,
 ) : UserApi {
     private val uuidRegex =
         Regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$")
@@ -50,7 +53,7 @@ class UserApiImpl(
 
         // todo: test this API to check the return type
 
-        return executeRequest {
+        return executeRequest(dispatcher) {
             client.post("user/refreshtoken") {
                 contentType(ContentType.Application.Json)
                 setBody(
@@ -61,7 +64,7 @@ class UserApiImpl(
     }
 
     override suspend fun data(settings: Boolean?): ApiResult<ApiResponseDto<UserDataDto>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             client.get("user/me") {
                 settings?.let { parameter("settings", it) }
             }
@@ -83,7 +86,7 @@ class UserApiImpl(
             )
         }
 
-        return executeRequest {
+        return executeRequest(dispatcher) {
             client.post("user/addreferral") {
                 parameter("referral", referral)
             }
@@ -91,12 +94,12 @@ class UserApiImpl(
     }
 
     override suspend fun requestConfirmationCode(): ApiResult<ApiResponseDto<String>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             client.get("user/getconfirmation")
         }
 
     override suspend fun startAuthorizationProcess(app: String?): ApiResult<ApiResponseDto<DeviceCodeAuthorizationStartDto>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             client.get("user/auth/device/start") {
                 noAuth()
                 app?.trim()?.takeIf { it.isNotEmpty() }?.let { parameter("app", it) }
@@ -110,7 +113,7 @@ class UserApiImpl(
             )
         }
 
-        return executeRequest {
+        return executeRequest(dispatcher) {
             client.post("user/auth/device/token") {
                 noAuth()
                 contentType(ContentType.Application.Json)
@@ -120,17 +123,17 @@ class UserApiImpl(
     }
 
     override suspend fun referral(): ApiResult<ApiResponseDto<ReferralDataDto>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             client.get("user/referraldata")
         }
 
     override suspend fun subscriptions(): ApiResult<ApiResponseListDto<SubscriptionDto>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             client.get("user/subscriptions")
         }
 
     override suspend fun transactions(): ApiResult<ApiResponseListDto<TransactionDto>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             client.get("user/transactions")
         }
 
@@ -141,24 +144,26 @@ class UserApiImpl(
             )
         }
 
-        return runCatching {
-            client.get("user/transaction/pdf") {
-                parameter("transaction_id", transactionId)
-            }
-        }.fold(
-            onSuccess = { response ->
-                if (!response.status.isSuccessOrRedirect()) {
-                    return@fold ApiResult.Failure.Http(response.status.value, response.safeBodyText())
+        return withContext(dispatcher) {
+            runCatching {
+                client.get("user/transaction/pdf") {
+                    parameter("transaction_id", transactionId)
                 }
+            }.fold(
+                onSuccess = { response ->
+                    if (!response.status.isSuccessOrRedirect()) {
+                        return@fold ApiResult.Failure.Http(response.status.value, response.safeBodyText())
+                    }
 
-                runCatching { response.body<ByteArray>() }.fold(
-                    onSuccess = { ApiResult.Success(it) },
-                    // don't attempt to stringify binary payloads as error body
-                    onFailure = { toFailure(it, null) },
-                )
-            },
-            onFailure = { toFailure(it, null) },
-        )
+                    runCatching { response.body<ByteArray>() }.fold(
+                        onSuccess = { ApiResult.Success(it) },
+                        // don't attempt to stringify binary payloads as error body
+                        onFailure = { toFailure(it, null) },
+                    )
+                },
+                onFailure = { toFailure(it, null) },
+            )
+        }
     }
 
     override suspend fun edit(
@@ -224,7 +229,7 @@ class UserApiImpl(
         webPlayerEnableScrobbling: Boolean?,
         appendFilenameToLinks: Boolean?,
     ): ApiResult<ApiResponseDto<String>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             client.put("user/settings/editsettings") {
                 contentType(ContentType.Application.Json)
                 setBody(
@@ -296,7 +301,7 @@ class UserApiImpl(
         }
 
     override suspend fun searchEngines(id: Int?): ApiResult<ApiResponseListDto<SearchEngineDto>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             client.get("user/settings/searchengines") {
                 id?.let { parameter("id", it) }
             }
@@ -318,7 +323,7 @@ class UserApiImpl(
             )
         }
 
-        return executeRequest {
+        return executeRequest(dispatcher) {
             client.post("user/settings/controlsearchengines") {
                 contentType(ContentType.Application.Json)
                 setBody(SearchEngineControlRequestDto(operation = normalized, id = id, all = all))
@@ -337,7 +342,7 @@ class UserApiImpl(
             return ApiResult.Failure.BadRequest(IllegalArgumentException("id must be a positive integer"))
         }
 
-        return executeRequest {
+        return executeRequest(dispatcher) {
             client.post("user/settings/modifysearchengines") {
                 contentType(ContentType.Application.Json)
                 setBody(
@@ -372,7 +377,7 @@ class UserApiImpl(
             )
         }
 
-        return executeRequest {
+        return executeRequest(dispatcher) {
             client.put("user/settings/addsearchengines") {
                 contentType(ContentType.Application.Json)
                 setBody(
@@ -399,7 +404,7 @@ class UserApiImpl(
             )
         }
 
-        return executeRequest {
+        return executeRequest(dispatcher) {
             client.get("user/stats") {
                 parameter("general", general)
                 parameter("bandwidth", bandwidth)

@@ -10,6 +10,8 @@ import com.github.livingwithhippos.torbox.network.ApiResult
 import com.github.livingwithhippos.torbox.network.executeRequest
 import com.github.livingwithhippos.torbox.network.noAuth
 import io.ktor.client.HttpClient
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
@@ -18,9 +20,10 @@ import io.ktor.http.isSuccess
 
 class GeneralApiImpl(
     private val client: HttpClient,
+    private val dispatcher: CoroutineDispatcher,
 ) : GeneralApi {
     override suspend fun upStatus(): ApiResult<ApiResponseDto<String>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             // what happens if the api are failing? does this return success false?
             client.get("https://api.torbox.app") {
                 noAuth()
@@ -28,29 +31,31 @@ class GeneralApiImpl(
         }
 
     override suspend fun stats(): ApiResult<ApiResponseDto<StatsDto>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             client.get("stats") {
                 noAuth()
             }
         }
 
     override suspend fun changelogRSSFeed(): ApiResult<String> =
-        runCatching {
-            val response =
-                client.get("changelogs/rss") {
-                    noAuth()
+        withContext(dispatcher) {
+            runCatching {
+                val response =
+                    client.get("changelogs/rss") {
+                        noAuth()
+                    }
+                if (response.status.isSuccess()) {
+                    ApiResult.Success(response.body<String>())
+                } else {
+                    ApiResult.Failure.Http(response.status.value, response.bodyAsText())
                 }
-            if (response.status.isSuccess()) {
-                ApiResult.Success(response.body<String>())
-            } else {
-                ApiResult.Failure.Http(response.status.value, response.bodyAsText())
+            }.getOrElse {
+                ApiResult.Failure.Network(it)
             }
-        }.getOrElse {
-            ApiResult.Failure.Network(it)
         }
 
     override suspend fun changelogJson(): ApiResult<ApiResponseListDto<ChangelogEntryDto>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             client.get("changelogs/json") {
                 noAuth()
             }
@@ -68,7 +73,7 @@ class GeneralApiImpl(
             )
         }
 
-        return executeRequest {
+        return executeRequest(dispatcher) {
             client.get("speedtest") {
                 noAuth()
                 parameter("test_length", normalizedTestLength)

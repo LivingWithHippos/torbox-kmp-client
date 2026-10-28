@@ -48,16 +48,16 @@ class TorboxClient private constructor(
             val client =
                 createHttpClient(config = config, authState = authState, engineFactory = platformEngineFactory())
             return TorboxClient(
-                torrent = TorrentApiImpl(client),
-                web = WebApiImpl(client),
-                usenet = UsenetApiImpl(client),
-                general = GeneralApiImpl(client),
-                notifications = NotificationsApiImpl(client),
-                queued = QueuedApiImpl(client),
-                user = UserApiImpl(client),
-                rss = RSSApiImpl(client),
-                integrations = IntegrationsApiImpl(client),
-                stream = StreamApiImpl(client),
+                torrent = TorrentApiImpl(client, config.dispatcher),
+                web = WebApiImpl(client, config.dispatcher),
+                usenet = UsenetApiImpl(client, config.dispatcher),
+                general = GeneralApiImpl(client, config.dispatcher),
+                notifications = NotificationsApiImpl(client, config.dispatcher),
+                queued = QueuedApiImpl(client, config.dispatcher),
+                user = UserApiImpl(client, config.dispatcher),
+                rss = RSSApiImpl(client, config.dispatcher),
+                integrations = IntegrationsApiImpl(client, config.dispatcher),
+                stream = StreamApiImpl(client, config.dispatcher),
                 httpClient = client,
                 authState = authState,
             )

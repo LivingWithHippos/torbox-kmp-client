@@ -13,6 +13,7 @@ import com.github.livingwithhippos.torbox.model.UsenetDownloadDto
 import com.github.livingwithhippos.torbox.network.ApiResult
 import com.github.livingwithhippos.torbox.network.executeRequest
 import io.ktor.client.HttpClient
+import kotlinx.coroutines.CoroutineDispatcher
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
 import io.ktor.client.request.get
@@ -27,13 +28,14 @@ import io.ktor.http.contentType
 
 class UsenetApiImpl(
     private val client: HttpClient,
+    private val dispatcher: CoroutineDispatcher,
 ) : UsenetApi {
     override suspend fun list(
         bypassCache: Boolean?,
         offset: Int?,
         limit: Int?,
     ): ApiResult<ApiResponseListDto<UsenetDownloadDto>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             client.get("usenet/mylist") {
                 bypassCache?.let { parameter("bypass_cache", it) }
                 offset?.let { parameter("offset", it) }
@@ -45,7 +47,7 @@ class UsenetApiImpl(
         bypassCache: Boolean?,
         id: Int,
     ): ApiResult<ApiResponseDto<UsenetDownloadDto>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             client.get("usenet/mylist") {
                 bypassCache?.let { parameter("bypass_cache", it) }
                 parameter("id", id)
@@ -76,7 +78,7 @@ class UsenetApiImpl(
             )
         }
 
-        return executeRequest {
+        return executeRequest(dispatcher) {
             client.post("usenet/createusenetdownload") {
                 setBody(
                     MultiPartFormDataContent(
@@ -123,7 +125,7 @@ class UsenetApiImpl(
             )
         }
 
-        return executeRequest {
+        return executeRequest(dispatcher) {
             client.post("usenet/controlusenetdownload") {
                 contentType(ContentType.Application.Json)
                 setBody(
@@ -146,7 +148,7 @@ class UsenetApiImpl(
         redirect: Boolean?,
         appendName: Boolean?,
     ): ApiResult<ApiResponseDto<String>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             client.get("usenet/requestdl") {
                 parameter("token", token)
                 parameter("usenet_id", usenetId)
@@ -162,7 +164,7 @@ class UsenetApiImpl(
         hashes: List<String>,
         listFiles: Boolean?,
     ): ApiResult<ApiResponseListDto<CacheDto>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             client.get("usenet/checkcached") {
                 hashes.forEach {
                     parameter("hash", it)
@@ -176,7 +178,7 @@ class UsenetApiImpl(
         hashes: List<String>,
         listFiles: Boolean?,
     ): ApiResult<ApiResponseMapDto<CacheDto>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             client.get("usenet/checkcached") {
                 hashes.forEach {
                     parameter("hash", it)
@@ -187,7 +189,7 @@ class UsenetApiImpl(
         }
 
     override suspend fun listAvailabilityBatchObject(hashes: List<String>): ApiResult<ApiResponseMapDto<CacheDto>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             client.post("usenet/checkcached") {
                 parameter("format", "object")
                 contentType(ContentType.Application.Json)
@@ -200,7 +202,7 @@ class UsenetApiImpl(
         }
 
     override suspend fun listAvailabilityBatch(hashes: List<String>): ApiResult<ApiResponseListDto<CacheDto>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             client.post("usenet/checkcached") {
                 parameter("format", "list")
                 contentType(ContentType.Application.Json)
@@ -224,7 +226,7 @@ class UsenetApiImpl(
             )
         }
 
-        return executeRequest {
+        return executeRequest(dispatcher) {
             client.put("usenet/editusenetdownload") {
                 contentType(ContentType.Application.Json)
                 setBody(

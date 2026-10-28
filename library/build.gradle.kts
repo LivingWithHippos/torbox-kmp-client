@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "io.github.livingwithhippos"
-version = "0.1.5"
+version = "0.2.0"
 
 kotlin {
     jvm()
@@ -110,6 +110,10 @@ kotlin {
         }
         jvmMain.dependencies {
             implementation(libs.ktor.client.cio)
+        }
+
+        jvmTest.dependencies {
+            implementation(libs.ktor.client.mock)
         }
 
         jsMain.dependencies {

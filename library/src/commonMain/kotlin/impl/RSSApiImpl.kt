@@ -11,6 +11,7 @@ import com.github.livingwithhippos.torbox.model.RssFeedItemDto
 import com.github.livingwithhippos.torbox.network.ApiResult
 import com.github.livingwithhippos.torbox.network.executeRequest
 import io.ktor.client.HttpClient
+import kotlinx.coroutines.CoroutineDispatcher
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
@@ -20,6 +21,7 @@ import io.ktor.http.contentType
 
 class RSSApiImpl(
     private val client: HttpClient,
+    private val dispatcher: CoroutineDispatcher,
 ) : RSSApi {
     override suspend fun add(
         url: String,
@@ -36,7 +38,7 @@ class RSSApiImpl(
             return ApiResult.Failure.BadRequest(IllegalArgumentException("url must not be blank"))
         }
 
-        return executeRequest {
+        return executeRequest(dispatcher) {
             client.post("rss/addrss") {
                 contentType(ContentType.Application.Json)
                 setBody(
@@ -67,7 +69,7 @@ class RSSApiImpl(
             )
         }
 
-        return executeRequest {
+        return executeRequest(dispatcher) {
             client.post("rss/controlrss") {
                 contentType(ContentType.Application.Json)
                 setBody(
@@ -91,7 +93,7 @@ class RSSApiImpl(
         rssType: String?,
         torrentSeeding: Int?,
     ): ApiResult<ApiResponseDto<String>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             client.post("rss/modifyrss") {
                 contentType(ContentType.Application.Json)
                 setBody(
@@ -117,7 +119,7 @@ class RSSApiImpl(
             )
         }
 
-        return executeRequest {
+        return executeRequest(dispatcher) {
             client.get("rss/getfeeds") {
                 id?.let { parameter("id", it) }
             }
@@ -131,7 +133,7 @@ class RSSApiImpl(
             )
         }
 
-        return executeRequest {
+        return executeRequest(dispatcher) {
             client.get("rss/getfeeditems") {
                 parameter("id", id)
             }
