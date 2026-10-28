@@ -8,6 +8,7 @@ import com.github.livingwithhippos.torbox.model.QueuedDownloadDto
 import com.github.livingwithhippos.torbox.network.ApiResult
 import com.github.livingwithhippos.torbox.network.executeRequest
 import io.ktor.client.HttpClient
+import kotlinx.coroutines.CoroutineDispatcher
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
@@ -17,6 +18,7 @@ import io.ktor.http.contentType
 
 class QueuedApiImpl(
     private val client: HttpClient,
+    private val dispatcher: CoroutineDispatcher,
 ) : QueuedApi {
     override suspend fun downloads(
         bypassCache: Boolean?,
@@ -47,7 +49,7 @@ class QueuedApiImpl(
             )
         }
 
-        return executeRequest {
+        return executeRequest(dispatcher) {
             client.get("queued/getqueued") {
                 bypassCache?.let { parameter("bypass_cache", it) }
                 id?.let { parameter("id", it) }
@@ -85,7 +87,7 @@ class QueuedApiImpl(
             )
         }
 
-        return executeRequest {
+        return executeRequest(dispatcher) {
             client.post("queued/controlqueued") {
                 contentType(ContentType.Application.Json)
                 setBody(

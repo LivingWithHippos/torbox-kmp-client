@@ -7,6 +7,8 @@ import com.github.livingwithhippos.torbox.model.NotificationDto
 import com.github.livingwithhippos.torbox.network.ApiResult
 import com.github.livingwithhippos.torbox.network.executeRequest
 import io.ktor.client.HttpClient
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
@@ -16,29 +18,32 @@ import io.ktor.http.isSuccess
 
 class NotificationsApiImpl(
     private val client: HttpClient,
+    private val dispatcher: CoroutineDispatcher,
 ) : NotificationsApi {
     override suspend fun rssFeed(token: String): ApiResult<String> =
-        runCatching {
-            val response =
-                client.get("notifications/rss") {
-                    parameter("token", token)
+        withContext(dispatcher) {
+            runCatching {
+                val response =
+                    client.get("notifications/rss") {
+                        parameter("token", token)
+                    }
+                if (response.status.isSuccess()) {
+                    ApiResult.Success(response.body<String>())
+                } else {
+                    ApiResult.Failure.Http(response.status.value, response.bodyAsText())
                 }
-            if (response.status.isSuccess()) {
-                ApiResult.Success(response.body<String>())
-            } else {
-                ApiResult.Failure.Http(response.status.value, response.bodyAsText())
+            }.getOrElse {
+                ApiResult.Failure.Network(it)
             }
-        }.getOrElse {
-            ApiResult.Failure.Network(it)
         }
 
     override suspend fun jsonFeed(): ApiResult<ApiResponseListDto<NotificationDto>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             client.get("notifications/mynotifications")
         }
 
     override suspend fun clear(notificationId: Int?): ApiResult<ApiResponseDto<String>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             if (notificationId != null) {
                 client.post("notifications/clear/$notificationId")
             } else {
@@ -47,7 +52,7 @@ class NotificationsApiImpl(
         }
 
     override suspend fun sendTest(): ApiResult<ApiResponseDto<String>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             client.post("notifications/test")
         }
 }

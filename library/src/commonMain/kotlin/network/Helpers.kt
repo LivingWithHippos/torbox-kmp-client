@@ -6,6 +6,8 @@ import io.ktor.client.plugins.ResponseException
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerializationException
 
 internal suspend fun HttpResponse.safeBodyText(): String? = runCatching { bodyAsText() }.getOrNull()
@@ -33,23 +35,28 @@ internal fun toFailure(
         }
     }
 
-internal suspend inline fun <reified T : ApiSuccessResponse> executeRequest(noinline request: suspend () -> HttpResponse): ApiResult<T> =
-    runCatching { request() }.fold(
-        onSuccess = { response ->
-            if (response.status.isSuccessOrRedirect()) {
-                runCatching { response.body<T>() }.fold(
-                    onSuccess = { parsed ->
-                        if (parsed.success) {
-                            ApiResult.Success(parsed)
-                        } else {
-                            ApiResult.Failure.NoSuccess(parsed)
-                        }
-                    },
-                    onFailure = { toFailure(it, response.safeBodyText()) },
-                )
-            } else {
-                ApiResult.Failure.Http(response.status.value, response.safeBodyText())
-            }
-        },
-        onFailure = { toFailure(it, null) },
-    )
+internal suspend inline fun <reified T : ApiSuccessResponse> executeRequest(
+    dispatcher: CoroutineDispatcher,
+    noinline request: suspend () -> HttpResponse,
+): ApiResult<T> =
+    withContext(dispatcher) {
+        runCatching { request() }.fold(
+            onSuccess = { response ->
+                if (response.status.isSuccessOrRedirect()) {
+                    runCatching { response.body<T>() }.fold(
+                        onSuccess = { parsed ->
+                            if (parsed.success) {
+                                ApiResult.Success(parsed)
+                            } else {
+                                ApiResult.Failure.NoSuccess(parsed)
+                            }
+                        },
+                        onFailure = { toFailure(it, response.safeBodyText()) },
+                    )
+                } else {
+                    ApiResult.Failure.Http(response.status.value, response.safeBodyText())
+                }
+            },
+            onFailure = { toFailure(it, null) },
+        )
+    }

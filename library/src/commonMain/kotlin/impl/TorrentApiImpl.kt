@@ -20,6 +20,8 @@ import com.github.livingwithhippos.torbox.network.noAuth
 import com.github.livingwithhippos.torbox.network.safeBodyText
 import com.github.livingwithhippos.torbox.network.toFailure
 import io.ktor.client.HttpClient
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import io.ktor.client.call.body
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
@@ -35,13 +37,14 @@ import io.ktor.http.contentType
 
 class TorrentApiImpl(
     private val client: HttpClient,
+    private val dispatcher: CoroutineDispatcher,
 ) : TorrentApi {
     override suspend fun list(
         bypassCache: Boolean?,
         offset: Int?,
         limit: Int?,
     ): ApiResult<ApiResponseListDto<TorrentDto>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             client.get("torrents/mylist") {
                 bypassCache?.let { parameter("bypass_cache", it) }
                 offset?.let { parameter("offset", it) }
@@ -53,7 +56,7 @@ class TorrentApiImpl(
         bypassCache: Boolean?,
         id: Int,
     ): ApiResult<ApiResponseDto<TorrentDto>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             client.get("torrents/mylist") {
                 bypassCache?.let { parameter("bypass_cache", it) }
                 parameter("id", id)
@@ -80,7 +83,7 @@ class TorrentApiImpl(
             )
         }
 
-        return executeRequest {
+        return executeRequest(dispatcher) {
             client.post("torrents/asynccreatetorrent") {
                 setBody(
                     MultiPartFormDataContent(
@@ -132,7 +135,7 @@ class TorrentApiImpl(
             )
         }
 
-        return executeRequest {
+        return executeRequest(dispatcher) {
             client.post("torrents/createtorrent") {
                 setBody(
                     MultiPartFormDataContent(
@@ -180,7 +183,7 @@ class TorrentApiImpl(
             )
         }
 
-        return executeRequest {
+        return executeRequest(dispatcher) {
             client.post("torrents/controltorrent") {
                 contentType(ContentType.Application.Json)
                 setBody(
@@ -206,7 +209,7 @@ class TorrentApiImpl(
             )
         }
 
-        return executeRequest {
+        return executeRequest(dispatcher) {
             client.put("torrents/edittorrent") {
                 contentType(ContentType.Application.Json)
                 setBody(
@@ -230,7 +233,7 @@ class TorrentApiImpl(
         redirect: Boolean?,
         appendName: Boolean?,
     ): ApiResult<ApiResponseDto<String>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             client.get("torrents/requestdl") {
                 parameter("token", token)
                 parameter("torrent_id", torrentId)
@@ -246,7 +249,7 @@ class TorrentApiImpl(
         hashes: List<String>,
         listFiles: Boolean?,
     ): ApiResult<ApiResponseListDto<CacheDto>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             client.get("torrents/checkcached") {
                 hashes.forEach {
                     parameter("hash", it)
@@ -260,7 +263,7 @@ class TorrentApiImpl(
         hashes: List<String>,
         listFiles: Boolean?,
     ): ApiResult<ApiResponseMapDto<CacheDto>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             client.get("torrents/checkcached") {
                 hashes.forEach {
                     parameter("hash", it)
@@ -271,7 +274,7 @@ class TorrentApiImpl(
         }
 
     override suspend fun listAvailabilityBatchObject(hashes: List<String>): ApiResult<ApiResponseMapDto<CacheDto>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             client.post("torrents/checkcached") {
                 parameter("format", "object")
                 contentType(ContentType.Application.Json)
@@ -284,7 +287,7 @@ class TorrentApiImpl(
         }
 
     override suspend fun listAvailabilityBatch(hashes: List<String>): ApiResult<ApiResponseListDto<CacheDto>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             client.post("torrents/checkcached") {
                 parameter("format", "list")
                 contentType(ContentType.Application.Json)
@@ -307,37 +310,39 @@ class TorrentApiImpl(
             )
         }
 
-        return runCatching {
-            client.get("torrents/exportdata") {
-                parameter("torrent_id", torrentId)
-                parameter("type", normalizedType)
-            }
-        }.fold(
-            onSuccess = { response ->
-                if (!response.status.isSuccessOrRedirect()) {
-                    return@fold ApiResult.Failure.Http(response.status.value, response.safeBodyText())
+        return withContext(dispatcher) {
+            runCatching {
+                client.get("torrents/exportdata") {
+                    parameter("torrent_id", torrentId)
+                    parameter("type", normalizedType)
                 }
-                if (normalizedType == "magnet") {
-                    runCatching { response.body<ApiResponseDto<String>>() }.fold(
-                        onSuccess = { parsed ->
-                            if (parsed.success && parsed.data != null) {
-                                ApiResult.Success(ExportResultDto.Magnet(parsed.data))
-                            } else {
-                                ApiResult.Failure.NoSuccess(parsed)
-                            }
-                        },
-                        onFailure = { toFailure(it, response.safeBodyText()) },
-                    )
-                } else {
-                    runCatching { ExportResultDto.Torrent(response.body<ByteArray>()) }.fold(
-                        onSuccess = { ApiResult.Success(it) },
-                        // don't attempt to stringify binary payloads as error body
-                        onFailure = { toFailure(it, null) },
-                    )
-                }
-            },
-            onFailure = { toFailure(it, null) },
-        )
+            }.fold(
+                onSuccess = { response ->
+                    if (!response.status.isSuccessOrRedirect()) {
+                        return@fold ApiResult.Failure.Http(response.status.value, response.safeBodyText())
+                    }
+                    if (normalizedType == "magnet") {
+                        runCatching { response.body<ApiResponseDto<String>>() }.fold(
+                            onSuccess = { parsed ->
+                                if (parsed.success && parsed.data != null) {
+                                    ApiResult.Success(ExportResultDto.Magnet(parsed.data))
+                                } else {
+                                    ApiResult.Failure.NoSuccess(parsed)
+                                }
+                            },
+                            onFailure = { toFailure(it, response.safeBodyText()) },
+                        )
+                    } else {
+                        runCatching { ExportResultDto.Torrent(response.body<ByteArray>()) }.fold(
+                            onSuccess = { ApiResult.Success(it) },
+                            // don't attempt to stringify binary payloads as error body
+                            onFailure = { toFailure(it, null) },
+                        )
+                    }
+                },
+                onFailure = { toFailure(it, null) },
+            )
+        }
     }
 
     override suspend fun info(
@@ -345,7 +350,7 @@ class TorrentApiImpl(
         timeout: Int?,
         cacheLookup: Boolean?,
     ): ApiResult<ApiResponseDto<TorrentInfoDto>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             client.get("torrents/torrentinfo") {
                 parameter("hash", hash)
                 parameter("timeout", timeout)
@@ -377,7 +382,7 @@ class TorrentApiImpl(
 
         // fixme: this does not seem to be working when using a file
 
-        return executeRequest {
+        return executeRequest(dispatcher) {
             client.post("torrents/torrentinfo") {
                 setBody(
                     MultiPartFormDataContent(
@@ -415,25 +420,27 @@ class TorrentApiImpl(
             )
         }
 
-        return runCatching {
-            client.post("torrents/magnettofile") {
-                noAuth()
-                contentType(ContentType.Application.Json)
-                setBody(MagnetToFileRequestDto(magnet = magnet))
-            }
-        }.fold(
-            onSuccess = { response ->
-                if (!response.status.isSuccessOrRedirect()) {
-                    return@fold ApiResult.Failure.Http(response.status.value, response.safeBodyText())
+        return withContext(dispatcher) {
+            runCatching {
+                client.post("torrents/magnettofile") {
+                    noAuth()
+                    contentType(ContentType.Application.Json)
+                    setBody(MagnetToFileRequestDto(magnet = magnet))
                 }
+            }.fold(
+                onSuccess = { response ->
+                    if (!response.status.isSuccessOrRedirect()) {
+                        return@fold ApiResult.Failure.Http(response.status.value, response.safeBodyText())
+                    }
 
-                runCatching { response.body<ByteArray>() }.fold(
-                    onSuccess = { ApiResult.Success(it) },
-                    // don't attempt to stringify binary payloads as error body
-                    onFailure = { toFailure(it, null) },
-                )
-            },
-            onFailure = { toFailure(it, null) },
-        )
+                    runCatching { response.body<ByteArray>() }.fold(
+                        onSuccess = { ApiResult.Success(it) },
+                        // don't attempt to stringify binary payloads as error body
+                        onFailure = { toFailure(it, null) },
+                    )
+                },
+                onFailure = { toFailure(it, null) },
+            )
+        }
     }
 }

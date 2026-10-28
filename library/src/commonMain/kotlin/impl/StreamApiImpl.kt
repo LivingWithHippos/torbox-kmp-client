@@ -7,11 +7,13 @@ import com.github.livingwithhippos.torbox.model.StreamDto
 import com.github.livingwithhippos.torbox.network.ApiResult
 import com.github.livingwithhippos.torbox.network.executeRequest
 import io.ktor.client.HttpClient
+import kotlinx.coroutines.CoroutineDispatcher
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 
 class StreamApiImpl(
     private val client: HttpClient,
+    private val dispatcher: CoroutineDispatcher,
 ) : StreamApi {
     override suspend fun create(
         id: Int,
@@ -53,7 +55,7 @@ class StreamApiImpl(
             )
         }
 
-        return executeRequest {
+        return executeRequest(dispatcher) {
             client.get("stream/createstream") {
                 parameter("id", id)
                 parameter("file_id", fileId)
@@ -98,7 +100,7 @@ class StreamApiImpl(
             )
         }
 
-        return executeRequest {
+        return executeRequest(dispatcher) {
             client.get("stream/getstreamdata") {
                 parameter("presigned_token", presignedToken)
                 parameter("token", token)

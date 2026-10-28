@@ -15,6 +15,7 @@ import com.github.livingwithhippos.torbox.network.ApiResult
 import com.github.livingwithhippos.torbox.network.executeRequest
 import com.github.livingwithhippos.torbox.network.noAuth
 import io.ktor.client.HttpClient
+import kotlinx.coroutines.CoroutineDispatcher
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
 import io.ktor.client.request.get
@@ -27,13 +28,14 @@ import io.ktor.http.contentType
 
 class WebApiImpl(
     private val client: HttpClient,
+    private val dispatcher: CoroutineDispatcher,
 ) : WebApi {
     override suspend fun list(
         bypassCache: Boolean?,
         offset: Int?,
         limit: Int?,
     ): ApiResult<ApiResponseListDto<WebDownloadDto>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             client.get("webdl/mylist") {
                 bypassCache?.let { parameter("bypass_cache", it) }
                 offset?.let { parameter("offset", it) }
@@ -45,7 +47,7 @@ class WebApiImpl(
         bypassCache: Boolean?,
         id: Int,
     ): ApiResult<ApiResponseDto<WebDownloadDto>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             client.get("webdl/mylist") {
                 bypassCache?.let { parameter("bypass_cache", it) }
                 parameter("id", id)
@@ -59,7 +61,7 @@ class WebApiImpl(
         asQueued: Boolean?,
         addOnlyIfCached: Boolean?,
     ): ApiResult<ApiResponseDto<CreateWebDownloadDto>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             client.post("webdl/createwebdownload") {
                 setBody(
                     MultiPartFormDataContent(
@@ -84,7 +86,7 @@ class WebApiImpl(
         redirect: Boolean?,
         appendName: Boolean?,
     ): ApiResult<ApiResponseDto<String>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             client.get("webdl/requestdl") {
                 parameter("token", token)
                 parameter("web_id", webId)
@@ -100,7 +102,7 @@ class WebApiImpl(
         hashes: List<String>,
         listFiles: Boolean?,
     ): ApiResult<ApiResponseListDto<CacheDto>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             client.get("webdl/checkcached") {
                 hashes.forEach {
                     parameter("hash", it)
@@ -114,7 +116,7 @@ class WebApiImpl(
         hashes: List<String>,
         listFiles: Boolean?,
     ): ApiResult<ApiResponseMapDto<CacheDto>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             client.get("webdl/checkcached") {
                 hashes.forEach {
                     parameter("hash", it)
@@ -125,7 +127,7 @@ class WebApiImpl(
         }
 
     override suspend fun listAvailabilityBatchObject(hashes: List<String>): ApiResult<ApiResponseMapDto<CacheDto>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             client.post("webdl/checkcached") {
                 parameter("format", "object")
                 contentType(ContentType.Application.Json)
@@ -138,7 +140,7 @@ class WebApiImpl(
         }
 
     override suspend fun listAvailabilityBatch(hashes: List<String>): ApiResult<ApiResponseListDto<CacheDto>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             client.post("webdl/checkcached") {
                 parameter("format", "list")
                 contentType(ContentType.Application.Json)
@@ -151,7 +153,7 @@ class WebApiImpl(
         }
 
     override suspend fun hosters(auth: Boolean): ApiResult<ApiResponseListDto<HosterDto>> =
-        executeRequest {
+        executeRequest(dispatcher) {
             client.get("webdl/hosters") {
                 if (!auth) {
                     noAuth()
@@ -171,7 +173,7 @@ class WebApiImpl(
             )
         }
 
-        return executeRequest {
+        return executeRequest(dispatcher) {
             client.put("webdl/editwebdownload") {
                 contentType(ContentType.Application.Json)
                 setBody(
@@ -202,7 +204,7 @@ class WebApiImpl(
             )
         }
 
-        return executeRequest {
+        return executeRequest(dispatcher) {
             client.post("webdl/controlwebdownload") {
                 contentType(ContentType.Application.Json)
                 setBody(
