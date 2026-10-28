@@ -1,5 +1,9 @@
 # CHANGELOG
 
+**Version 0.2.0**
+
+- API calls are now main-safe: requests and response decoding run on `TorboxClientConfig.dispatcher` (default `Dispatchers.Default`)
+
 **Version 0.1.5**
 
 - fixed nullable server key
