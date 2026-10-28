@@ -112,6 +112,10 @@ kotlin {
             implementation(libs.ktor.client.cio)
         }
 
+        jvmTest.dependencies {
+            implementation(libs.ktor.client.mock)
+        }
+
         jsMain.dependencies {
             implementation(libs.ktor.client.js)
             implementation(libs.kotlinx.browser)
