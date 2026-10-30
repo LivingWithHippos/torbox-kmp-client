@@ -2,8 +2,10 @@ package com.github.livingwithhippos.torbox.network
 
 import com.github.livingwithhippos.torbox.BASE_URL
 import io.ktor.client.HttpClient
+import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.plugins.HttpTimeout
+import io.ktor.client.plugins.api.createClientPlugin
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
@@ -19,13 +21,14 @@ import kotlinx.serialization.json.Json
 import co.touchlab.kermit.Logger as KermitLogger
 import io.ktor.client.plugins.logging.Logger as KtorLogger
 
-val NoAuth = AttributeKey<Boolean>("NoAuth")
+internal val NoAuth = AttributeKey<Boolean>("NoAuth")
 
-fun HttpRequestBuilder.noAuth() {
+/** Marks a request so that the bearer token is not sent */
+internal fun HttpRequestBuilder.noAuth() {
     attributes.put(NoAuth, true)
 }
 
-fun logLevelToEnum(level: String): LogLevel =
+internal fun logLevelToEnum(level: String): LogLevel =
     when (level.lowercase()) {
         "none" -> LogLevel.NONE
         "info" -> LogLevel.INFO
@@ -35,57 +38,78 @@ fun logLevelToEnum(level: String): LogLevel =
         else -> LogLevel.NONE
     }
 
-fun createHttpClient(
+/**
+ * Adds the bearer token to each request, unless it's blank or the request is marked with [noAuth].
+ * This runs after the request builder, so the [NoAuth] attribute set there is visible.
+ */
+private fun bearerAuthPlugin(authState: TorboxAuthState) =
+    createClientPlugin("TorboxBearerAuth") {
+        onRequest { request, _ ->
+            val skipAuth =
+                request.attributes.getOrNull(NoAuth) == true ||
+                    authState.bearerToken.isBlank() ||
+                    request.headers.contains(HttpHeaders.Authorization)
+            if (!skipAuth) {
+                request.header(HttpHeaders.Authorization, "Bearer ${authState.bearerToken}")
+            }
+        }
+    }
+
+internal fun createHttpClient(
     config: TorboxClientConfig,
     authState: TorboxAuthState,
     engineFactory: HttpClientEngineFactory<*>,
 ): HttpClient =
     HttpClient(engineFactory) {
-        expectSuccess = false
+        configureTorbox(config, authState)
+    }
 
-        install(ContentNegotiation) {
-            json(
-                Json {
-                    ignoreUnknownKeys = true
-                    isLenient = true
-                    explicitNulls = false
-                    coerceInputValues = true
-                },
-            )
-        }
+internal fun HttpClientConfig<*>.configureTorbox(
+    config: TorboxClientConfig,
+    authState: TorboxAuthState,
+) {
+    expectSuccess = false
 
-        val logLevel = logLevelToEnum(config.logLevel)
+    install(ContentNegotiation) {
+        json(
+            Json {
+                ignoreUnknownKeys = true
+                isLenient = true
+                explicitNulls = false
+                coerceInputValues = true
+            },
+        )
+    }
 
-        if (logLevel != LogLevel.NONE) {
-            install(Logging) {
-                level = logLevel
-                logger =
-                    object : KtorLogger {
-                        override fun log(message: String) {
-                            KermitLogger.i(tag = "TorboxKMP") {
-                                message
-                            }
+    val logLevel = logLevelToEnum(config.logLevel)
+
+    if (logLevel != LogLevel.NONE) {
+        install(Logging) {
+            level = logLevel
+            logger =
+                object : KtorLogger {
+                    override fun log(message: String) {
+                        KermitLogger.i(tag = "TorboxKMP") {
+                            message
                         }
                     }
-                // important: some APIs have the token as query parameter!
-                sanitizeHeader { header -> header == HttpHeaders.Authorization }
-            }
-        }
-
-        install(HttpTimeout) {
-            requestTimeoutMillis = config.requestTimeoutMs
-            connectTimeoutMillis = config.connectTimeoutMs
-            socketTimeoutMillis = config.socketTimeoutMs
-        }
-
-        defaultRequest {
-            url(BASE_URL)
-            // skip the auth if not required or the token is missing
-            val skipAuth = attributes.getOrNull(NoAuth) == true || authState.bearerToken.isBlank()
-            if (!skipAuth) {
-                header(HttpHeaders.Authorization, "Bearer ${authState.bearerToken}")
-            }
-            headers.append(HttpHeaders.Accept, ContentType.Application.Json)
-            config.defaultHeaders.forEach { (k, v) -> headers.append(k, v) }
+                }
+            // important: some APIs have the token as query parameter!
+            sanitizeHeader { header -> header == HttpHeaders.Authorization }
         }
     }
+
+    install(HttpTimeout) {
+        requestTimeoutMillis = config.requestTimeoutMs
+        connectTimeoutMillis = config.connectTimeoutMs
+        socketTimeoutMillis = config.socketTimeoutMs
+    }
+
+    install(bearerAuthPlugin(authState))
+
+    defaultRequest {
+        url(BASE_URL)
+        headers.append(HttpHeaders.Accept, ContentType.Application.Json)
+        config.defaultHeaders.forEach { (k, v) -> headers.append(k, v) }
+    }
+}

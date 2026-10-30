@@ -26,7 +26,7 @@ import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
 
-class UsenetApiImpl(
+internal class UsenetApiImpl(
     private val client: HttpClient,
     private val dispatcher: CoroutineDispatcher,
 ) : UsenetApi {
