@@ -1,5 +1,12 @@
 # CHANGELOG
 
+**Version 0.3.0**
+
+- fixed `noAuth()` being ignored: public endpoints (stats, changelogs, speedtest, device auth...) no longer send the bearer token
+- malformed response bodies are now reported as `ApiResult.Failure.Serialization` instead of `ApiResult.Failure.Network`
+- breaking: internal helpers are no longer public (`BASE_URL`, `NoAuth`, `noAuth()`, `logLevelToEnum`, `createHttpClient`, `platformEngineFactory` and the `*ApiImpl` classes). Use `TorboxClient.create(...)` and the API interfaces instead
+- `ktor-client-mock` is no longer a runtime dependency
+
 **Version 0.2.0**
 
 - API calls are now main-safe: requests and response decoding run on `TorboxClientConfig.dispatcher` (default `Dispatchers.Default`)
