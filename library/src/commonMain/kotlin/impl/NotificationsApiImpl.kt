@@ -16,7 +16,7 @@ import io.ktor.client.request.post
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.isSuccess
 
-class NotificationsApiImpl(
+internal class NotificationsApiImpl(
     private val client: HttpClient,
     private val dispatcher: CoroutineDispatcher,
 ) : NotificationsApi {

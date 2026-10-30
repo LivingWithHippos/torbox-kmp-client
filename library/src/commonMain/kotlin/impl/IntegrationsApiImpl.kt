@@ -11,7 +11,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
 
-class IntegrationsApiImpl(
+internal class IntegrationsApiImpl(
     private val client: HttpClient,
     private val dispatcher: CoroutineDispatcher,
 ) : IntegrationsApi {

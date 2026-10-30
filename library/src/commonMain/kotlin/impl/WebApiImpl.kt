@@ -26,7 +26,7 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 
-class WebApiImpl(
+internal class WebApiImpl(
     private val client: HttpClient,
     private val dispatcher: CoroutineDispatcher,
 ) : WebApi {

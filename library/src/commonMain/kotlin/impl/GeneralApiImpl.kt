@@ -18,7 +18,7 @@ import io.ktor.client.request.parameter
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.isSuccess
 
-class GeneralApiImpl(
+internal class GeneralApiImpl(
     private val client: HttpClient,
     private val dispatcher: CoroutineDispatcher,
 ) : GeneralApi {

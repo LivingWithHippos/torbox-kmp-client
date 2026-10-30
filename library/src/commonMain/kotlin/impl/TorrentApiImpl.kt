@@ -35,7 +35,7 @@ import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
 
-class TorrentApiImpl(
+internal class TorrentApiImpl(
     private val client: HttpClient,
     private val dispatcher: CoroutineDispatcher,
 ) : TorrentApi {

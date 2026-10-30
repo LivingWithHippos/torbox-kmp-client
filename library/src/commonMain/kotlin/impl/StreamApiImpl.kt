@@ -11,7 +11,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 
-class StreamApiImpl(
+internal class StreamApiImpl(
     private val client: HttpClient,
     private val dispatcher: CoroutineDispatcher,
 ) : StreamApi {
