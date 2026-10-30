@@ -6,6 +6,7 @@ import io.ktor.client.plugins.ResponseException
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
+import io.ktor.serialization.ContentConvertException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerializationException
@@ -26,7 +27,8 @@ internal fun toFailure(
             )
         }
 
-        is SerializationException -> {
+        // Ktor wraps JSON decoding errors in ContentConvertException
+        is SerializationException, is ContentConvertException -> {
             ApiResult.Failure.Serialization(throwable, body)
         }
 
